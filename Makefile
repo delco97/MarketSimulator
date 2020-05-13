@@ -20,8 +20,8 @@ EXE_1	:= $(BIN)/main
 EXE_2	:= $(BIN)/test_squeue
 EXES	:= $(EXE_1) $(EXE_2)
 #List of object files needed by each program
-OBJECTS_1	:= $(OBJ)/main.o #$(OBJ)/utilities.o 
-OBJECTS_2	:= $(OBJ)/Test/Test_SQueue.o  $(OBJ)/SQueue.o  $(OBJ)/utilities.o 
+OBJECTS_1	:= $(OBJ)/main.o $(OBJ)/utilities.o 
+OBJECTS_2	:= $(OBJ)/Test/Test_SQueue.o  $(OBJ)/DataStruct/SQueue.o  $(OBJ)/utilities.o 
 
 #************************************************************
 #	END OF PARAMETERS AREA
@@ -42,7 +42,7 @@ CLIBS		:= $(patsubst %,-L%, $(LIBDIRS:%/=%))
 
 .PHONY: all dir clean clean_all doc docker_build docker_run
 
-all: $(EXES)
+all: $(EXES) $(OBJS)
 
 #Build objects files to link
 $(OBJ)/%.o: $(SRC)/%.c $(INCLUDEDIRS)/*
@@ -67,8 +67,8 @@ doc:
 	doxygen Doxyfile
 
 clean:
-	-rm -r $(BIN)/*
-	-rm -r $(OBJ)/*
+	-rm -r $(BIN)
+	-rm -r $(OBJ)
 
 #Build docker image for the project
 docker_build:
