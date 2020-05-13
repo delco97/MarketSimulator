@@ -10,16 +10,17 @@
  *              - max: maximum number of elements allowed in the queue (<=0: means no limit)
  */
 
-#include <util.h>
+#include <utilities.h>
 #include <SQueue.h>
 #include <pthread.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 
-//Private fun
+//Private functions prototypes
 static Node * pSQueue_allocateNode() { return malloc(sizeof(Node));}
 static SQueue * pSQueue_allocQueue() { return malloc(sizeof(SQueue)); }
-static void pSQueue_freeNode(Node * n, funDealloc p_funDealloc) { p_funDealloc(n->data); free(n); }
+static void pSQueue_freeNode(Node * n, funDealloc p_funDealloc) { if(p_funDealloc != NULL) p_funDealloc(n->data); free(n); }
 static int pSQueue_isEmpty(SQueue * p_q);
 static int pSQueue_isFull(SQueue * p_q);
 static int pSQueue_pop(SQueue * p_q, void ** p_removed);
@@ -36,20 +37,19 @@ static void pSQueue_SignalFull(SQueue * p_q) {if(pthread_cond_signal(&p_q->cv_fu
  * @param p_max is the maximum number of elements for the queue, in particular: if 
  *              if p_max > 0 p_max set the maximum number of elements in the queue; otherwise
  *              there is no limit.
+ * @param p_funNodeDel It is the function that will be used to deallocate node data. If NULL is passed node data will not be deallocated.
  * @return SQueue* pointer to new queue allocated, NULL if a probelm occurred during allocation.
  */
-SQueue * SQueue_init(long p_max){    
+SQueue * SQueue_init(long p_max, funDealloc p_funNodeDel){    
     SQueue * aux = NULL;
     
-    aux = (SQueue *)malloc(sizeof(SQueue));
+    aux = pSQueue_allocQueue();
     if(aux != NULL){
         aux->max = p_max;
         aux->n = 0;
-        aux->h = pSQueue_allocateNode();
-        if(aux->h == NULL) goto err;
-        aux->h->data = NULL;
-        aux->h->next = NULL;        
-        aux->t = aux->h;
+        aux->h = NULL;  
+        aux->t = NULL;
+        aux->funNodeDel = p_funNodeDel;
         //Locking system setup
         if (pthread_mutex_init(&(aux->lock), NULL) != 0 || 
             pthread_cond_init(&(aux->cv_empty), NULL) != 0 ||
@@ -70,24 +70,23 @@ err:
  *          Typically the main thread call this function after all slave threads have terminated.
  * 
  * @param p_q Requirements: p_q != NULL and must refer to a SQueue object created with #SQueue_init. Target SQueue.
- * @param p_funDealloc is the function used to deallocated data contained in all nodes.
- *        If p_funDealloc == NULL, data inside nodes will not be deallocated (usefull if data contained by nodes doesn't need to be deallocated).
  * @return int: result code:
  *  1: p_q != NULL and the deallocation proceed witout errors. 
  *  -1: p_q == NULL
  */
-int SQueue_deleteQueue(SQueue * p_q, funDealloc p_funDealloc){
+int SQueue_deleteQueue(SQueue * p_q){
     if(p_q == NULL) return -1;
     Node * aux = NULL;
     while (p_q->h != NULL) {
-        //Deallocated data inside node
-        if(p_funDealloc != NULL) p_funDealloc(p_q->h->data);
-        //Continue SQueue scan
         aux = p_q->h;
         p_q->h= p_q->h->next;
         //Deallocate Node
-        pSQueue_freeNode(aux);
+        pSQueue_freeNode(aux, p_q->funNodeDel);
     }
+    pthread_mutex_destroy(&p_q->lock);
+    pthread_cond_destroy(&p_q->cv_empty);
+    pthread_cond_destroy(&p_q->cv_full);
+    free(p_q);
     return 1;
 }
 
@@ -139,13 +138,19 @@ static int pSQueue_push(SQueue * p_q, void * p_new){
     if(pSQueue_isFull(p_q) == 1)//Is full
         res_fun = -2;
     else{
-        //add in head
+        //Init new node
         Node * aux = pSQueue_allocateNode();
         if(aux == NULL) return -3;
         aux->data = p_new;
         aux->next = NULL;
-        p_q->t->next = aux;
-        p_q->t = aux;
+        //Add new node in tail
+        if(p_q->t == NULL){//Empty queue
+            p_q->h = aux;
+            p_q->t = aux;
+        }else{//No empty queue, add in tail.
+            p_q->t->next = aux;
+            p_q->t = aux;
+        }
         p_q->n++;
         res_fun = 1;
     }
@@ -191,7 +196,7 @@ int SQueue_popWait(SQueue * p_q, void ** p_removed){
     while (pSQueue_isEmpty(p_q) == 1) pSQueue_WaitEmpty(p_q);
 
     if( (res_fun = pSQueue_pop(p_q, p_removed)) == 1){
-        pSQueue_WaitFull(p_q);
+        pSQueue_SignalFull(p_q);
     } 
     
     pSQueue_Unlock(p_q);
@@ -200,16 +205,23 @@ int SQueue_popWait(SQueue * p_q, void ** p_removed){
 
 static int pSQueue_pop(SQueue * p_q, void ** p_removed){
     int res_fun = 0;
+    if(p_removed == NULL) return -3;
     if(pSQueue_isEmpty(p_q) == 1)//Is empty
         res_fun = -2;
     else{
         //remove from tail
         Node * aux;
-        if(p_removed == NULL) return -3;
         aux = p_q->h;
         *p_removed = aux->data;
-        p_q->h = p_q->h->next;
-        pSQueue_freeNode(aux);
+        if(p_q->h == p_q->t){//One element left
+           p_q->h = NULL;
+           p_q->t = NULL; 
+        }else{//More then one element
+            p_q->h = p_q->h->next;
+        }
+        //Free memory allocated only for Node struct.
+        //Data contained inside node is not deallocated.
+        pSQueue_freeNode(aux, NULL);
         p_q->n--;
         res_fun = 1;
     }
@@ -250,6 +262,45 @@ int SQueue_isFull(SQueue * p_q){
     pSQueue_Lock(p_q);      
     res_fun = pSQueue_isFull(p_q);
     pSQueue_Unlock(p_q);  
+    return res_fun;
+}
+
+/**
+ * @brief Print data contained in all nodes of p_q.
+ * 
+ * @param p_q Requirements: p_q != NULL and must refer to a SQueue object created with #SQueue_init. Target SQueue.
+ * @param p_funPrint Requirements: p_funPrint != NULL. Function used tu print nodes data.
+ */
+void SQueue_print(SQueue * p_q, funPrint p_funPrint){
+    pSQueue_Lock(p_q);
+    fprintf(stdout, "Queue Length: %ld\n", p_q->n);
+    fprintf(stdout, "Elements:\n");
+    Node * aux = p_q->h;
+    char buf[MAX_STRING_NODE];
+    while(aux != NULL) {
+        p_funPrint(buf, MAX_STRING_NODE, aux->data);
+        fprintf(stdout, "%s   ", buf);
+        aux = aux->next;
+    }
+    fprintf(stdout, "\n");
+
+    pSQueue_Unlock(p_q);
+}
+
+/**
+ * @brief Get number of elements currently inside p_q
+ * 
+ * @param p_q Requirements: p_q != NULL and must refer to a SQueue object created with #SQueue_init. Target SQueue.
+ * @return int: result code:
+ * -1: invalid pointer
+ * [0;n]: number of elements inside p_q
+ */
+int SQueue_dim(SQueue * p_q){
+    int res_fun = -1;
+    if(p_q == NULL) return -1;
+    pSQueue_Lock(p_q);
+    res_fun = p_q->n;
+    pSQueue_Unlock(p_q);
     return res_fun;
 }
 
