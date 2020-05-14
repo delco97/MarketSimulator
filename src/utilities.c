@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <errno.h>		/**> For definition of errno and error functions*/
 #include <stdarg.h>		/**> ISO C variable aruments */
+#include <time.h>
 
 /**
  * @brief   Print a message and return to caller.
@@ -146,5 +147,37 @@ void err_quit(const char *fmt, ...) {
 	err_doit(0, 0, fmt, ap);
 	va_end(ap);
 	exit(1);
+}
+
+/**
+ * @brief Wait a specified amount of milliseconds.
+ * 
+ * This code has been taken from https://stackoverflow.com/questions/1157209/is-there-an-alternative-sleep-function-in-c-to-milliseconds.
+ * 
+ * @param p_waitMs milliseconds to wait.
+ * @return int: error code:
+ * -1: an error occurred (errno set)
+ * 	0: successfully executed
+ */
+int waitMs(long p_msec){
+    struct timespec ts;
+    int res;
+	//Check input
+    if (p_msec < 0){
+        errno = EINVAL;
+        return -1;
+    }
+	//Conert p_msec in second and nanoseconds
+    ts.tv_sec = p_msec / 1000;
+    ts.tv_nsec = (p_msec % 1000) * 1000000;
+
+	//if nanosleep is interrupted by a signal handler
+	//continue to wait from where it stopped.
+    do {
+        res = nanosleep(&ts, &ts);
+    } while (res && errno == EINTR);
+
+	//Get here only if nanosleep has finished its task or if an error occurred.
+    return res;
 }
 
