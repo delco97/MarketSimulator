@@ -45,6 +45,7 @@ static void runTest(void (test_fun)(char *), char * p_title){
 
 static void test1(){
     //Check if all the values are correctly retriven
+    printConfiguration();
     testCaseExe(1,parseConfigFile("./configFiles/Test/config_test1.txt")==1);
     testCaseExe(2,g_K==6);
     testCaseExe(3,g_KS==3);
@@ -56,12 +57,14 @@ static void test1(){
     testCaseExe(9,g_S1==2);
     testCaseExe(10,g_S2=10);
     testCaseExe(11,g_NP==2);
+    printConfiguration();
 }
 
 static void test2(){
     //Comment check 
     testCaseExe(1,parseConfigFile("./configFiles/Test/config_test2.txt")==0);
     testCaseExe(2,g_K==6);
+    printConfiguration();
 }
 
 static void test3(){
@@ -95,7 +98,6 @@ static void test8(){
 }
 
 int main() {
-
     runTest(test1, "test1");
     runTest(test2, "test2");
     runTest(test3, "test3");

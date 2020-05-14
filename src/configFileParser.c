@@ -27,6 +27,8 @@ long g_S2; 	/**< This threshold set the limit that tells to director if it's tim
 				 one queue with a number of user in queue equals or greater then S2. {S2>0} */
 long g_NP; 	/**< Time required to process a single product. {NP>0} */
 
+static int isDataValid = 0; /**< Tell if all configuration values are valid (isDataValid!=0).
+								 isDataValid is set to 1 only after a successfull execution of parseConfigFile*/
 
 /**
  * @brief Get position of string p_target insdie p_strings
@@ -241,5 +243,16 @@ int parseConfigFile(char * p_configPath){
 	}
     fclose(f_config);
 	free(status);
+	isDataValid = res;
 	return res;
+}
+
+/**
+ * @brief 	Print current configuration values.
+ * 			This only works after a successful parseConfigFile execution.
+ */
+void printConfiguration(){
+	if(!isDataValid) printf("Configuration items are not set.\n");
+	else
+		printf("K=%ld\nKS=%ld,\nC=%ld,\nE=%ld,\nT=%ld,\nP=%ld,\nS=%ld,\nS1=%ld,\nS2=%ld,\nNP=%ld",g_K,g_KS,g_C,g_E,g_T,g_P,g_S,g_S1,g_S2,g_NP);
 }
