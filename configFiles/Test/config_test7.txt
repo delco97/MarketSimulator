@@ -1,0 +1,11 @@
+//Costraint check 1
+K=-1
+KS=-1
+C=-1
+E=-1
+T=-1
+P=-1
+S=-1
+S1=-1
+S2=-1
+NP=-1

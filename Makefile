@@ -18,10 +18,13 @@ OBJ		:= obj
 #in "Build executables" for each EXE
 EXE_1	:= $(BIN)/main
 EXE_2	:= $(BIN)/test_squeue
-EXES	:= $(EXE_1) $(EXE_2)
+EXE_3	:= $(BIN)/Test_configFileParser
+EXES	:= $(EXE_1) $(EXE_2) $(EXE_3)
 #List of object files needed by each program
-OBJECTS_1	:= $(OBJ)/main.o $(OBJ)/utilities.o 
-OBJECTS_2	:= $(OBJ)/Test/Test_SQueue.o  $(OBJ)/DataStruct/SQueue.o  $(OBJ)/utilities.o 
+OBJECTS_1	:= $(OBJ)/main.o $(OBJ)/utilities.o $(OBJ)/configFileParser.o 
+OBJECTS_2	:= $(OBJ)/Test/Test_SQueue.o  $(OBJ)/DataStruct/SQueue.o  $(OBJ)/utilities.o
+OBJECTS_3	:= $(OBJ)/Test/Test_configFileParser.o  $(OBJ)/configFileParser.o $(OBJ)/utilities.o
+
 
 #************************************************************
 #	END OF PARAMETERS AREA
@@ -54,6 +57,9 @@ $(EXE_1):	$(OBJECTS_1)
 
 $(EXE_2):	$(OBJECTS_2)
 	$(CC) $(CFLAGS) $(CINCLUDES) $(CLIBS) $^ -o $@ $(LIBRARIES)
+
+$(EXE_3):	$(OBJECTS_3)
+	$(CC) $(CFLAGS) $(CINCLUDES) $(CLIBS) $^ -o $@ $(LIBRARIES)	
 
 #Create BIN and OBJ folder if they are missing.
 #OBJ folder will have the same structure of SRC folder.

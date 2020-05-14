@@ -1,0 +1,14 @@
+//No duplication test
+K=6
+K=10
+K=12
+KS=3
+C=50
+C=20
+E=3
+T=200
+P=100
+S=20
+S1=2
+S2=10
+NP=2

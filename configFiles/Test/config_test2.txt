@@ -1,0 +1,14 @@
+//K=10
+K=6
+//This is a comment
+   //This is an invalid comment
+//    Valid comment
+KS=3
+C=50
+E=3
+T=200
+P=100
+S=20
+S1=2
+S2=10
+NP=2

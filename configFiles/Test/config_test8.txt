@@ -1,0 +1,11 @@
+//Costraint check 2
+K=10
+KS=11
+C=1
+E=0
+T=10
+P=1
+S=1
+S1=1
+S2=1
+NP=1
