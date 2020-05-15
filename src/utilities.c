@@ -18,6 +18,7 @@
 #include <errno.h>		/**> For definition of errno and error functions*/
 #include <stdarg.h>		/**> ISO C variable aruments */
 #include <time.h>
+#include <pthread.h>
 
 /**
  * @brief   Print a message and return to caller.
@@ -180,4 +181,30 @@ int waitMs(long p_msec){
 	//Get here only if nanosleep has finished its task or if an error occurred.
     return res;
 }
+
+/**
+ * @brief Return the elapsed (p_end - p_start) time in ms.
+ * 
+ * @param p_start start time
+ * @param p_end end time
+ * @return long 
+ */
+long elapsedTime(struct timespec p_start, struct timespec p_end) {
+	return (p_end.tv_sec - p_start.tv_sec) * 1000 + (p_end.tv_nsec - p_start.tv_nsec) / 1000000;
+}
+/**
+ * @brief Get the current time as struct timespec
+ * @return struct timespec set with current time
+ */
+struct timespec getCurrentTime(){
+	struct timespec now;
+	clock_gettime(CLOCK_REALTIME, &now);
+	return now;
+}
+
+//Locking utilities
+void Lock(pthread_mutex_t * p_lock) {if(pthread_mutex_lock(p_lock) != 0) err_quit("An error occurred during locking.");}
+void Unlock(pthread_mutex_t * p_lock) {if(pthread_mutex_unlock(p_lock) != 0) err_quit("An error occurred during unlocking.");}
+void Wait(pthread_cond_t * p_cond, pthread_mutex_t * p_lock) {if(pthread_cond_wait(p_cond, p_lock) != 0) err_quit("An error occurred during cond wait.");}
+void Signal(pthread_cond_t * p_cond) {if(pthread_cond_signal(p_cond) != 0) err_quit("An error occurred during a condition singal.");}
 
