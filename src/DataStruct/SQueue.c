@@ -36,10 +36,9 @@ static void pSQueue_SignalFull(SQueue * p_q) {if(pthread_cond_signal(&p_q->cv_fu
  * @param p_max is the maximum number of elements for the queue, in particular: if 
  *              if p_max > 0 p_max set the maximum number of elements in the queue; otherwise
  *              there is no limit.
- * @param p_funNodeDel It is the function that will be used to deallocate node data. If NULL is passed node data will not be deallocated.
  * @return SQueue* pointer to new queue allocated, NULL if a probelm occurred during allocation.
  */
-SQueue * SQueue_init(long p_max, funDealloc p_funNodeDel){    
+SQueue * SQueue_init(long p_max){    
     SQueue * aux = NULL;
     
     aux = pSQueue_allocQueue();
@@ -48,7 +47,6 @@ SQueue * SQueue_init(long p_max, funDealloc p_funNodeDel){
         aux->n = 0;
         aux->h = NULL;  
         aux->t = NULL;
-        aux->funNodeDel = p_funNodeDel;
         //Locking system setup
         if (pthread_mutex_init(&(aux->lock), NULL) != 0 || 
             pthread_cond_init(&(aux->cv_empty), NULL) != 0 ||
@@ -68,19 +66,20 @@ err:
  * @warning This function should be called by only one thread when no other thread is working on SQueue object.
  *          Typically the main thread call this function after all slave threads have terminated.
  * 
+ * @param p_f Function to use for deallocate data nodes. If NULL, no deallocation.
  * @param p_q Requirements: p_q != NULL and must refer to a SQueue object created with #SQueue_init. Target SQueue.
  * @return int: result code:
  *  1: p_q != NULL and the deallocation proceed witout errors. 
  *  -1: p_q == NULL
  */
-int SQueue_deleteQueue(SQueue * p_q){
+int SQueue_deleteQueue(SQueue * p_q, funDealloc p_f){
     if(p_q == NULL) return -1;
     Node * aux = NULL;
     while (p_q->h != NULL) {
         aux = p_q->h;
         p_q->h= p_q->h->next;
         //Deallocate Node
-        pSQueue_freeNode(aux, p_q->funNodeDel);
+        pSQueue_freeNode(aux, p_f);
     }
     pthread_mutex_destroy(&p_q->lock);
     pthread_cond_destroy(&p_q->cv_empty);
@@ -302,6 +301,33 @@ int SQueue_dim(SQueue * p_q){
     pSQueue_Unlock(p_q);
     return res_fun;
 }
+
+/**
+ * @brief Find p_target inside p_q using p_funCmp as comapre criteria.
+ * If found return its position inside list.
+ * 
+ * @param p_q Requirements: p_q != NULL and must refer to a SQueue object created with #SQueue_init. Target SQueue.
+ * @param p_target data to search
+ * @param p_funCmp function used for compare data of nodes (result value as strcmp).
+ * @return int: result code:
+ * [0;n]: first node with p_target data.
+ * -1: invalid pointer;
+ * -2: invalid compare function
+ * -3: p_target not found
+ */
+int SQueue_find(SQueue * p_q, void * p_target, funCmp p_funCmp){
+    if(p_q == NULL) return -1;
+    if(p_funCmp == NULL) return -2;
+    int i=0;
+    Node * cur = p_q->h;
+    while (cur != NULL) {
+        if(p_funCmp(p_target, cur->data) == 0) return i;
+        cur = cur->next;
+        i++;
+    }
+    return -1;
+}
+
 
 static int pSQueue_isEmpty(SQueue * p_q){
     return p_q->n == 0 ? 1:0;

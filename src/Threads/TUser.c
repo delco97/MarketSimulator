@@ -270,11 +270,11 @@ void * User_main(void * p_arg){
     //End of shopping, move to one cashdesk
     if(u->products > 0){//Has something in the cart
         printf("[User %d]: move to a open cash desk for payment.\n", u->id);
-        //TODO
+        //TODO: User_moveToPay(u)
     }else{//Nothing in the cart
         printf("[User %d]: move to the authorization queue.\n", u->id);
         //Move User struct to queue of users waiting director authorization before exit.
-        //TODO
+        //TODO: User_moveToAuth(u)
     }
     
     User_waitExit(u);//Wait until user exit

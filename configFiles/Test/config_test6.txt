@@ -2,7 +2,7 @@
 //but in this case K is a number so "=6" is not a number
 //Next is good 'cause all consecutive '=' are consider as only one '='
 K=====6
-//Next is bad (no space a)
+//Next is good but key has blank space.
    KS=3
 //Next is bad   
 C50
@@ -10,15 +10,15 @@ C50
 E=
 //Next is bad   
 =200
-//Next is bad   
+//Next is good   
 P=abcd
-//Next is good (it will be truncated!)
+//Next is good
 S=2.2
 //Next is bad   
 
-//Next is bad   
+//Next is good   
 S1=asdasd3
-//Next is bad   
+//Next is good   
 S2=asd10asd
 //Next is good
 NP=      2

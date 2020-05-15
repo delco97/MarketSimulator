@@ -7,9 +7,8 @@
 
 #define MARKET_NAME_MAX 100
 
-
-
 typedef struct _Market {
+    pthread_t thread;   /**< Market  thread */
     pthread_mutex_t lock;  /**< lock variable */
     char name[MARKET_NAME_MAX]; /**< Name of the market */
     int C; /**< Maximum number of users allowed inside */
@@ -19,7 +18,10 @@ typedef struct _Market {
 
 } Market;
 
-Market * Market_init(int p_K, int p_C, int p_E, int p_T, int p_P, int p_S1, int p_S2, int p_NP, char * p_logPath);
+Market * Market_init();
+int Market_startThread(Market * p_u);
+int Market_joinThread(Market * p_u);
+int Market_delete(Market * p_u);
 
 
 #endif	/* _TMARKET_H */

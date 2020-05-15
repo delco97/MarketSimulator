@@ -50,7 +50,7 @@ void test_SingleThread(){
     
     printf("**START TEST - test_SingleThread**\n");
     
-    testCaseExe((q = SQueue_init(5, freeNodeData_int))!= NULL );
+    testCaseExe((q = SQueue_init(5))!= NULL );
     testCaseExe(SQueue_isEmpty(q)==1);
     testCaseExe(SQueue_isFull(q)==0);
     testCaseExe(SQueue_dim(q)==0);
@@ -92,7 +92,7 @@ void test_SingleThread(){
     testCaseExe(*((int *)aux) == 5);free(aux);
     testCaseExe(SQueue_pop(q, &aux) == -2);
     testCaseExe(SQueue_dim(q)==0); 
-    SQueue_deleteQueue(q);
+    SQueue_deleteQueue(q, freeNodeData_int);
 
     printf("**END TEST - test_SingleThread**\n");
     
@@ -145,7 +145,7 @@ void test_MultiThread(){
     setupTest();
     
     printf("**START TEST - test_MultiThread**\n");
-    q = SQueue_init(-1, freeNodeData_int);
+    q = SQueue_init(-1);
     pthread_create(&th_producer, NULL, Producer, q);
     pthread_create(&th_consumer, NULL, Consumer, q);    
     pthread_join(th_producer, NULL);

@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <utilities.h>
 #include <SQueue.h>
-#include <configFileParser.h>
+#include <Config.h>
 
 /**
  * @brief Explain how to correctly use the program and exit.
@@ -24,6 +24,7 @@ void useInfo(char * p_argv[]){
 
 int main(int argc, char * argv[]) {
 	FILE * f_log = NULL;
+	FILE * f_conf = NULL;
 	char userChoice;
 	
 	if(argc != 3){//Wrong use
@@ -44,12 +45,19 @@ int main(int argc, char * argv[]) {
 		fclose(f_log);
 	}
 
+	//Check the config file path
+	f_conf = fopen(argv[1], "r");
+	if( f_conf == NULL ) {
+		err_sys("Unable to open configuration file %s. Check the path and try again.");
+	}
+
 	//Read configurations
-	printf("Reading configuration file %s ...\n", argv[1]);
-	if(parseConfigFile(argv[1]) != 1) {
-		err_quit("Impossible to setup the market, check the configuration file and try again.");
+	printf("Check configuration file %s ...\n", argv[1]);
+	if(Config_checkFile(f_conf) != 1) {
+		err_quit("Impossible to setup the market, because there are some error in the config file.\nFix them and try again.");
 	}
 	printf("Done!\n");
+
 	printf("**Welcome to Market simulator**\n");
 
 	return 0;
