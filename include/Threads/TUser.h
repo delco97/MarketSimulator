@@ -2,38 +2,58 @@
 #define	_TUSER_H
 
 #include <SQueue.h>
-#include <Market.h>
+#include <TMarket.h>
 #include <pthread.h>
+#include <time.h>
+
+typedef enum _UserState {
+    USR_SHOPPING,
+    USR_PAYQUEUE,
+    USR_AUTHQUEUE,
+    USR_OUT
+} UserState;
 
 typedef struct _User {
+    pthread_t thread;   /**< User thread */
     pthread_mutex_t lock;  /**< lock variable */
+    pthread_cond_t cv_out; /**< used to wait when user is inside the market. */
     int id; /**< Numberic identification number. */
     int products;  /**< Number of products in cart. */  
     int queueChanges; /**< Number of queue changed. */
-    int shoppingTime; /**< Time to spend in shopping area. */
-    int cashDeskTime; /**< Time spent in a cash desk queue. */
-    int authTime;   /**< Time spent before getting the exit authorization. */
+    UserState state; /**< Current user state */
+    struct timespec tMarketEntry;  /**< Entry time in the market */
+    struct timespec tMarketExit;  /**< Exit time from the market */
+    struct timespec tQueueStart;  /**< Time when users start to wait in a queue to pay o to be authorized for exit*/
+    struct timespec tStartPayment;  /**< Time when a cashier start to serve the user */
+    int shoppingTime; /**< Time to spend in shopping area in ms. */
+    Market * market;  /**< Reference to the market where the user is. */
 } User;
 
-/**
- * @brief Arguments passed to thread TUser.c
- */
-typedef struct _TUserArg {
-    int id; /**< Custom thread id. */
-    User * u; /**< User associated to the thread. */
-    Market * m;  /**< Reference to the market where the user is. */
-} TUserArg;
 
+User * User_init(int p_products, int p_shoppingTime, Market * p_m);
+int User_startThread(User * p_u);
+int User_joinThread(User * p_u);
+int User_delete(User * p_u);
+//Getters
+int User_getId(User * p_u);
+int User_getProducts(User * p_u);
+int User_getQueueChanges(User * p_u);
+UserState User_getState(User * p_u);
+struct timespec User_getMarketEntryTime(User * p_u);
+struct timespec User_getMarketExitTime(User * p_u);
+struct timespec User_getQueueStartTime(User * p_u);
+struct timespec User_getStartPaymentTime(User * p_u);
+int User_getShoppingTime(User * p_u);
+//Setters
+void User_setState(User * p_u, UserState p_x);
+void User_setMarketEntryTime(User * p_u, struct timespec p_x);
+void User_setMarketExitTime(User * p_u, struct timespec p_x);
+void User_setQueueStartTime(User * p_u, struct timespec p_x);
+void User_setStartPaymentTime(User * p_u, struct timespec p_x);
+void User_changeQueue(User * p_u);
 
-User * User_init(int p_products, int p_shoppingTime);
-
-int getId(User * p_u);
-int getProducts(User * p_u);
-int getQueueChanges(User * p_u);
-int getShoppingTime(User * p_u);
-int getCashDeskTime(User * p_u);
-int getAuthTime(User * p_u);
-void changeQueue(User * p_u);
-void * th_Tokenizer_main(void * arg);
+void User_signalExit(User * p_u);
+void User_waitExit(User * p_u);
+void * User_main(void * arg);
 
 #endif	/* _TUSER_H */
