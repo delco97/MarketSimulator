@@ -10,55 +10,37 @@
 #include <utilities.h>
 #include <SQueue.h>
 #include <Config.h>
-
+#include <TMarket.h>
 /**
- * @brief Explain how to correctly use the program and exit.
+ * @brief Explain how to correctly use the program.
  * 
  * @param p_argv parameters passed to the program.
  */
 void useInfo(char * p_argv[]){
-	fprintf(stderr, "Wrong use. See the expected call:\n");
+	fprintf(stderr, "See the expected call:\n");
 	fprintf(stderr, "	%s <config_file> <log_file>\n", p_argv[0]);
-	exit(EXIT_FAILURE);
 }
 
 int main(int argc, char * argv[]) {
-	FILE * f_log = NULL;
-	FILE * f_conf = NULL;
-	char userChoice;
-	
+	Market * m;
+
 	if(argc != 3){//Wrong use
+		printf("Wrong use.");
 		useInfo(argv);
-	}
-	//Check the log file path
-	f_log = fopen(argv[2], "r");
-	if( f_log != NULL ) {
-    	printf("Log file %s already exist. If you want to proceed it will be overwritten.", argv[2]);
-		do{
-			printf("\nDo you want to proceed?[y/n] ");
-			userChoice = getchar();
-		}while(userChoice != 'y' && userChoice != 'n');
-		if(userChoice == 'n'){
-			fclose(f_log);
-			exit(0);
-		}
-		fclose(f_log);
+		err_exit(EXIT_FAILURE, "Exit...");
 	}
 
-	//Check the config file path
-	f_conf = fopen(argv[1], "r");
-	if( f_conf == NULL ) {
-		err_sys("Unable to open configuration file %s. Check the path and try again.");
-	}
-
-	//Read configurations
-	printf("Check configuration file %s ...\n", argv[1]);
-	if(Config_checkFile(f_conf) != 1) {
-		err_quit("Impossible to setup the market, because there are some error in the config file.\nFix them and try again.");
-	}
-	printf("Done!\n");
-
-	printf("**Welcome to Market simulator**\n");
+	//Try to init market
+	if((m = Market_init(argv[1], argv[2])) == NULL)
+		err_exit(EXIT_FAILURE, "An error occurred during market initialization. Exit...");
+	
+	//Market is correctly initialized
+	if(Market_startThread(m) != 0)
+		err_exit(EXIT_FAILURE, "An error occurred during market startup (1). Exit...");
+	
+	//Wait Market
+	if(Market_joinThread(m) != 0)
+		err_exit(EXIT_FAILURE, "An error occurred during market startup (2). Exit...");
 
 	return 0;
 }

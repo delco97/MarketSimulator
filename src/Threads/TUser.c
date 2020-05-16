@@ -1,6 +1,6 @@
 /**
  * @file TUser.c
- * @brief  Implementation of User thread.
+ * @brief  Implementation of User.
  */
 
 #include <TUser.h>
@@ -28,7 +28,7 @@ static int pUser_getNextId() {
 }
 
 /**
- * @brief 
+ * @brief Create a new User object.
  * 
  * @param p_products Number of products in the cart.
  * @param p_shoppingTime Time to spend in shopping area.

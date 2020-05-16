@@ -22,7 +22,7 @@ EXE_3	:= $(BIN)/Test_Config
 EXE_4	:= $(BIN)/Test_User
 EXES	:= $(EXE_1) $(EXE_2) $(EXE_3) $(EXE_4)
 #List of object files needed by each program
-OBJECTS_1	:= $(OBJ)/main.o $(OBJ)/utilities.o $(OBJ)/Config.o $(OBJ)/DataStruct/SQueue.o
+OBJECTS_1	:= $(OBJ)/main.o $(OBJ)/utilities.o $(OBJ)/Config.o $(OBJ)/DataStruct/SQueue.o $(OBJ)/Threads/TMarket.o
 OBJECTS_2	:= $(OBJ)/Test/Test_SQueue.o  $(OBJ)/DataStruct/SQueue.o  $(OBJ)/utilities.o
 OBJECTS_3	:= $(OBJ)/Test/Test_Config.o  $(OBJ)/Config.o $(OBJ)/DataStruct/SQueue.o $(OBJ)/utilities.o
 OBJECTS_4	:= $(OBJ)/Test/Test_User.o $(OBJ)/Threads/TUser.o $(OBJ)/utilities.o
