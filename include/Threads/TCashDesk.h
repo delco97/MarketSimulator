@@ -3,13 +3,13 @@
 
 #include <pthread.h>
 #include <SQueue.h>
-
-typedef struct _CashDesk {
+typedef struct _CashDesk CashDesk;
+struct CashDesk {
     pthread_t thread;   /**< CaskDesk thread */
     pthread_mutex_t lock;  /**< lock variable */
     
     SQueue usersPay; /**< Users waiting for payment. */
-} CashDesk;
+};
 
 CashDesk CashDesk_init();
 

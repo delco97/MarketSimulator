@@ -66,7 +66,7 @@ static int parseConfigLine(char * p_str, const char * p_limit, char * p_label, c
  * 0: p_key not found
  * 1: p_key found
  */
-int Config_getValue(FILE * p_f, char * p_key, char * p_buff){
+int Config_getValue(FILE * p_f, const char * p_key, char * p_buff){
     char line[MAX_DIM_STR_CONF]; //line of config file
 	char str_label[MAX_DIM_STR_CONF];
 	char str_value[MAX_DIM_STR_CONF];

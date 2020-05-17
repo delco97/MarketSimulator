@@ -4,10 +4,15 @@
 #include <pthread.h>
 #include <TDirector.h>
 #include <SQueue.h>
+#include <TUser.h>
+#include <Config.h>
 
 #define MARKET_NAME_MAX 100
 
-typedef struct _Market {
+typedef struct Market Market;
+typedef struct Director Director;
+
+struct Market {
     pthread_t thread;   /**< Market  thread */
     pthread_mutex_t lock;  /**< lock variable */
     //Global variables configured according to the config file on startup.
@@ -25,15 +30,18 @@ typedef struct _Market {
                     In particular, S2 is the maximum number of users in a single queue. So if there is at least
                     one queue with a number of user in queue equals or greater then S2. {S2>0} */
     long NP; 	/**< Time required to process a single product. {NP>0} */
-    Director director;  /**< Director of the market */
-    SQueue usersShopping;  /**< Users in shopping area */
+    Director * director;  /**< Director of the market */
+    SQueue * usersShopping;  /**< Users in shopping area */
+    SQueue * usersExit;  /**< Users who have left the market */
 
-} Market;
+
+};
 
 Market * Market_init(const char * p_conf, const char * p_log);
-int Market_startThread(Market * p_u);
-int Market_joinThread(Market * p_u);
-int Market_delete(Market * p_u);
+void * Market_main(void * arg);
+int Market_startThread(Market * p_m);
+int Market_joinThread(Market * p_m);
+int Market_delete(Market * p_m);
 
 
 #endif	/* _TMARKET_H */

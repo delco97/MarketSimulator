@@ -16,15 +16,17 @@ typedef	void (*funDealloc)(void *); /**< function to dealloc data inside nodes *
 typedef	int (*funCmp)(void *, void *); /**< function to compare data inside nodes */
 typedef	void (*funPrint)(char *buf, size_t s, void * data); /**< function to print data inside nodes */
 
+typedef struct SQueue SQueue;
+typedef struct Node Node;
 /**
  * @brief Queue node containing generic data (void *).
  */
-typedef struct _Node {
+struct Node {
     void * data; /**< generic data pointer */
-    struct _Node * next; /**<  pointer to next node object in the queue*/
-} Node;
+    struct Node * next; /**<  pointer to next node object in the queue*/
+};
 
-typedef struct _SQueue{
+struct SQueue{
     pthread_mutex_t lock;  /**< lock variable */
     pthread_cond_t cv_full; /**< used to wait when is full */
     pthread_cond_t cv_empty; /**< used to wait when is empty */ 
@@ -32,7 +34,7 @@ typedef struct _SQueue{
     long max;  /**< is the max number of elements that queue can contain (<=0: no limit) */
     Node * h; /**< head pointer */
     Node * t; /**< tail pointer */
-} SQueue;
+};
 
 
 

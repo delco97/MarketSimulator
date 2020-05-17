@@ -32,15 +32,20 @@ int main(int argc, char * argv[]) {
 
 	//Try to init market
 	if((m = Market_init(argv[1], argv[2])) == NULL)
-		err_exit(EXIT_FAILURE, "An error occurred during market initialization. Exit...");
+		err_quit("An error occurred during market initialization. Exit...");
 	
 	//Market is correctly initialized
 	if(Market_startThread(m) != 0)
-		err_exit(EXIT_FAILURE, "An error occurred during market startup (1). Exit...");
+		err_quit("An error occurred during market startup (1). Exit...");
 	
 	//Wait Market
 	if(Market_joinThread(m) != 0)
-		err_exit(EXIT_FAILURE, "An error occurred during market startup (2). Exit...");
+		err_quit("An error occurred during market startup (2). Exit...");
+
+	if(Market_delete(m) != 1)
+		err_quit( "An error occurred during market closing. Exit...");
+
+	
 
 	return 0;
 }

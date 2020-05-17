@@ -6,14 +6,18 @@
 #include <pthread.h>
 #include <time.h>
 
-typedef enum _UserState {
+typedef enum UserState UserState;
+typedef struct Market Market;
+typedef struct User User;
+
+enum UserState {
     USR_SHOPPING,
     USR_PAYQUEUE,
     USR_AUTHQUEUE,
     USR_OUT
-} UserState;
+};
 
-typedef struct _User {
+struct User {
     pthread_t thread;   /**< User thread */
     pthread_mutex_t lock;  /**< lock variable */
     pthread_cond_t cv_out; /**< used to wait when user is inside the market. */
@@ -27,7 +31,7 @@ typedef struct _User {
     struct timespec tStartPayment;  /**< Time when a cashier start to serve the user */
     int shoppingTime; /**< Time to spend in shopping area in ms. */
     Market * market;  /**< Reference to the market where the user is. */
-} User;
+};
 
 
 User * User_init(int p_products, int p_shoppingTime, Market * p_m);
