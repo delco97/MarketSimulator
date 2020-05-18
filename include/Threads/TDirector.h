@@ -13,13 +13,16 @@ typedef struct Director Director;
 struct Director {
     pthread_t thread;   /**< Director thread */
     Market * market;  /**< Reference to the market where the director is. */
-    SQueue usersAuthQueue; /**< Users waiting for authorization. */
-    CashDesk * desks; /**< Array of cash desks managed by director */
+
 };
 
 Director * Director_init(Market * m);
-int Director_startThread(Director * p_u);
-int Director_joinThread(Director * p_u);
-int Director_delete(Director * p_u);
+int Director_startThread(Director * p_d);
+int Director_joinThread(Director * p_d);
+int Director_delete(Director * p_d);
+void * Director_main(void * p_arg);
+
+//Getters
+Market * Director_getMarket(Director * p_d);
 
 #endif	/* _TDIRECTOR_H */

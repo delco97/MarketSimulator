@@ -19,6 +19,7 @@
 #include <stdarg.h>		/**> ISO C variable aruments */
 #include <time.h>
 #include <pthread.h>
+#include <time.h>
 
 /**
  * @brief   Print a message and return to caller.
@@ -201,6 +202,20 @@ struct timespec getCurrentTime(){
 	clock_gettime(CLOCK_REALTIME, &now);
 	return now;
 }
+
+//General stuff
+/**
+ * @brief 	Get a random integer value in the following range [p_lower; p_upper]
+ * 			Remember to set a seed using srand before. Each thread using this function
+ * 			should have its own seed.
+ * 
+ * @param p_lower 
+ * @param p_upper 
+ * @return int: 
+ */
+int getRandom(int p_lower, int p_upper, unsigned int * p_seed) { 
+    return (rand_r(p_seed) % (p_upper - p_lower + 1)) + p_lower; 
+} 
 
 //Locking utilities
 void Lock(pthread_mutex_t * p_lock) {if(pthread_mutex_lock(p_lock) != 0) err_quit("An error occurred during locking.");}

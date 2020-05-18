@@ -25,4 +25,8 @@ void Lock(pthread_mutex_t * p_lock);
 void Unlock(pthread_mutex_t * p_lock);
 void Wait(pthread_cond_t * p_cond, pthread_mutex_t * p_lock);
 void Signal(pthread_cond_t * p_cond);
+
+//** General utilities
+int getRandom(int p_lower, int p_upper, unsigned int * p_seed);
+
 #endif	/* _UTILITIES_H */
