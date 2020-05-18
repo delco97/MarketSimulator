@@ -14,12 +14,15 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <assert.h>
 
 //Private functions prototypes
 static Node * pSQueue_allocateNode() { return malloc(sizeof(Node));}
 static SQueue * pSQueue_allocQueue() { return malloc(sizeof(SQueue)); }
-static void pSQueue_freeNode(Node * n, funDealloc p_funDealloc) { if(p_funDealloc != NULL) p_funDealloc(n->data); free(n); }
+static void pSQueue_freeNode(Node * n, funDealloc p_funDealloc) { 
+    if(p_funDealloc != NULL) p_funDealloc(n->data); 
+    free(n); 
+}
 static int pSQueue_isEmpty(SQueue * p_q);
 static int pSQueue_isFull(SQueue * p_q);
 static int pSQueue_pop(SQueue * p_q, void ** p_removed);
@@ -74,6 +77,7 @@ err:
  */
 int SQueue_deleteQueue(SQueue * p_q, funDealloc p_f){
     if(p_q == NULL) return -1;
+    pSQueue_Lock(p_q);
     Node * aux = NULL;
     while (p_q->h != NULL) {
         aux = p_q->h;
@@ -81,6 +85,7 @@ int SQueue_deleteQueue(SQueue * p_q, funDealloc p_f){
         //Deallocate Node
         pSQueue_freeNode(aux, p_f);
     }
+    pSQueue_Unlock(p_q);
     pthread_mutex_destroy(&p_q->lock);
     pthread_cond_destroy(&p_q->cv_empty);
     pthread_cond_destroy(&p_q->cv_full);
@@ -318,15 +323,140 @@ int SQueue_dim(SQueue * p_q){
 int SQueue_find(SQueue * p_q, void * p_target, funCmp p_funCmp){
     if(p_q == NULL) return -1;
     if(p_funCmp == NULL) return -2;
+    pSQueue_Lock(p_q);
     int i=0;
+    int res_fun = -3;
     Node * cur = p_q->h;
     while (cur != NULL) {
-        if(p_funCmp(p_target, cur->data) == 0) return i;
+        if(p_funCmp(p_target, cur->data) == 0) {
+            res_fun = i;
+            break;
+        }
         cur = cur->next;
         i++;
     }
-    return -1;
+    pSQueue_Unlock(p_q);
+    return res_fun;
 }
+
+/**
+ * @brief   Find first occurrence of p_target inside p_q using p_funCmp as comapre criteria
+ *          and remove it from the queue if it's found.
+ * 
+ * @param p_q Requirements: p_q != NULL and must refer to a SQueue object created with #SQueue_init. Target SQueue.
+ * @param p_target data to remove
+ * @param p_funCmp function used for compare data of nodes (result value as strcmp).
+ * @return int: result code:
+ *  1: p_target found and removed
+ * -1: invalid pointer;
+ * -2: invalid compare function
+ * -3: p_target not found
+ */
+int SQueue_remove(SQueue * p_q, void * p_target, funCmp p_funCmp){
+    if(p_q == NULL) return -1;
+    if(p_funCmp == NULL) return -2;    
+    pSQueue_Lock(p_q);
+    int res_fun = -3;
+    Node * prev = NULL;
+    Node * cur = p_q->h;
+    Node * aux;
+    if(p_q->n > 0){//There is at least one element
+        //Search target to remove
+
+        while (cur != NULL) {
+            if(p_funCmp(p_target, cur->data) == 0){//Check if found
+                res_fun = 1;
+                break;
+            }
+            prev = cur;
+            cur = cur->next;
+        }
+        if(cur != NULL){//Target found
+            p_q->n--;
+            if(p_q->h == p_q->t){//Only one element in queue
+                pSQueue_freeNode(cur, NULL);
+                p_q->h = NULL;
+                p_q->t = NULL;
+            }else{//At least two elements in queue
+                if(cur == p_q->h){//Target in head
+                    aux = cur->next;
+                    pSQueue_freeNode(cur, NULL);
+                    p_q->h = aux;
+                }else if(cur == p_q->t){//Target in tail
+                    pSQueue_freeNode(cur, NULL);
+                    p_q->t = prev;
+                    p_q->t->next = NULL;
+                }else{//Target in the middle of the queue (at least 3 elements)
+                    prev->next = cur->next;
+                    pSQueue_freeNode(cur, NULL);
+                }
+            }
+        }
+    }
+    pSQueue_Unlock(p_q);
+    return res_fun;
+}
+
+/**
+ * @brief   Remove item from position p_pos.
+ * 
+ * @param p_q Requirements: p_q != NULL and must refer to a SQueue object created with #SQueue_init. Target SQueue.
+ * @param p_pos position of the node to remove.
+ * @param p_removed will contain data removed if an element in position p_pos exists
+ * @return int: result code:
+ *  1: element in position p_pos exist and removed
+ * -1: invalid pointer;
+ * -2: p_q is empty
+ * -3: invalid p_pos
+ */
+int SQueue_removePos(SQueue * p_q, int p_pos, void ** p_removed) {
+    if(p_q == NULL) return -1;
+    pSQueue_Lock(p_q);
+    if(p_q->n == 0) return -2;
+    if(p_pos < 0 || p_pos >= p_q->n) return -3;    
+    int res_fun = -3;
+    int i = 0;
+    Node * prev = NULL;
+    Node * cur = p_q->h;
+    Node * aux;
+    if(p_q->n > 0) {//There is at least one element
+        res_fun = 1;
+        //Search target to remove
+        while (cur != NULL) {
+            if(i == p_pos) break;
+            prev = cur;
+            cur = cur->next;
+            i++;
+        }
+        //Element found for sure
+        assert(cur != NULL);
+        *p_removed = cur->data;
+        p_q->n--;
+        if(p_q->h == p_q->t){//Only one element in queue
+            pSQueue_freeNode(cur, NULL);
+            p_q->h = NULL;
+            p_q->t = NULL;
+        }else{//At least two elements in queue
+            if(cur == p_q->h){//Target in head
+                aux = cur->next;
+                pSQueue_freeNode(cur, NULL);
+                p_q->h = aux;
+            }else if(cur == p_q->t){//Target in tail
+                pSQueue_freeNode(cur, NULL);
+                p_q->t = prev;
+                p_q->t->next = NULL;
+            }else{//Target in the middle of the queue (at least 3 elements)
+                prev->next = cur->next;
+                pSQueue_freeNode(cur, NULL);
+            }
+        }
+
+    }
+    pSQueue_Unlock(p_q);
+    return res_fun;
+}
+
+
 
 
 static int pSQueue_isEmpty(SQueue * p_q){

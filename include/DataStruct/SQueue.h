@@ -49,5 +49,7 @@ int SQueue_isFull(SQueue * p_q);
 void SQueue_print(SQueue * p_q, funPrint p_funPrint);
 int SQueue_dim(SQueue * p_q);
 int SQueue_find(SQueue * p_q, void * p_target, funCmp p_funCmp);
+int SQueue_remove(SQueue * p_q, void * p_target, funCmp p_funCmp);
+int SQueue_removePos(SQueue * p_q, int p_pos, void ** p_removed);
 
 #endif /* SQueue_h */

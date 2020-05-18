@@ -39,6 +39,10 @@ void freeNodeData_int(void * data){
     free(data);
 }
 
+int int_compare(void * p_1, void * p_2){
+    return ((int *) p_1) - ((int *) p_2);
+}
+
 void test_SingleThread(){
     int tot=0;
 
@@ -92,6 +96,55 @@ void test_SingleThread(){
     testCaseExe(*((int *)aux) == 5);free(aux);
     testCaseExe(SQueue_pop(q, &aux) == -2);
     testCaseExe(SQueue_dim(q)==0); 
+    
+    //Test remove
+    //FIll queue
+    int * x1 = malloc(sizeof(int)); *x1 = 1;
+    testCaseExe(SQueue_push(q, x1) == 1);
+    testCaseExe(SQueue_dim(q)==1);    
+    int * x2 = malloc(sizeof(int)); *x2 = 2; 
+    testCaseExe(SQueue_push(q, x2) == 1);
+    int * x3 = malloc(sizeof(int)); *x3 = 3; 
+    testCaseExe(SQueue_push(q, x3) == 1);    
+    int * x4 = malloc(sizeof(int)); *x4 = 4; 
+    testCaseExe(SQueue_push(q, x4) == 1);    
+    int * x5 = malloc(sizeof(int)); *x5 = 5; 
+    testCaseExe(SQueue_push(q, x5) == 1); 
+    SQueue_print(q, toString_int);
+
+    //Remove head
+    SQueue_print(q, toString_int);
+    testCaseExe(SQueue_remove(q,x1, int_compare) == 1); free(x1);
+    SQueue_print(q, toString_int);
+    testCaseExe(SQueue_remove(q,x5, int_compare) == 1); free(x5);
+    SQueue_print(q, toString_int); 
+    testCaseExe(SQueue_remove(q,x3, int_compare) == 1); free(x3);
+    SQueue_print(q, toString_int);     
+    testCaseExe(SQueue_remove(q,x2, int_compare) == 1); free(x2);
+    SQueue_print(q, toString_int);
+    testCaseExe(SQueue_remove(q,x4, int_compare) == 1);
+    SQueue_print(q, toString_int);             
+    testCaseExe(SQueue_dim(q)==0); 
+    testCaseExe(SQueue_remove(q,x4, int_compare) == -3); free(x4);
+    SQueue_print(q, toString_int);               
+    
+    //Test remove pos
+    x1 = malloc(sizeof(int)); *x1 = 1;
+    testCaseExe(SQueue_push(q, x1) == 1);
+    testCaseExe(SQueue_dim(q)==1);    
+    x2 = malloc(sizeof(int)); *x2 = 2; 
+    testCaseExe(SQueue_push(q, x2) == 1);
+    x3 = malloc(sizeof(int)); *x3 = 3; 
+    testCaseExe(SQueue_push(q, x3) == 1);    
+    x4 = malloc(sizeof(int)); *x4 = 4; 
+    testCaseExe(SQueue_push(q, x4) == 1);    
+    x5 = malloc(sizeof(int)); *x5 = 5; 
+    testCaseExe(SQueue_push(q, x5) == 1); 
+    SQueue_print(q, toString_int);
+    
+    testCaseExe(SQueue_removePos(q,1,&aux)); free(aux);
+    SQueue_print(q, toString_int);
+
     SQueue_deleteQueue(q, freeNodeData_int);
 
     printf("**END TEST - test_SingleThread**\n");
