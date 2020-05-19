@@ -21,12 +21,17 @@ volatile sig_atomic_t sig_quit=0; /**< SIGQUIT signal indicator */
 static void sigHandler(int p_sig) {
 	switch (p_sig){
 		case SIGHUP:
-			sig_hup=1;
-			write(1,"Received signal SIGINT\n",24);
+			if(sig_quit ==0){
+				sig_hup=1;
+				write(1,"Received signal SIGHUP\n",24);
+			}else write(1,"Signal SIGHUP ignored\n",23);
+			
 			break;
 		case SIGQUIT:
-			sig_quit=1;
-			write(1,"Received signal SIGQUIT\n",25);
+			if(sig_hup == 0){
+				sig_quit=1;
+				write(1,"Received signal SIGQUIT\n",25);
+			} else write(1,"Signal SIGQUIT ignored\n",24);
 			break;
 		default:
 			write(2,"Received unexpected signal\n",28);
@@ -67,7 +72,7 @@ static void setupHandlers() {
 
 int main(int argc, char * argv[]) {
 	Market * m;
-	
+	printf("PID: %d\n", getpid());
 	if(argc != 3){//Wrong use
 		printf("Wrong use.");
 		useInfo(argv);
@@ -92,7 +97,7 @@ int main(int argc, char * argv[]) {
 	if(Market_delete(m) != 1)
 		err_quit( "An error occurred during market closing. Exit...");
 
-	
+	printf("Market closed\n");
 
 	return 0;
 }

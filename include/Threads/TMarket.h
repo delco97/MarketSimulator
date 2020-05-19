@@ -2,6 +2,7 @@
 #define	_TMARKET_H
 
 #include <pthread.h>
+#include <signal.h>
 #include <TDirector.h>
 #include <SQueue.h>
 #include <TUser.h>
@@ -14,6 +15,8 @@ typedef struct Market Market;
 typedef struct Director Director;
 typedef struct User User;
 typedef struct CashDesk CashDesk;
+extern volatile sig_atomic_t sig_hup;
+extern volatile sig_atomic_t sig_quit;
 
 struct Market {
     pthread_t thread;   /**< Market  thread */

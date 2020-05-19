@@ -191,16 +191,16 @@ int SQueue_pop(SQueue * p_q, void ** p_removed){
  * @return int: result code:
  * 1: good;
  * -1: invalid pointer;
- * -2: p_q is empty;
  * -3: p_removed == NULL
  */
 int SQueue_popWait(SQueue * p_q, void ** p_removed){
     int res_fun = 0;
     if(p_q == NULL) return -1;
+    if(p_removed == NULL) return -3;
     pSQueue_Lock(p_q);
 
     while (pSQueue_isEmpty(p_q) == 1) pSQueue_WaitEmpty(p_q);
-
+    
     if( (res_fun = pSQueue_pop(p_q, p_removed)) == 1){
         pSQueue_SignalFull(p_q);
     } 

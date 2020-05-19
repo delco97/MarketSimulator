@@ -2,6 +2,7 @@
 #define	_TCASHDESK_H
 
 #include <pthread.h>
+#include <signal.h>
 #include <SQueue.h>
 #include <TMarket.h>
 
@@ -9,6 +10,8 @@ typedef struct Market Market;
 typedef struct CashDesk CashDesk;
 typedef struct User User;
 typedef enum CashDeskState CashDeskState;
+extern volatile sig_atomic_t sig_hup;
+extern volatile sig_atomic_t sig_quit;
 
 enum CashDeskState {
     DESK_OPEN,

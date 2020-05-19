@@ -84,12 +84,26 @@ void * Director_handleAuth(void * p_arg) {
     void * data = NULL;
     User * user = NULL;
     while (1) {
-        if(SQueue_popWait(auth, &data) != 1)
-            err_quit("[Director]: an error occurred during authorization queue handling.");
-        user = (User *) data;
-        //Move user to exit
-        Market_moveToExit(m, user);
+        if(sig_hup == 1) {
+            //Empties the user auth queue and wait until no other users are in shopping area
+            while (SQueue_isEmpty(m->usersShopping) != 1 || SQueue_isEmpty(auth) !=1) {
+                if(SQueue_pop(auth, &data) == 1) {
+                    user = (User *) data;
+                    //Move user to exit
+                    Market_moveToExit(m, user);
+                }
+            }
+            break;
+        }
+        //TODO:SIGQUIT
+        if(SQueue_pop(auth, &data) == 1){
+            user = (User *) data;
+            //Move user to exit
+            Market_moveToExit(m, user);
+        }
     }
+
+    return (void *) NULL;
 }
 
 /**

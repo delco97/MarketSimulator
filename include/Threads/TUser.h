@@ -2,6 +2,7 @@
 #define	_TUSER_H
 
 #include <SQueue.h>
+#include <signal.h>
 #include <TMarket.h>
 #include <pthread.h>
 #include <time.h>
@@ -9,6 +10,8 @@
 typedef enum UserState UserState;
 typedef struct Market Market;
 typedef struct User User;
+extern volatile sig_atomic_t sig_hup;
+extern volatile sig_atomic_t sig_quit;
 
 struct User {
     pthread_t thread;   /**< User thread */

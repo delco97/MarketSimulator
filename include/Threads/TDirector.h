@@ -2,6 +2,7 @@
 #define	_TDIRECTOR_H
 
 #include <pthread.h>
+#include <signal.h>
 #include <SQueue.h>
 #include <TCashDesk.h>
 #include <TMarket.h>
@@ -9,6 +10,8 @@
 
 typedef struct Market Market;
 typedef struct Director Director;
+extern volatile sig_atomic_t sig_hup;
+extern volatile sig_atomic_t sig_quit;
 
 struct Director {
     pthread_t thread;   /**< Director thread */
