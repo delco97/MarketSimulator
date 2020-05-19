@@ -5,6 +5,7 @@
  */
 
 #include <TCashDesk.h>
+#include <TUser.h>
 #include <utilities.h>
 
 //Private functions
@@ -22,17 +23,19 @@ void CashDesk_Unlock(CashDesk * p_c) {Unlock(&p_c->lock);}
  * @param p_m Market in which the CashDesk operate
  * @param p_c Where the new CashDesk will be placed
  * @param p_id id number
+ * @param p_serviceConst service costant time for each users served
  * @param p_state starting state
  * @return int: result codes
  * 1: Good init
  */
-int CashDesk_init(Market * p_m, CashDesk * p_c, int p_id, CashDeskState p_state){
+int CashDesk_init(Market * p_m, CashDesk * p_c, int p_id, int p_serviceConst, CashDeskState p_state) {
     CashDesk aux;
     int isLockInit = 0;
 
     aux.id = p_id;
-    aux.state = p_state;
     aux.usersPay = NULL;
+    aux.serviceConst = p_serviceConst;
+    aux.state = p_state;
     aux.market = p_m;
 
     if((aux.usersPay = SQueue_init(-1)) == NULL) goto err;
@@ -126,15 +129,16 @@ void * CashDesk_main(void * p_arg){
     printf("[CashDesk %d]: start of thread.\n", CashDesk_getId(c));
     
     while (1) {
-        /*Market_lock(m);
-        //Wait that the desk is open and with at least one user in queue.
-        while () 
-        
-        
-        SQueue_popWait(users, &data);
-        servedUser = (User *) data;
-        Market_unlock(m);
-        */
+        if(SQueue_popWait(c->usersPay, &data) != 1)
+            err_quit("[CashDesk %d]: an error occurred when trying to get user to serve.\n", c->id);
+        servedUser = (User *)data;
+        User_setStartPaymentTime(servedUser, getCurrentTime());
+        printf("[CashDesk %d]: started to serve user %d.\n", CashDesk_getId(c), User_getId(servedUser));
+        if(waitMs(c->serviceConst + User_getProducts(servedUser) * Market_getNP(m)) == -1)
+            err_sys("[User %d]: an error occurred during waiting for shopping time.\n", User_getId(servedUser));
+        printf("[CashDesk %d]: user served %d.\n", CashDesk_getId(c), User_getId(servedUser));
+        //TODO: move user to exit queue
+        Market_moveToExit(m, servedUser);
     }
     
 	printf("[CashDesk %d]: end of thread.\n", CashDesk_getId(c));

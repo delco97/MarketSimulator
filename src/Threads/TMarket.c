@@ -87,6 +87,7 @@ void Market_FromShoppingToPay(Market * p_m, User * p_u) {
 	if( SQueue_remove(p_m->usersShopping, p_u, User_compare) != 1)
 		err_quit("Impossible to find User %d in shopping area.", User_getId(p_u));
 	User_setQueueStartTime(p_u, getCurrentTime());
+	User_changeQueue(p_u);
 	//Choose a random open caskdesk
 	SQueue * desksOpen = NULL;
 	void * aux = NULL;
@@ -102,7 +103,9 @@ void Market_FromShoppingToPay(Market * p_m, User * p_u) {
 	int r = getRandom(0,SQueue_dim(desksOpen)-1, &p_m->seed);
 	if(SQueue_removePos(desksOpen, r, &aux) != 1)
 		err_quit("An error occurred during open desk search. (2)");
+	SQueue_deleteQueue(desksOpen, NULL);
 	deskChoosen = (CashDesk *) aux;
+
 	CashDesk_addUser(deskChoosen, p_u);
 	Unlock(&p_m->lock);
 }
@@ -119,8 +122,35 @@ void Market_FromShoppingToAuth(Market * p_m, User * p_u) {
 	if( SQueue_remove(p_m->usersShopping, p_u, User_compare) != 1)
 		err_quit("Impossible to find User %d in shopping area.", User_getId(p_u));
 	User_setQueueStartTime(p_u, getCurrentTime());
+	User_changeQueue(p_u);
 	if(SQueue_push(p_m->usersAuthQueue, p_u) != 1)
 		err_quit("Impossible to move User %d in authorization queue.", User_getId(p_u));
+	Unlock(&p_m->lock);
+}
+
+/**
+ * @brief Move users p_u to the exit queue
+ * 
+ * @param p_m reference to the market in which the action is performed
+ * @param p_u user to move
+ */
+void Market_moveToExit(Market * p_m, User * p_u){
+	Lock(&p_m->lock);
+	User_setMarketExitTime(p_u, getCurrentTime());
+	if(SQueue_push(p_m->usersExit, p_u) != 1)
+		err_quit("Impossible to move User %d in exit queue.", User_getId(p_u));
+	Unlock(&p_m->lock);
+}
+
+/**
+ * @brief Log data to statistics file.
+ * 
+ * @param p_m Requirements: p_m != NULL and must refer to a Market object created with #Market_init. Target Market.
+ * @param p_data string to write into file
+ */
+void Market_log(Market * p_m, char * p_data) {
+	Lock(&p_m->lock);
+	fprintf(p_m->f_log, "%s\n", p_data);
 	Unlock(&p_m->lock);
 }
 
@@ -151,6 +181,12 @@ Market * Market_init(const char * p_conf, const char * p_log){
 		if(userChoice == 'n') goto err;
 		fclose(f_log);
 		f_log = NULL;
+	}
+	//Open log file for writing
+	f_log = fopen(p_log, "w");
+	if( f_log == NULL ) {
+		err_ret("Unable to open log file %s. Check the path and try again.");
+		goto err;
 	}
 
 	//Check the config file path
@@ -240,7 +276,7 @@ Market * Market_init(const char * p_conf, const char * p_log){
 		goto err;
 	}
 	for(int i = 0;i < m->K; i++){
-		if( CashDesk_init(m, &m->desks[i], i, (i<=m->K/2) ? DESK_OPEN:DESK_CLOSE) != 1 ) {
+		if( CashDesk_init(m, &m->desks[i], i, getRandom(20, 80, &m->seed), (i<=m->K/2) ? DESK_OPEN:DESK_CLOSE) != 1 ) {
 			err_msg("An error occurred during cashdesk creation. Impossible to setup the market.");
 			goto err;
 		}
@@ -278,7 +314,7 @@ err:
  * @brief Start Market thread.
  *        The behaviour is undefined if p_u has not been previously initialized with #Market_init.
  * 
- * @param p_u Requirements: p_m != NULL and must refer to a Market object created with #Market_init. Target Market.
+ * @param p_m Requirements: p_m != NULL and must refer to a Market object created with #Market_init. Target Market.
  * @return int: result pf pthread_create call
  */
 int Market_startThread(Market * p_m){
@@ -361,10 +397,8 @@ void * Market_main(void * p_arg){
 			//Users thread in usersExit thread are not running
 			u_aux = (User *) data;
 			exit++;
-			//Log user info and delete it.
-			//It's important to free users memory during the simulation; otherwise there is
-			//the risk to fill all the memory if the execution continue for a long time.
-			User_log(u_aux, m->f_log);
+			//Log user info.
+			User_log(u_aux);
 			//Reset user structure for next reuse
 			User_reset(u_aux, getRandom(0, Market_getP(m), Market_getSeed(m)), getRandom(10, Market_getT(m), Market_getSeed(m)), m);
 			SQueue_push(newGroup, u_aux);

@@ -101,15 +101,16 @@ void pUser_toString(User * p_u, char * p_buff){
 }
 
 /**
- * @brief Log user info into a file
+ * @brief Log user info.
  * 
  * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- * @param f 
  */
-void User_log(User * p_u, FILE * f){
+void User_log(User * p_u){
+    pUser_Lock(p_u);
     char aux[MAX_USR_STR];
     pUser_toString(p_u, aux);
-    fprintf(f, "%s\n", aux);
+    Market_log(p_u->market, aux);
+    pUser_Unlock(p_u);
 }
 
 /**
@@ -286,12 +287,14 @@ void * User_main(void * p_arg){
     if(User_getProducts(u) > 0){//Has something in the cart
         printf("[User %d]: move to a open cash desk for payment.\n", User_getId(u));
         Market_FromShoppingToPay(User_getMarket(u), u);
+        //Wait Exit authorization
     }else{//Nothing in the cart
         printf("[User %d]: move to the authorization queue.\n", User_getId(u));
         //Move User struct to queue of users waiting director authorization before exit.
         Market_FromShoppingToAuth(User_getMarket(u), u);
+        //Wait to be served
     }
-        
+    
     printf("[User %d]: end of thread.\n", User_getId(u));
     return (void *)NULL;
 }

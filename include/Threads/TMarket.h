@@ -69,5 +69,6 @@ CashDesk * Market_getDesks(Market * p_m);
 
 void Market_FromShoppingToPay(Market * p_m, User * p_u);
 void Market_FromShoppingToAuth(Market * p_m, User * p_u);
-
+void Market_moveToExit(Market * p_m, User * p_u);
+void Market_log(Market * p_m, char * p_data);
 #endif	/* _TMARKET_H */

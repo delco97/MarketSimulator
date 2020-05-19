@@ -30,7 +30,7 @@ int User_startThread(User * p_u);
 int User_joinThread(User * p_u);
 int User_delete(User * p_u);
 void User_reset(User * p_u, int p_products, int p_shoppingTime, Market * p_m);
-void User_log(User * p_u, FILE * f);
+void User_log(User * p_u);
 int User_compare(void * p_u1, void * p_u2);
 //Getters
 int User_getId(User * p_u);

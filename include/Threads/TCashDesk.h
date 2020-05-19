@@ -18,14 +18,14 @@ enum CashDeskState {
 struct CashDesk {
     pthread_t thread;   /**< CaskDesk thread */
     pthread_mutex_t lock;  /**< lock variable */
-    pthread_cond_t cv_canServe; /**< condition variable used to know if anybody can be served*/
     int id; /** desk id */
+    int serviceConst; /**< costant service time */
     CashDeskState state;    /**< current cashdesk state */
     SQueue * usersPay; /**< Users waiting for payment. */
     Market * market;  /**< Reference to the market where the director is. */
 };
 
-int CashDesk_init(Market * p_m, CashDesk * p_c, int p_id, CashDeskState p_state);
+int CashDesk_init(Market * p_m, CashDesk * p_c, int p_id, int p_serviceConst, CashDeskState p_state);
 int CashDesk_delete(CashDesk * p_c);
 int CashDesk_startThread(CashDesk * p_c);
 int CashDesk_joinThread(CashDesk * p_c);

@@ -108,14 +108,16 @@ int SQueue_push(SQueue * p_q, void * p_new){
     int res_fun = 0;
     if(p_q == NULL) return -1;
     pSQueue_Lock(p_q);
-    res_fun = pSQueue_push(p_q, p_new);
+    if( (res_fun = pSQueue_push(p_q, p_new)) == 1 )
+        pSQueue_SignalEmpty(p_q);
     pSQueue_Unlock(p_q);
     return res_fun;
 }
 
 /**
- * @brief  Add a new element p_new in queue p_q only if the queue is not full.
- *         If queue is full, it waits until there is space to add the new element.
+ * @brief   Add a new element p_new in queue p_q only if the queue is not full.
+ *          If queue is full, it waits until there is space to add the new element.
+ *          Note: if the queue is set as unlimited queue will never be full.
  * @param p_q Requirements: p_q != NULL and must refer to a SQueue object created with #SQueue_init. Target SQueue.
  * @param p_new New data to add.
  * @return int: result code:
@@ -175,7 +177,8 @@ int SQueue_pop(SQueue * p_q, void ** p_removed){
     int res_fun = 0;
     if(p_q == NULL) return -1;    
     pSQueue_Lock(p_q);
-    res_fun = pSQueue_pop(p_q, p_removed);
+    if( (res_fun = pSQueue_pop(p_q, p_removed)) == 1)
+        pSQueue_SignalFull(p_q);
     pSQueue_Unlock(p_q);
     return res_fun;
 }

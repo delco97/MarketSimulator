@@ -1,0 +1,1411 @@
+[User 22]: products=60 tot_time_market=186 tot_time_queue=156 queue_visited=1
+
+[User 23]: products=57 tot_time_market=210 tot_time_queue=165 queue_visited=1
+
+[User 49]: products=92 tot_time_market=240 tot_time_queue=224 queue_visited=1
+
+[User 42]: products=59 tot_time_market=245 tot_time_queue=161 queue_visited=1
+
+[User 27]: products=17 tot_time_market=322 tot_time_queue=226 queue_visited=1
+
+[User 14]: products=52 tot_time_market=326 tot_time_queue=288 queue_visited=1
+
+[User 25]: products=72 tot_time_market=402 tot_time_queue=346 queue_visited=1
+
+[User 18]: products=45 tot_time_market=456 tot_time_queue=341 queue_visited=1
+
+[User 40]: products=99 tot_time_market=477 tot_time_queue=447 queue_visited=1
+
+[User 30]: products=26 tot_time_market=506 tot_time_queue=422 queue_visited=1
+
+[User 26]: products=82 tot_time_market=528 tot_time_queue=483 queue_visited=1
+
+[User 6]: products=22 tot_time_market=539 tot_time_queue=412 queue_visited=1
+
+[User 29]: products=17 tot_time_market=597 tot_time_queue=548 queue_visited=1
+
+[User 19]: products=53 tot_time_market=623 tot_time_queue=584 queue_visited=1
+
+[User 13]: products=22 tot_time_market=707 tot_time_queue=652 queue_visited=1
+
+[User 8]: products=72 tot_time_market=723 tot_time_queue=570 queue_visited=1
+
+[User 17]: products=95 tot_time_market=747 tot_time_queue=662 queue_visited=1
+
+[User 28]: products=78 tot_time_market=788 tot_time_queue=735 queue_visited=1
+
+[User 11]: products=37 tot_time_market=837 tot_time_queue=683 queue_visited=1
+
+[User 21]: products=55 tot_time_market=860 tot_time_queue=791 queue_visited=1
+
+[User 34]: products=42 tot_time_market=878 tot_time_queue=794 queue_visited=1
+
+[User 36]: products=92 tot_time_market=1009 tot_time_queue=950 queue_visited=1
+
+[User 37]: products=70 tot_time_market=1039 tot_time_queue=970 queue_visited=1
+
+[User 45]: products=100 tot_time_market=1078 tot_time_queue=907 queue_visited=1
+
+[User 3]: products=96 tot_time_market=1121 tot_time_queue=1016 queue_visited=1
+
+[User 50]: products=48 tot_time_market=1141 tot_time_queue=1046 queue_visited=1
+
+[User 35]: products=30 tot_time_market=1180 tot_time_queue=1003 queue_visited=1
+
+[User 10]: products=3 tot_time_market=1227 tot_time_queue=1048 queue_visited=1
+
+[User 9]: products=88 tot_time_market=1254 tot_time_queue=1177 queue_visited=1
+
+[User 16]: products=10 tot_time_market=1314 tot_time_queue=1237 queue_visited=1
+
+[User 46]: products=73 tot_time_market=1314 tot_time_queue=1196 queue_visited=1
+
+[User 5]: products=91 tot_time_market=1363 tot_time_queue=1247 queue_visited=1
+
+[User 12]: products=49 tot_time_market=1367 tot_time_queue=1177 queue_visited=1
+
+[User 52]: products=21 tot_time_market=1213 tot_time_queue=1143 queue_visited=1
+
+[User 39]: products=28 tot_time_market=1455 tot_time_queue=1340 queue_visited=1
+
+[User 2]: products=54 tot_time_market=1462 tot_time_queue=1366 queue_visited=1
+
+[User 4]: products=54 tot_time_market=1475 tot_time_queue=1355 queue_visited=1
+
+[User 41]: products=45 tot_time_market=1590 tot_time_queue=1488 queue_visited=1
+
+[User 47]: products=34 tot_time_market=1590 tot_time_queue=1452 queue_visited=1
+
+[User 31]: products=74 tot_time_market=1640 tot_time_queue=1512 queue_visited=1
+
+[User 59]: products=91 tot_time_market=1200 tot_time_queue=1131 queue_visited=1
+
+[User 32]: products=50 tot_time_market=1777 tot_time_queue=1648 queue_visited=1
+
+[User 38]: products=78 tot_time_market=1796 tot_time_queue=1638 queue_visited=1
+
+[User 15]: products=99 tot_time_market=1828 tot_time_queue=1698 queue_visited=1
+
+[User 33]: products=47 tot_time_market=1906 tot_time_queue=1777 queue_visited=1
+
+[User 60]: products=98 tot_time_market=1375 tot_time_queue=1302 queue_visited=1
+
+[User 55]: products=61 tot_time_market=1639 tot_time_queue=1441 queue_visited=1
+
+[User 1]: products=91 tot_time_market=2051 tot_time_queue=1913 queue_visited=1
+
+[User 58]: products=58 tot_time_market=1593 tot_time_queue=1400 queue_visited=1
+
+[User 48]: products=3 tot_time_market=2094 tot_time_queue=1922 queue_visited=1
+
+[User 7]: products=97 tot_time_market=2135 tot_time_queue=2005 queue_visited=1
+
+[User 65]: products=73 tot_time_market=1451 tot_time_queue=1318 queue_visited=1
+
+[User 44]: products=8 tot_time_market=2186 tot_time_queue=2040 queue_visited=1
+
+[User 62]: products=94 tot_time_market=1764 tot_time_queue=1574 queue_visited=1
+
+[User 68]: products=51 tot_time_market=1522 tot_time_queue=1363 queue_visited=1
+
+[User 54]: products=90 tot_time_market=1988 tot_time_queue=1903 queue_visited=1
+
+[User 24]: products=67 tot_time_market=2355 tot_time_queue=2178 queue_visited=1
+
+[User 61]: products=18 tot_time_market=1841 tot_time_queue=1648 queue_visited=1
+
+[User 85]: products=24 tot_time_market=947 tot_time_queue=854 queue_visited=1
+
+[User 77]: products=38 tot_time_market=1248 tot_time_queue=1237 queue_visited=1
+
+[User 20]: products=81 tot_time_market=2553 tot_time_queue=2353 queue_visited=1
+
+[User 88]: products=52 tot_time_market=973 tot_time_queue=911 queue_visited=1
+
+[User 64]: products=97 tot_time_market=1907 tot_time_queue=1852 queue_visited=1
+
+[User 75]: products=78 tot_time_market=1447 tot_time_queue=1409 queue_visited=1
+
+[User 94]: products=29 tot_time_market=765 tot_time_queue=660 queue_visited=1
+
+[User 83]: products=14 tot_time_market=1329 tot_time_queue=1283 queue_visited=1
+
+[User 43]: products=62 tot_time_market=2711 tot_time_queue=2508 queue_visited=1
+
+[User 67]: products=54 tot_time_market=1978 tot_time_queue=1895 queue_visited=1
+
+[User 78]: products=24 tot_time_market=1470 tot_time_queue=1345 queue_visited=1
+
+[User 53]: products=23 tot_time_market=2556 tot_time_queue=2466 queue_visited=1
+
+[User 71]: products=14 tot_time_market=1956 tot_time_queue=1893 queue_visited=1
+
+[User 82]: products=23 tot_time_market=1502 tot_time_queue=1349 queue_visited=1
+
+[User 98]: products=94 tot_time_market=857 tot_time_queue=721 queue_visited=1
+
+[User 51]: products=44 tot_time_market=2682 tot_time_queue=2559 queue_visited=1
+
+[User 69]: products=40 tot_time_market=2076 tot_time_queue=1995 queue_visited=1
+
+[User 56]: products=51 tot_time_market=2737 tot_time_queue=2618 queue_visited=1
+
+[User 105]: products=64 tot_time_market=729 tot_time_queue=689 queue_visited=1
+
+[User 87]: products=98 tot_time_market=1512 tot_time_queue=1367 queue_visited=1
+
+[User 76]: products=69 tot_time_market=1956 tot_time_queue=1881 queue_visited=1
+
+[User 109]: products=8 tot_time_market=721 tot_time_queue=680 queue_visited=1
+
+[User 57]: products=46 tot_time_market=2717 tot_time_queue=2684 queue_visited=1
+
+[User 108]: products=14 tot_time_market=798 tot_time_queue=754 queue_visited=1
+
+[User 90]: products=45 tot_time_market=1454 tot_time_queue=1443 queue_visited=1
+
+[User 81]: products=55 tot_time_market=1920 tot_time_queue=1818 queue_visited=1
+
+[User 66]: products=42 tot_time_market=2524 tot_time_queue=2452 queue_visited=1
+
+[User 104]: products=24 tot_time_market=1023 tot_time_queue=841 queue_visited=1
+
+[User 111]: products=21 tot_time_market=806 tot_time_queue=640 queue_visited=1
+
+[User 92]: products=85 tot_time_market=1667 tot_time_queue=1552 queue_visited=1
+
+[User 63]: products=66 tot_time_market=2775 tot_time_queue=2597 queue_visited=1
+
+[User 79]: products=99 tot_time_market=2212 tot_time_queue=2019 queue_visited=1
+
+[User 84]: products=2 tot_time_market=2109 tot_time_queue=1990 queue_visited=1
+
+[User 73]: products=43 tot_time_market=2525 tot_time_queue=2482 queue_visited=1
+
+[User 96]: products=84 tot_time_market=1603 tot_time_queue=1530 queue_visited=1
+
+[User 117]: products=94 tot_time_market=871 tot_time_queue=767 queue_visited=1
+
+[User 124]: products=4 tot_time_market=761 tot_time_queue=569 queue_visited=1
+
+[User 74]: products=60 tot_time_market=2682 tot_time_queue=2601 queue_visited=1
+
+[User 91]: products=75 tot_time_market=1988 tot_time_queue=1842 queue_visited=1
+
+[User 129]: products=43 tot_time_market=659 tot_time_queue=497 queue_visited=1
+
+[User 93]: products=29 tot_time_market=1960 tot_time_queue=1863 queue_visited=1
+
+[User 101]: products=100 tot_time_market=1761 tot_time_queue=1749 queue_visited=1
+
+[User 72]: products=59 tot_time_market=2837 tot_time_queue=2682 queue_visited=1
+
+[User 130]: products=34 tot_time_market=777 tot_time_queue=584 queue_visited=1
+
+[User 95]: products=63 tot_time_market=2124 tot_time_queue=1995 queue_visited=1
+
+[User 107]: products=54 tot_time_market=1690 tot_time_queue=1651 queue_visited=1
+
+[User 139]: products=18 tot_time_market=528 tot_time_queue=349 queue_visited=1
+
+[User 110]: products=2 tot_time_market=1661 tot_time_queue=1507 queue_visited=1
+
+[User 80]: products=86 tot_time_market=2808 tot_time_queue=2649 queue_visited=1
+
+[User 146]: products=19 tot_time_market=382 tot_time_queue=313 queue_visited=1
+
+[User 86]: products=6 tot_time_market=2708 tot_time_queue=2674 queue_visited=1
+
+[User 97]: products=99 tot_time_market=2220 tot_time_queue=2124 queue_visited=1
+
+[User 118]: products=94 tot_time_market=1532 tot_time_queue=1440 queue_visited=1
+
+[User 89]: products=98 tot_time_market=2812 tot_time_queue=2643 queue_visited=1
+
+[User 106]: products=86 tot_time_market=2130 tot_time_queue=2025 queue_visited=1
+
+[User 120]: products=84 tot_time_market=1660 tot_time_queue=1513 queue_visited=1
+
+[User 156]: products=94 tot_time_market=436 tot_time_queue=236 queue_visited=1
+
+[User 99]: products=81 tot_time_market=2469 tot_time_queue=2349 queue_visited=1
+
+[User 121]: products=54 tot_time_market=1809 tot_time_queue=1650 queue_visited=1
+
+[User 102]: products=75 tot_time_market=2375 tot_time_queue=2208 queue_visited=1
+
+[User 161]: products=53 tot_time_market=418 tot_time_queue=278 queue_visited=1
+
+[User 100]: products=55 tot_time_market=2615 tot_time_queue=2485 queue_visited=1
+
+[User 103]: products=3 tot_time_market=2492 tot_time_queue=2334 queue_visited=1
+
+[User 119]: products=92 tot_time_market=2117 tot_time_queue=2104 queue_visited=1
+
+[User 125]: products=97 tot_time_market=1957 tot_time_queue=1883 queue_visited=1
+
+[User 163]: products=99 tot_time_market=451 tot_time_queue=416 queue_visited=1
+
+[User 112]: products=78 tot_time_market=2372 tot_time_queue=2198 queue_visited=1
+
+[User 127]: products=47 tot_time_market=1944 tot_time_queue=1883 queue_visited=1
+
+[User 115]: products=61 tot_time_market=2367 tot_time_queue=2212 queue_visited=1
+
+[User 162]: products=29 tot_time_market=557 tot_time_queue=372 queue_visited=1
+
+[User 128]: products=21 tot_time_market=2028 tot_time_queue=1887 queue_visited=1
+
+[User 114]: products=72 tot_time_market=2474 tot_time_queue=2379 queue_visited=1
+
+[User 132]: products=35 tot_time_market=1890 tot_time_queue=1863 queue_visited=1
+
+[User 167]: products=21 tot_time_market=501 tot_time_queue=432 queue_visited=1
+
+[User 113]: products=16 tot_time_market=2624 tot_time_queue=2433 queue_visited=1
+
+[User 116]: products=1 tot_time_market=2578 tot_time_queue=2444 queue_visited=1
+
+[User 134]: products=71 tot_time_market=2028 tot_time_queue=1846 queue_visited=1
+
+[User 173]: products=46 tot_time_market=412 tot_time_queue=345 queue_visited=1
+
+[User 122]: products=14 tot_time_market=2468 tot_time_queue=2313 queue_visited=1
+
+[User 131]: products=87 tot_time_market=2200 tot_time_queue=2017 queue_visited=1
+
+[User 138]: products=1 tot_time_market=1911 tot_time_queue=1732 queue_visited=1
+
+[User 137]: products=57 tot_time_market=2051 tot_time_queue=1901 queue_visited=1
+
+[User 172]: products=81 tot_time_market=626 tot_time_queue=509 queue_visited=1
+
+[User 123]: products=89 tot_time_market=2599 tot_time_queue=2443 queue_visited=1
+
+[User 140]: products=55 tot_time_market=2060 tot_time_queue=1869 queue_visited=1
+
+[User 126]: products=3 tot_time_market=2494 tot_time_queue=2402 queue_visited=1
+
+[User 145]: products=12 tot_time_market=1894 tot_time_queue=1856 queue_visited=1
+
+[User 141]: products=73 tot_time_market=2005 tot_time_queue=1881 queue_visited=1
+
+[User 133]: products=60 tot_time_market=2468 tot_time_queue=2310 queue_visited=1
+
+[User 178]: products=98 tot_time_market=652 tot_time_queue=581 queue_visited=1
+
+[User 144]: products=69 tot_time_market=2074 tot_time_queue=1879 queue_visited=1
+
+[User 136]: products=38 tot_time_market=2446 tot_time_queue=2295 queue_visited=1
+
+[User 143]: products=90 tot_time_market=2227 tot_time_queue=2081 queue_visited=1
+
+[User 148]: products=36 tot_time_market=2081 tot_time_queue=1896 queue_visited=1
+
+[User 180]: products=86 tot_time_market=828 tot_time_queue=646 queue_visited=1
+
+[User 155]: products=41 tot_time_market=2014 tot_time_queue=1856 queue_visited=1
+
+[User 185]: products=9 tot_time_market=756 tot_time_queue=711 queue_visited=1
+
+[User 135]: products=100 tot_time_market=2682 tot_time_queue=2496 queue_visited=1
+
+[User 149]: products=95 tot_time_market=2247 tot_time_queue=2236 queue_visited=1
+
+[User 183]: products=12 tot_time_market=831 tot_time_queue=779 queue_visited=1
+
+[User 165]: products=86 tot_time_market=1608 tot_time_queue=1590 queue_visited=1
+
+[User 187]: products=45 tot_time_market=892 tot_time_queue=755 queue_visited=1
+
+[User 164]: products=80 tot_time_market=1787 tot_time_queue=1615 queue_visited=1
+
+[User 142]: products=91 tot_time_market=2668 tot_time_queue=2575 queue_visited=1
+
+[User 170]: products=13 tot_time_market=1635 tot_time_queue=1439 queue_visited=1
+
+[User 191]: products=54 tot_time_market=910 tot_time_queue=709 queue_visited=1
+
+[User 147]: products=68 tot_time_market=2630 tot_time_queue=2501 queue_visited=1
+
+[User 166]: products=86 tot_time_market=1823 tot_time_queue=1716 queue_visited=1
+
+[User 176]: products=61 tot_time_market=1499 tot_time_queue=1388 queue_visited=1
+
+[User 174]: products=17 tot_time_market=1572 tot_time_queue=1454 queue_visited=1
+
+[User 195]: products=74 tot_time_market=891 tot_time_queue=723 queue_visited=1
+
+[User 152]: products=76 tot_time_market=2715 tot_time_queue=2689 queue_visited=1
+
+[User 169]: products=93 tot_time_market=1979 tot_time_queue=1838 queue_visited=1
+
+[User 200]: products=55 tot_time_market=941 tot_time_queue=874 queue_visited=1
+
+[User 182]: products=80 tot_time_market=1638 tot_time_queue=1449 queue_visited=1
+
+[User 150]: products=55 tot_time_market=2864 tot_time_queue=2693 queue_visited=1
+
+[User 196]: products=9 tot_time_market=1121 tot_time_queue=942 queue_visited=1
+
+[User 175]: products=61 tot_time_market=1846 tot_time_queue=1816 queue_visited=1
+
+[User 181]: products=2 tot_time_market=1759 tot_time_queue=1646 queue_visited=1
+
+[User 184]: products=48 tot_time_market=1639 tot_time_queue=1440 queue_visited=1
+
+[User 198]: products=30 tot_time_market=1120 tot_time_queue=935 queue_visited=1
+
+[User 154]: products=73 tot_time_market=2959 tot_time_queue=2861 queue_visited=1
+
+[User 211]: products=13 tot_time_market=742 tot_time_queue=713 queue_visited=1
+
+[User 193]: products=45 tot_time_market=1490 tot_time_queue=1442 queue_visited=1
+
+[User 151]: products=22 tot_time_market=3123 tot_time_queue=2924 queue_visited=1
+
+[User 179]: products=63 tot_time_market=1975 tot_time_queue=1790 queue_visited=1
+
+[User 209]: products=10 tot_time_market=850 tot_time_queue=714 queue_visited=1
+
+[User 201]: products=8 tot_time_market=1139 tot_time_queue=1059 queue_visited=1
+
+[User 158]: products=43 tot_time_market=3074 tot_time_queue=3033 queue_visited=1
+
+[User 153]: products=10 tot_time_market=3221 tot_time_queue=3078 queue_visited=1
+
+[User 218]: products=59 tot_time_market=685 tot_time_queue=653 queue_visited=1
+
+[User 177]: products=81 tot_time_market=2180 tot_time_queue=1977 queue_visited=1
+
+[User 157]: products=4 tot_time_market=3175 tot_time_queue=3078 queue_visited=1
+
+[User 207]: products=74 tot_time_market=1049 tot_time_queue=912 queue_visited=1
+
+[User 160]: products=20 tot_time_market=3077 tot_time_queue=2993 queue_visited=1
+
+[User 208]: products=36 tot_time_market=1162 tot_time_queue=1011 queue_visited=1
+
+[User 188]: products=63 tot_time_market=2087 tot_time_queue=2062 queue_visited=1
+
+[User 159]: products=52 tot_time_market=3221 tot_time_queue=3074 queue_visited=1
+
+[User 217]: products=97 tot_time_market=927 tot_time_queue=785 queue_visited=1
+
+[User 220]: products=35 tot_time_market=938 tot_time_queue=806 queue_visited=1
+
+[User 215]: products=94 tot_time_market=1182 tot_time_queue=1090 queue_visited=1
+
+[User 168]: products=51 tot_time_market=2928 tot_time_queue=2848 queue_visited=1
+
+[User 194]: products=91 tot_time_market=2109 tot_time_queue=2086 queue_visited=1
+
+[User 221]: products=21 tot_time_market=1026 tot_time_queue=862 queue_visited=1
+
+[User 216]: products=43 tot_time_market=1184 tot_time_queue=1056 queue_visited=1
+
+[User 171]: products=94 tot_time_market=2994 tot_time_queue=2830 queue_visited=1
+
+[User 232]: products=36 tot_time_market=823 tot_time_queue=753 queue_visited=1
+
+[User 227]: products=56 tot_time_market=979 tot_time_queue=954 queue_visited=1
+
+[User 189]: products=99 tot_time_market=2409 tot_time_queue=2310 queue_visited=1
+
+[User 186]: products=16 tot_time_market=2580 tot_time_queue=2411 queue_visited=1
+
+[User 222]: products=6 tot_time_market=1143 tot_time_queue=964 queue_visited=1
+
+[User 230]: products=31 tot_time_market=1003 tot_time_queue=847 queue_visited=1
+
+[User 190]: products=5 tot_time_market=2482 tot_time_queue=2362 queue_visited=1
+
+[User 231]: products=30 tot_time_market=995 tot_time_queue=974 queue_visited=1
+
+[User 192]: products=64 tot_time_market=2519 tot_time_queue=2338 queue_visited=1
+
+[User 235]: products=34 tot_time_market=981 tot_time_queue=894 queue_visited=1
+
+[User 197]: products=71 tot_time_market=2442 tot_time_queue=2370 queue_visited=1
+
+[User 233]: products=59 tot_time_market=1163 tot_time_queue=1098 queue_visited=1
+
+[User 206]: products=63 tot_time_market=2181 tot_time_queue=2084 queue_visited=1
+
+[User 199]: products=45 tot_time_market=2460 tot_time_queue=2388 queue_visited=1
+
+[User 234]: products=80 tot_time_market=1180 tot_time_queue=1071 queue_visited=1
+
+[User 236]: products=26 tot_time_market=1211 tot_time_queue=1045 queue_visited=1
+
+[User 210]: products=31 tot_time_market=2068 tot_time_queue=2024 queue_visited=1
+
+[User 203]: products=68 tot_time_market=2491 tot_time_queue=2431 queue_visited=1
+
+[User 241]: products=71 tot_time_market=1177 tot_time_queue=1098 queue_visited=1
+
+[User 238]: products=75 tot_time_market=1253 tot_time_queue=1086 queue_visited=1
+
+[User 202]: products=34 tot_time_market=2597 tot_time_queue=2512 queue_visited=1
+
+[User 213]: products=92 tot_time_market=2119 tot_time_queue=2044 queue_visited=1
+
+[User 205]: products=1 tot_time_market=2539 tot_time_queue=2408 queue_visited=1
+
+[User 243]: products=94 tot_time_market=1258 tot_time_queue=1129 queue_visited=1
+
+[User 204]: products=52 tot_time_market=2677 tot_time_queue=2484 queue_visited=1
+
+[User 249]: products=93 tot_time_market=1085 tot_time_queue=1025 queue_visited=1
+
+[User 219]: products=79 tot_time_market=2087 tot_time_queue=2008 queue_visited=1
+
+[User 245]: products=94 tot_time_market=1486 tot_time_queue=1318 queue_visited=1
+
+[User 224]: products=64 tot_time_market=2153 tot_time_queue=2128 queue_visited=1
+
+[User 212]: products=85 tot_time_market=2666 tot_time_queue=2635 queue_visited=1
+
+[User 247]: products=87 tot_time_market=1350 tot_time_queue=1221 queue_visited=1
+
+[User 214]: products=43 tot_time_market=2616 tot_time_queue=2549 queue_visited=1
+
+[User 223]: products=68 tot_time_market=2330 tot_time_queue=2158 queue_visited=1
+
+[User 244]: products=85 tot_time_market=1696 tot_time_queue=1521 queue_visited=1
+
+[User 250]: products=59 tot_time_market=1480 tot_time_queue=1390 queue_visited=1
+
+[User 225]: products=7 tot_time_market=2283 tot_time_queue=2121 queue_visited=1
+
+[User 257]: products=18 tot_time_market=1308 tot_time_queue=1186 queue_visited=1
+
+[User 226]: products=76 tot_time_market=2363 tot_time_queue=2314 queue_visited=1
+
+[User 260]: products=20 tot_time_market=1318 tot_time_queue=1177 queue_visited=1
+
+[User 229]: products=56 tot_time_market=2362 tot_time_queue=2248 queue_visited=1
+
+[User 253]: products=82 tot_time_market=1499 tot_time_queue=1325 queue_visited=1
+
+[User 262]: products=18 tot_time_market=1295 tot_time_queue=1134 queue_visited=1
+
+[User 228]: products=57 tot_time_market=2440 tot_time_queue=2286 queue_visited=1
+
+[User 242]: products=26 tot_time_market=2135 tot_time_queue=2024 queue_visited=1
+
+[User 263]: products=84 tot_time_market=1504 tot_time_queue=1304 queue_visited=1
+
+[User 266]: products=89 tot_time_market=1373 tot_time_queue=1343 queue_visited=1
+
+[User 248]: products=76 tot_time_market=2000 tot_time_queue=1839 queue_visited=1
+
+[User 237]: products=99 tot_time_market=2387 tot_time_queue=2361 queue_visited=1
+
+[User 269]: products=17 tot_time_market=1366 tot_time_queue=1207 queue_visited=1
+
+[User 277]: products=7 tot_time_market=1007 tot_time_queue=942 queue_visited=1
+
+[User 261]: products=52 tot_time_market=1669 tot_time_queue=1476 queue_visited=1
+
+[User 240]: products=35 tot_time_market=2464 tot_time_queue=2402 queue_visited=1
+
+[User 246]: products=70 tot_time_market=2183 tot_time_queue=2018 queue_visited=1
+
+[User 284]: products=47 tot_time_market=897 tot_time_queue=780 queue_visited=1
+
+[User 251]: products=62 tot_time_market=2253 tot_time_queue=2243 queue_visited=1
+
+[User 268]: products=93 tot_time_market=1693 tot_time_queue=1515 queue_visited=1
+
+[User 255]: products=80 tot_time_market=2105 tot_time_queue=1984 queue_visited=1
+
+[User 286]: products=81 tot_time_market=923 tot_time_queue=781 queue_visited=1
+
+[User 252]: products=79 tot_time_market=2253 tot_time_queue=2196 queue_visited=1
+
+[User 254]: products=36 tot_time_market=2261 tot_time_queue=2092 queue_visited=1
+
+[User 267]: products=79 tot_time_market=1903 tot_time_queue=1702 queue_visited=1
+
+[User 256]: products=38 tot_time_market=2321 tot_time_queue=2251 queue_visited=1
+
+[User 289]: products=96 tot_time_market=1095 tot_time_queue=914 queue_visited=1
+
+[User 265]: products=74 tot_time_market=2095 tot_time_queue=2055 queue_visited=1
+
+[User 292]: products=1 tot_time_market=1024 tot_time_queue=836 queue_visited=1
+
+[User 258]: products=49 tot_time_market=2387 tot_time_queue=2218 queue_visited=1
+
+[User 297]: products=9 tot_time_market=801 tot_time_queue=717 queue_visited=1
+
+[User 270]: products=97 tot_time_market=1977 tot_time_queue=1909 queue_visited=1
+
+[User 303]: products=39 tot_time_market=756 tot_time_queue=658 queue_visited=1
+
+[User 259]: products=57 tot_time_market=2538 tot_time_queue=2338 queue_visited=1
+
+[User 285]: products=83 tot_time_market=1398 tot_time_queue=1233 queue_visited=1
+
+[User 274]: products=18 tot_time_market=1958 tot_time_queue=1915 queue_visited=1
+
+[User 291]: products=62 tot_time_market=1393 tot_time_queue=1366 queue_visited=1
+
+[User 307]: products=74 tot_time_market=845 tot_time_queue=772 queue_visited=1
+
+[User 264]: products=88 tot_time_market=2511 tot_time_queue=2404 queue_visited=1
+
+[User 272]: products=89 tot_time_market=2292 tot_time_queue=2095 queue_visited=1
+
+[User 271]: products=23 tot_time_market=2353 tot_time_queue=2332 queue_visited=1
+
+[User 315]: products=44 tot_time_market=540 tot_time_queue=505 queue_visited=1
+
+[User 273]: products=22 tot_time_market=2281 tot_time_queue=2186 queue_visited=1
+
+[User 279]: products=18 tot_time_market=2109 tot_time_queue=2095 queue_visited=1
+
+[User 293]: products=81 tot_time_market=1596 tot_time_queue=1520 queue_visited=1
+
+[User 319]: products=23 tot_time_market=538 tot_time_queue=435 queue_visited=1
+
+[User 275]: products=9 tot_time_market=2350 tot_time_queue=2174 queue_visited=1
+
+[User 276]: products=12 tot_time_market=2290 tot_time_queue=2167 queue_visited=1
+
+[User 294]: products=49 tot_time_market=1657 tot_time_queue=1464 queue_visited=1
+
+[User 324]: products=51 tot_time_market=524 tot_time_queue=446 queue_visited=1
+
+[User 278]: products=14 tot_time_market=2369 tot_time_queue=2224 queue_visited=1
+
+[User 281]: products=76 tot_time_market=2299 tot_time_queue=2255 queue_visited=1
+
+[User 299]: products=43 tot_time_market=1576 tot_time_queue=1446 queue_visited=1
+
+[User 280]: products=29 tot_time_market=2394 tot_time_queue=2332 queue_visited=1
+
+[User 305]: products=12 tot_time_market=1479 tot_time_queue=1461 queue_visited=1
+
+[User 283]: products=59 tot_time_market=2289 tot_time_queue=2221 queue_visited=1
+
+[User 323]: products=94 tot_time_market=772 tot_time_queue=585 queue_visited=1
+
+[User 302]: products=27 tot_time_market=1670 tot_time_queue=1519 queue_visited=1
+
+[User 287]: products=73 tot_time_market=2230 tot_time_queue=2172 queue_visited=1
+
+[User 337]: products=47 tot_time_market=418 tot_time_queue=338 queue_visited=1
+
+[User 282]: products=99 tot_time_market=2539 tot_time_queue=2406 queue_visited=1
+
+[User 288]: products=54 tot_time_market=2320 tot_time_queue=2168 queue_visited=1
+
+[User 312]: products=92 tot_time_market=1425 tot_time_queue=1275 queue_visited=1
+
+[User 298]: products=15 tot_time_market=1989 tot_time_queue=1883 queue_visited=1
+
+[User 290]: products=18 tot_time_market=2393 tot_time_queue=2328 queue_visited=1
+
+[User 341]: products=75 tot_time_market=526 tot_time_queue=407 queue_visited=1
+
+[User 301]: products=16 tot_time_market=1986 tot_time_queue=1944 queue_visited=1
+
+[User 304]: products=5 tot_time_market=1937 tot_time_queue=1885 queue_visited=1
+
+[User 314]: products=47 tot_time_market=1562 tot_time_queue=1401 queue_visited=1
+
+[User 343]: products=36 tot_time_market=537 tot_time_queue=457 queue_visited=1
+
+[User 295]: products=57 tot_time_market=2366 tot_time_queue=2230 queue_visited=1
+
+[User 306]: products=54 tot_time_market=1981 tot_time_queue=1881 queue_visited=1
+
+[User 326]: products=71 tot_time_market=1347 tot_time_queue=1323 queue_visited=1
+
+[User 345]: products=97 tot_time_market=666 tot_time_queue=650 queue_visited=1
+
+[User 296]: products=91 tot_time_market=2599 tot_time_queue=2462 queue_visited=1
+
+[User 318]: products=37 tot_time_market=1624 tot_time_queue=1430 queue_visited=1
+
+[User 322]: products=8 tot_time_market=1542 tot_time_queue=1393 queue_visited=1
+
+[User 308]: products=95 tot_time_market=2207 tot_time_queue=2072 queue_visited=1
+
+[User 351]: products=84 tot_time_market=597 tot_time_queue=560 queue_visited=1
+
+[User 327]: products=39 tot_time_market=1436 tot_time_queue=1357 queue_visited=1
+
+[User 300]: products=97 tot_time_market=2563 tot_time_queue=2506 queue_visited=1
+
+[User 310]: products=74 tot_time_market=2226 tot_time_queue=2111 queue_visited=1
+
+[User 353]: products=50 tot_time_market=738 tot_time_queue=553 queue_visited=1
+
+[User 311]: products=21 tot_time_market=2296 tot_time_queue=2193 queue_visited=1
+
+[User 331]: products=54 tot_time_market=1497 tot_time_queue=1460 queue_visited=1
+
+[User 309]: products=33 tot_time_market=2328 tot_time_queue=2143 queue_visited=1
+
+[User 313]: products=1 tot_time_market=2253 tot_time_queue=2096 queue_visited=1
+
+[User 364]: products=29 tot_time_market=416 tot_time_queue=224 queue_visited=1
+
+[User 330]: products=55 tot_time_market=1647 tot_time_queue=1520 queue_visited=1
+
+[User 316]: products=28 tot_time_market=2193 tot_time_queue=2094 queue_visited=1
+
+[User 368]: products=23 tot_time_market=421 tot_time_queue=285 queue_visited=1
+
+[User 321]: products=74 tot_time_market=2005 tot_time_queue=1963 queue_visited=1
+
+[User 369]: products=67 tot_time_market=432 tot_time_queue=374 queue_visited=1
+
+[User 336]: products=88 tot_time_market=1692 tot_time_queue=1624 queue_visited=1
+
+[User 320]: products=88 tot_time_market=2317 tot_time_queue=2242 queue_visited=1
+
+[User 377]: products=17 tot_time_market=341 tot_time_queue=322 queue_visited=1
+
+[User 333]: products=89 tot_time_market=1847 tot_time_queue=1734 queue_visited=1
+
+[User 317]: products=23 tot_time_market=2487 tot_time_queue=2289 queue_visited=1
+
+[User 344]: products=80 tot_time_market=1711 tot_time_queue=1693 queue_visited=1
+
+[User 374]: products=65 tot_time_market=584 tot_time_queue=453 queue_visited=1
+
+[User 325]: products=50 tot_time_market=2380 tot_time_queue=2251 queue_visited=1
+
+[User 328]: products=6 tot_time_market=2221 tot_time_queue=2157 queue_visited=1
+
+[User 334]: products=87 tot_time_market=2072 tot_time_queue=1951 queue_visited=1
+
+[User 342]: products=25 tot_time_market=1805 tot_time_queue=1740 queue_visited=1
+
+[User 340]: products=11 tot_time_market=1968 tot_time_queue=1800 queue_visited=1
+
+[User 335]: products=26 tot_time_market=2173 tot_time_queue=2022 queue_visited=1
+
+[User 346]: products=4 tot_time_market=1815 tot_time_queue=1748 queue_visited=1
+
+[User 380]: products=93 tot_time_market=647 tot_time_queue=568 queue_visited=1
+
+[User 329]: products=72 tot_time_market=2402 tot_time_queue=2234 queue_visited=1
+
+[User 347]: products=23 tot_time_market=1903 tot_time_queue=1762 queue_visited=1
+
+[User 338]: products=31 tot_time_market=2188 tot_time_queue=2090 queue_visited=1
+
+[User 384]: products=42 tot_time_market=520 tot_time_queue=420 queue_visited=1
+
+[User 350]: products=44 tot_time_market=1900 tot_time_queue=1834 queue_visited=1
+
+[User 383]: products=23 tot_time_market=679 tot_time_queue=497 queue_visited=1
+
+[User 339]: products=66 tot_time_market=2289 tot_time_queue=2268 queue_visited=1
+
+[User 332]: products=97 tot_time_market=2545 tot_time_queue=2399 queue_visited=1
+
+[User 389]: products=2 tot_time_market=490 tot_time_queue=421 queue_visited=1
+
+[User 392]: products=2 tot_time_market=465 tot_time_queue=428 queue_visited=1
+
+[User 355]: products=40 tot_time_market=1883 tot_time_queue=1739 queue_visited=1
+
+[User 352]: products=79 tot_time_market=1960 tot_time_queue=1884 queue_visited=1
+
+[User 348]: products=55 tot_time_market=2109 tot_time_queue=1970 queue_visited=1
+
+[User 391]: products=39 tot_time_market=586 tot_time_queue=405 queue_visited=1
+
+[User 356]: products=19 tot_time_market=1992 tot_time_queue=1918 queue_visited=1
+
+[User 400]: products=11 tot_time_market=418 tot_time_queue=400 queue_visited=1
+
+[User 359]: products=17 tot_time_market=1915 tot_time_queue=1895 queue_visited=1
+
+[User 357]: products=54 tot_time_market=1934 tot_time_queue=1869 queue_visited=1
+
+[User 354]: products=14 tot_time_market=2063 tot_time_queue=1940 queue_visited=1
+
+[User 358]: products=2 tot_time_market=1977 tot_time_queue=1815 queue_visited=1
+
+[User 361]: products=14 tot_time_market=1855 tot_time_queue=1833 queue_visited=1
+
+[User 393]: products=48 tot_time_market=694 tot_time_queue=512 queue_visited=1
+
+[User 360]: products=21 tot_time_market=1946 tot_time_queue=1761 queue_visited=1
+
+[User 362]: products=52 tot_time_market=1983 tot_time_queue=1931 queue_visited=1
+
+[User 406]: products=28 tot_time_market=458 tot_time_queue=300 queue_visited=1
+
+[User 366]: products=64 tot_time_market=1777 tot_time_queue=1657 queue_visited=1
+
+[User 367]: products=13 tot_time_market=1792 tot_time_queue=1730 queue_visited=1
+
+[User 363]: products=7 tot_time_market=1938 tot_time_queue=1737 queue_visited=1
+
+[User 365]: products=41 tot_time_market=1952 tot_time_queue=1816 queue_visited=1
+
+[User 414]: products=35 tot_time_market=316 tot_time_queue=300 queue_visited=1
+
+[User 371]: products=48 tot_time_market=1751 tot_time_queue=1711 queue_visited=1
+
+[User 372]: products=25 tot_time_market=1751 tot_time_queue=1578 queue_visited=1
+
+[User 411]: products=40 tot_time_market=472 tot_time_queue=400 queue_visited=1
+
+[User 373]: products=51 tot_time_market=1757 tot_time_queue=1735 queue_visited=1
+
+[User 376]: products=68 tot_time_market=1716 tot_time_queue=1546 queue_visited=1
+
+[User 379]: products=13 tot_time_market=1657 tot_time_queue=1507 queue_visited=1
+
+[User 416]: products=13 tot_time_market=506 tot_time_queue=346 queue_visited=1
+
+[User 386]: products=4 tot_time_market=1430 tot_time_queue=1378 queue_visited=1
+
+[User 382]: products=12 tot_time_market=1578 tot_time_queue=1417 queue_visited=1
+
+[User 370]: products=91 tot_time_market=2068 tot_time_queue=1893 queue_visited=1
+
+[User 395]: products=60 tot_time_market=1251 tot_time_queue=1224 queue_visited=1
+
+[User 425]: products=72 tot_time_market=469 tot_time_queue=357 queue_visited=1
+
+[User 375]: products=4 tot_time_market=1951 tot_time_queue=1936 queue_visited=1
+
+[User 385]: products=88 tot_time_market=1731 tot_time_queue=1598 queue_visited=1
+
+[User 423]: products=58 tot_time_market=628 tot_time_queue=430 queue_visited=1
+
+[User 390]: products=86 tot_time_market=1551 tot_time_queue=1401 queue_visited=1
+
+[User 388]: products=6 tot_time_market=1633 tot_time_queue=1449 queue_visited=1
+
+[User 378]: products=97 tot_time_market=2088 tot_time_queue=1907 queue_visited=1
+
+[User 397]: products=7 tot_time_market=1458 tot_time_queue=1372 queue_visited=1
+
+[User 403]: products=55 tot_time_market=1326 tot_time_queue=1134 queue_visited=1
+
+[User 381]: products=34 tot_time_market=2019 tot_time_queue=1846 queue_visited=1
+
+[User 430]: products=89 tot_time_market=631 tot_time_queue=604 queue_visited=1
+
+[User 394]: products=45 tot_time_market=1679 tot_time_queue=1489 queue_visited=1
+
+[User 387]: products=9 tot_time_market=1836 tot_time_queue=1808 queue_visited=1
+
+[User 426]: products=35 tot_time_market=863 tot_time_queue=661 queue_visited=1
+
+[User 401]: products=26 tot_time_market=1629 tot_time_queue=1589 queue_visited=1
+
+[User 396]: products=22 tot_time_market=1694 tot_time_queue=1566 queue_visited=1
+
+[User 409]: products=93 tot_time_market=1370 tot_time_queue=1345 queue_visited=1
+
+[User 402]: products=23 tot_time_market=1583 tot_time_queue=1462 queue_visited=1
+
+[User 429]: products=47 tot_time_market=875 tot_time_queue=778 queue_visited=1
+
+[User 410]: products=26 tot_time_market=1464 tot_time_queue=1337 queue_visited=1
+
+[User 434]: products=25 tot_time_market=900 tot_time_queue=844 queue_visited=1
+
+[User 398]: products=91 tot_time_market=1909 tot_time_queue=1713 queue_visited=1
+
+[User 405]: products=35 tot_time_market=1657 tot_time_queue=1541 queue_visited=1
+
+[User 408]: products=9 tot_time_market=1586 tot_time_queue=1500 queue_visited=1
+
+[User 435]: products=23 tot_time_market=891 tot_time_queue=832 queue_visited=1
+
+[User 399]: products=67 tot_time_market=2018 tot_time_queue=1866 queue_visited=1
+
+[User 415]: products=98 tot_time_market=1593 tot_time_queue=1435 queue_visited=1
+
+[User 440]: products=32 tot_time_market=907 tot_time_queue=832 queue_visited=1
+
+[User 422]: products=8 tot_time_market=1466 tot_time_queue=1352 queue_visited=1
+
+[User 417]: products=98 tot_time_market=1660 tot_time_queue=1636 queue_visited=1
+
+[User 427]: products=20 tot_time_market=1415 tot_time_queue=1393 queue_visited=1
+
+[User 404]: products=62 tot_time_market=2034 tot_time_queue=1897 queue_visited=1
+
+[User 413]: products=9 tot_time_market=1821 tot_time_queue=1687 queue_visited=1
+
+[User 407]: products=7 tot_time_market=2040 tot_time_queue=1846 queue_visited=1
+
+[User 446]: products=99 tot_time_market=902 tot_time_queue=815 queue_visited=1
+
+[User 420]: products=18 tot_time_market=1689 tot_time_queue=1678 queue_visited=1
+
+[User 445]: products=22 tot_time_market=988 tot_time_queue=809 queue_visited=1
+
+[User 412]: products=69 tot_time_market=2000 tot_time_queue=1874 queue_visited=1
+
+[User 428]: products=96 tot_time_market=1651 tot_time_queue=1616 queue_visited=1
+
+[User 447]: products=57 tot_time_market=1034 tot_time_queue=880 queue_visited=1
+
+[User 418]: products=81 tot_time_market=2027 tot_time_queue=1849 queue_visited=1
+
+[User 432]: products=40 tot_time_market=1584 tot_time_queue=1432 queue_visited=1
+
+[User 419]: products=78 tot_time_market=2099 tot_time_queue=1962 queue_visited=1
+
+[User 442]: products=42 tot_time_market=1366 tot_time_queue=1223 queue_visited=1
+
+[User 450]: products=55 tot_time_market=1135 tot_time_queue=966 queue_visited=1
+
+[User 448]: products=6 tot_time_market=1226 tot_time_queue=1196 queue_visited=1
+
+[User 421]: products=72 tot_time_market=2091 tot_time_queue=1962 queue_visited=1
+
+[User 433]: products=71 tot_time_market=1832 tot_time_queue=1773 queue_visited=1
+
+[User 424]: products=11 tot_time_market=2128 tot_time_queue=2025 queue_visited=1
+
+[User 453]: products=62 tot_time_market=1206 tot_time_queue=1043 queue_visited=1
+
+[User 444]: products=47 tot_time_market=1467 tot_time_queue=1317 queue_visited=1
+
+[User 431]: products=59 tot_time_market=2055 tot_time_queue=1852 queue_visited=1
+
+[User 452]: products=24 tot_time_market=1400 tot_time_queue=1357 queue_visited=1
+
+[User 454]: products=29 tot_time_market=1306 tot_time_queue=1124 queue_visited=1
+
+[User 439]: products=4 tot_time_market=1845 tot_time_queue=1823 queue_visited=1
+
+[User 464]: products=19 tot_time_market=1083 tot_time_queue=955 queue_visited=1
+
+[User 437]: products=100 tot_time_market=2000 tot_time_queue=1911 queue_visited=1
+
+[User 438]: products=27 tot_time_market=1937 tot_time_queue=1735 queue_visited=1
+
+[User 457]: products=56 tot_time_market=1335 tot_time_queue=1256 queue_visited=1
+
+[User 436]: products=55 tot_time_market=2159 tot_time_queue=2026 queue_visited=1
+
+[User 458]: products=52 tot_time_market=1481 tot_time_queue=1393 queue_visited=1
+
+[User 465]: products=100 tot_time_market=1217 tot_time_queue=1130 queue_visited=1
+
+[User 441]: products=83 tot_time_market=1980 tot_time_queue=1929 queue_visited=1
+
+[User 443]: products=24 tot_time_market=2010 tot_time_queue=1933 queue_visited=1
+
+[User 466]: products=30 tot_time_market=1319 tot_time_queue=1232 queue_visited=1
+
+[User 455]: products=26 tot_time_market=1728 tot_time_queue=1541 queue_visited=1
+
+[User 451]: products=14 tot_time_market=1843 tot_time_queue=1813 queue_visited=1
+
+[User 463]: products=62 tot_time_market=1467 tot_time_queue=1415 queue_visited=1
+
+[User 470]: products=12 tot_time_market=1295 tot_time_queue=1251 queue_visited=1
+
+[User 456]: products=89 tot_time_market=1821 tot_time_queue=1677 queue_visited=1
+
+[User 475]: products=92 tot_time_market=1218 tot_time_queue=1143 queue_visited=1
+
+[User 474]: products=38 tot_time_market=1218 tot_time_queue=1037 queue_visited=1
+
+[User 449]: products=90 tot_time_market=2122 tot_time_queue=1957 queue_visited=1
+
+[User 460]: products=40 tot_time_market=1848 tot_time_queue=1680 queue_visited=1
+
+[User 481]: products=47 tot_time_market=1121 tot_time_queue=1062 queue_visited=1
+
+[User 461]: products=35 tot_time_market=1881 tot_time_queue=1777 queue_visited=1
+
+[User 482]: products=67 tot_time_market=1159 tot_time_queue=1040 queue_visited=1
+
+[User 462]: products=52 tot_time_market=1901 tot_time_queue=1731 queue_visited=1
+
+[User 467]: products=37 tot_time_market=1813 tot_time_queue=1703 queue_visited=1
+
+[User 479]: products=75 tot_time_market=1392 tot_time_queue=1213 queue_visited=1
+
+[User 480]: products=84 tot_time_market=1367 tot_time_queue=1224 queue_visited=1
+
+[User 468]: products=74 tot_time_market=1848 tot_time_queue=1830 queue_visited=1
+
+[User 472]: products=67 tot_time_market=1805 tot_time_queue=1741 queue_visited=1
+
+[User 484]: products=30 tot_time_market=1356 tot_time_queue=1216 queue_visited=1
+
+[User 485]: products=58 tot_time_market=1358 tot_time_queue=1231 queue_visited=1
+
+[User 469]: products=13 tot_time_market=1913 tot_time_queue=1867 queue_visited=1
+
+[User 473]: products=34 tot_time_market=1921 tot_time_queue=1736 queue_visited=1
+
+[User 471]: products=36 tot_time_market=1963 tot_time_queue=1793 queue_visited=1
+
+[User 489]: products=85 tot_time_market=1348 tot_time_queue=1160 queue_visited=1
+
+[User 476]: products=43 tot_time_market=1921 tot_time_queue=1843 queue_visited=1
+
+[User 487]: products=95 tot_time_market=1506 tot_time_queue=1396 queue_visited=1
+
+[User 477]: products=52 tot_time_market=1818 tot_time_queue=1754 queue_visited=1
+
+[User 515]: products=8 tot_time_market=616 tot_time_queue=505 queue_visited=1
+
+[User 483]: products=20 tot_time_market=1666 tot_time_queue=1588 queue_visited=1
+
+[User 486]: products=54 tot_time_market=1654 tot_time_queue=1519 queue_visited=1
+
+[User 516]: products=45 tot_time_market=621 tot_time_queue=562 queue_visited=1
+
+[User 519]: products=1 tot_time_market=499 tot_time_queue=410 queue_visited=1
+
+[User 488]: products=53 tot_time_market=1743 tot_time_queue=1577 queue_visited=1
+
+[User 478]: products=85 tot_time_market=2024 tot_time_queue=1826 queue_visited=1
+
+[User 497]: products=6 tot_time_market=1525 tot_time_queue=1373 queue_visited=1
+
+[User 524]: products=44 tot_time_market=580 tot_time_queue=435 queue_visited=1
+
+[User 490]: products=96 tot_time_market=1743 tot_time_queue=1694 queue_visited=1
+
+[User 499]: products=65 tot_time_market=1526 tot_time_queue=1422 queue_visited=1
+
+[User 491]: products=97 tot_time_market=1843 tot_time_queue=1684 queue_visited=1
+
+[User 493]: products=53 tot_time_market=1850 tot_time_queue=1821 queue_visited=1
+
+[User 527]: products=91 tot_time_market=679 tot_time_queue=596 queue_visited=1
+
+[User 504]: products=49 tot_time_market=1516 tot_time_queue=1393 queue_visited=1
+
+[User 500]: products=60 tot_time_market=1713 tot_time_queue=1521 queue_visited=1
+
+[User 492]: products=60 tot_time_market=2009 tot_time_queue=1923 queue_visited=1
+
+[User 507]: products=34 tot_time_market=1492 tot_time_queue=1303 queue_visited=1
+
+[User 526]: products=81 tot_time_market=884 tot_time_queue=767 queue_visited=1
+
+[User 505]: products=80 tot_time_market=1710 tot_time_queue=1570 queue_visited=1
+
+[User 494]: products=61 tot_time_market=2171 tot_time_queue=2059 queue_visited=1
+
+[User 518]: products=19 tot_time_market=1304 tot_time_queue=1244 queue_visited=1
+
+[User 534]: products=24 tot_time_market=647 tot_time_queue=465 queue_visited=1
+
+[User 509]: products=29 tot_time_market=1610 tot_time_queue=1547 queue_visited=1
+
+[User 542]: products=8 tot_time_market=465 tot_time_queue=331 queue_visited=1
+
+[User 525]: products=58 tot_time_market=1127 tot_time_queue=944 queue_visited=1
+
+[User 496]: products=77 tot_time_market=2273 tot_time_queue=2209 queue_visited=1
+
+[User 508]: products=61 tot_time_market=1768 tot_time_queue=1704 queue_visited=1
+
+[User 549]: products=60 tot_time_market=296 tot_time_queue=275 queue_visited=1
+
+[User 495]: products=5 tot_time_market=2324 tot_time_queue=2143 queue_visited=1
+
+[User 511]: products=37 tot_time_market=1847 tot_time_queue=1721 queue_visited=1
+
+[User 543]: products=63 tot_time_market=624 tot_time_queue=578 queue_visited=1
+
+[User 498]: products=56 tot_time_market=2310 tot_time_queue=2108 queue_visited=1
+
+[User 548]: products=3 tot_time_market=568 tot_time_queue=420 queue_visited=1
+
+[User 553]: products=91 tot_time_market=441 tot_time_queue=366 queue_visited=1
+
+[User 512]: products=74 tot_time_market=2032 tot_time_queue=1848 queue_visited=1
+
+[User 546]: products=20 tot_time_market=659 tot_time_queue=482 queue_visited=1
+
+[User 503]: products=61 tot_time_market=2409 tot_time_queue=2265 queue_visited=1
+
+[User 517]: products=35 tot_time_market=1896 tot_time_queue=1845 queue_visited=1
+
+[User 556]: products=74 tot_time_market=476 tot_time_queue=277 queue_visited=1
+
+[User 554]: products=80 tot_time_market=691 tot_time_queue=672 queue_visited=1
+
+[User 522]: products=42 tot_time_market=1802 tot_time_queue=1785 queue_visited=1
+
+[User 501]: products=87 tot_time_market=2626 tot_time_queue=2448 queue_visited=1
+
+[User 551]: products=12 tot_time_market=841 tot_time_queue=645 queue_visited=1
+
+[User 559]: products=62 tot_time_market=576 tot_time_queue=396 queue_visited=1
+
+[User 521]: products=31 tot_time_market=1951 tot_time_queue=1777 queue_visited=1
+
+[User 502]: products=22 tot_time_market=2711 tot_time_queue=2527 queue_visited=1
+
+[User 560]: products=18 tot_time_market=627 tot_time_queue=494 queue_visited=1
+
+[User 528]: products=5 tot_time_market=1721 tot_time_queue=1602 queue_visited=1
+
+[User 562]: products=26 tot_time_market=561 tot_time_queue=457 queue_visited=1
+
+[User 506]: products=11 tot_time_market=2697 tot_time_queue=2498 queue_visited=1
+
+[User 530]: products=84 tot_time_market=1929 tot_time_queue=1790 queue_visited=1
+
+[User 563]: products=96 tot_time_market=761 tot_time_queue=715 queue_visited=1
+
+[User 565]: products=98 tot_time_market=691 tot_time_queue=680 queue_visited=1
+
+[User 513]: products=95 tot_time_market=2581 tot_time_queue=2544 queue_visited=1
+
+[User 566]: products=21 tot_time_market=742 tot_time_queue=661 queue_visited=1
+
+[User 533]: products=66 tot_time_market=2017 tot_time_queue=1927 queue_visited=1
+
+[User 510]: products=25 tot_time_market=2790 tot_time_queue=2630 queue_visited=1
+
+[User 575]: products=73 tot_time_market=556 tot_time_queue=541 queue_visited=1
+
+[User 564]: products=77 tot_time_market=948 tot_time_queue=791 queue_visited=1
+
+[User 531]: products=65 tot_time_market=2184 tot_time_queue=2027 queue_visited=1
+
+[User 571]: products=38 tot_time_market=750 tot_time_queue=604 queue_visited=1
+
+[User 532]: products=7 tot_time_market=2234 tot_time_queue=2054 queue_visited=1
+
+[User 514]: products=89 tot_time_market=2886 tot_time_queue=2796 queue_visited=1
+
+[User 569]: products=28 tot_time_market=952 tot_time_queue=874 queue_visited=1
+
+[User 576]: products=9 tot_time_market=653 tot_time_queue=451 queue_visited=1
+
+[User 582]: products=6 tot_time_market=462 tot_time_queue=411 queue_visited=1
+
+[User 520]: products=61 tot_time_market=2757 tot_time_queue=2660 queue_visited=1
+
+[User 536]: products=91 tot_time_market=2309 tot_time_queue=2166 queue_visited=1
+
+[User 587]: products=58 tot_time_market=528 tot_time_queue=489 queue_visited=1
+
+[User 567]: products=100 tot_time_market=1202 tot_time_queue=1073 queue_visited=1
+
+[User 523]: products=62 tot_time_market=2874 tot_time_queue=2809 queue_visited=1
+
+[User 584]: products=12 tot_time_market=687 tot_time_queue=507 queue_visited=1
+
+[User 572]: products=2 tot_time_market=1109 tot_time_queue=930 queue_visited=1
+
+[User 537]: products=73 tot_time_market=2414 tot_time_queue=2257 queue_visited=1
+
+[User 529]: products=33 tot_time_market=2751 tot_time_queue=2629 queue_visited=1
+
+[User 574]: products=53 tot_time_market=1190 tot_time_queue=1061 queue_visited=1
+
+[User 539]: products=32 tot_time_market=2556 tot_time_queue=2452 queue_visited=1
+
+[User 590]: products=84 tot_time_market=669 tot_time_queue=579 queue_visited=1
+
+[User 538]: products=67 tot_time_market=2583 tot_time_queue=2388 queue_visited=1
+
+[User 578]: products=24 tot_time_market=1206 tot_time_queue=1066 queue_visited=1
+
+[User 535]: products=20 tot_time_market=2715 tot_time_queue=2519 queue_visited=1
+
+[User 541]: products=14 tot_time_market=2479 tot_time_queue=2384 queue_visited=1
+
+[User 540]: products=26 tot_time_market=2565 tot_time_queue=2454 queue_visited=1
+
+[User 607]: products=68 tot_time_market=235 tot_time_queue=180 queue_visited=1
+
+[User 545]: products=46 tot_time_market=2495 tot_time_queue=2474 queue_visited=1
+
+[User 579]: products=52 tot_time_market=1312 tot_time_queue=1155 queue_visited=1
+
+[User 544]: products=18 tot_time_market=2529 tot_time_queue=2375 queue_visited=1
+
+[User 547]: products=64 tot_time_market=2548 tot_time_queue=2386 queue_visited=1
+
+[User 583]: products=79 tot_time_market=1321 tot_time_queue=1249 queue_visited=1
+
+[User 611]: products=96 tot_time_market=413 tot_time_queue=337 queue_visited=1
+
+[User 550]: products=100 tot_time_market=2552 tot_time_queue=2401 queue_visited=1
+
+[User 589]: products=57 tot_time_market=1253 tot_time_queue=1203 queue_visited=1
+
+[User 552]: products=95 tot_time_market=2594 tot_time_queue=2412 queue_visited=1
+
+[User 555]: products=40 tot_time_market=2439 tot_time_queue=2353 queue_visited=1
+
+[User 557]: products=12 tot_time_market=2502 tot_time_queue=2365 queue_visited=1
+
+[User 558]: products=34 tot_time_market=2484 tot_time_queue=2374 queue_visited=1
+
+[User 561]: products=13 tot_time_market=2386 tot_time_queue=2322 queue_visited=1
+
+[User 594]: products=86 tot_time_market=1299 tot_time_queue=1261 queue_visited=1
+
+[User 591]: products=7 tot_time_market=1420 tot_time_queue=1314 queue_visited=1
+
+[User 570]: products=70 tot_time_market=2205 tot_time_queue=2177 queue_visited=1
+
+[User 592]: products=8 tot_time_market=1486 tot_time_queue=1296 queue_visited=1
+
+[User 577]: products=91 tot_time_market=2081 tot_time_queue=1955 queue_visited=1
+
+[User 568]: products=15 tot_time_market=2416 tot_time_queue=2237 queue_visited=1
+
+[User 573]: products=10 tot_time_market=2253 tot_time_queue=2200 queue_visited=1
+
+[User 598]: products=43 tot_time_market=1455 tot_time_queue=1378 queue_visited=1
+
+[User 580]: products=69 tot_time_market=2214 tot_time_queue=2101 queue_visited=1
+
+[User 630]: products=75 tot_time_market=214 tot_time_queue=194 queue_visited=1
+
+[User 581]: products=90 tot_time_market=2343 tot_time_queue=2173 queue_visited=1
+
+[User 586]: products=53 tot_time_market=2068 tot_time_queue=2027 queue_visited=1
+
+[User 600]: products=94 tot_time_market=1558 tot_time_queue=1433 queue_visited=1
+
+[User 585]: products=30 tot_time_market=2170 tot_time_queue=2083 queue_visited=1
+
+[User 638]: products=73 tot_time_market=261 tot_time_queue=187 queue_visited=1
+
+[User 603]: products=25 tot_time_market=1601 tot_time_queue=1404 queue_visited=1
+
+[User 593]: products=83 tot_time_market=2000 tot_time_queue=1879 queue_visited=1
+
+[User 588]: products=37 tot_time_market=2146 tot_time_queue=1949 queue_visited=1
+
+[User 609]: products=20 tot_time_market=1479 tot_time_queue=1441 queue_visited=1
+
+[User 596]: products=49 tot_time_market=2079 tot_time_queue=1971 queue_visited=1
+
+[User 613]: products=35 tot_time_market=1535 tot_time_queue=1488 queue_visited=1
+
+[User 599]: products=68 tot_time_market=2031 tot_time_queue=1943 queue_visited=1
+
+[User 595]: products=62 tot_time_market=2241 tot_time_queue=2104 queue_visited=1
+
+[User 612]: products=52 tot_time_market=1687 tot_time_queue=1595 queue_visited=1
+
+[User 615]: products=13 tot_time_market=1638 tot_time_queue=1544 queue_visited=1
+
+[User 601]: products=82 tot_time_market=2097 tot_time_queue=2040 queue_visited=1
+
+[User 597]: products=65 tot_time_market=2293 tot_time_queue=2261 queue_visited=1
+
+[User 649]: products=45 tot_time_market=313 tot_time_queue=130 queue_visited=1
+
+[User 602]: products=24 tot_time_market=2183 tot_time_queue=2104 queue_visited=1
+
+[User 619]: products=53 tot_time_market=1627 tot_time_queue=1514 queue_visited=1
+
+[User 608]: products=20 tot_time_market=2054 tot_time_queue=2001 queue_visited=1
+
+[User 653]: products=44 tot_time_market=289 tot_time_queue=212 queue_visited=1
+
+[User 605]: products=67 tot_time_market=2273 tot_time_queue=2171 queue_visited=1
+
+[User 651]: products=50 tot_time_market=430 tot_time_queue=272 queue_visited=1
+
+[User 621]: products=88 tot_time_market=1749 tot_time_queue=1591 queue_visited=1
+
+[User 606]: products=95 tot_time_market=2285 tot_time_queue=2165 queue_visited=1
+
+[User 604]: products=72 tot_time_market=2451 tot_time_queue=2348 queue_visited=1
+
+[User 628]: products=42 tot_time_market=1639 tot_time_queue=1616 queue_visited=1
+
+[User 617]: products=60 tot_time_market=2199 tot_time_queue=2105 queue_visited=1
+
+[User 655]: products=89 tot_time_market=507 tot_time_queue=362 queue_visited=1
+
+[User 610]: products=97 tot_time_market=2469 tot_time_queue=2396 queue_visited=1
+
+[User 631]: products=75 tot_time_market=1658 tot_time_queue=1574 queue_visited=1
+
+[User 620]: products=75 tot_time_market=2225 tot_time_queue=2179 queue_visited=1
+
+[User 637]: products=1 tot_time_market=1501 tot_time_queue=1399 queue_visited=1
+
+[User 656]: products=93 tot_time_market=737 tot_time_queue=579 queue_visited=1
+
+[User 614]: products=84 tot_time_market=2608 tot_time_queue=2453 queue_visited=1
+
+[User 623]: products=74 tot_time_market=2308 tot_time_queue=2216 queue_visited=1
+
+[User 647]: products=65 tot_time_market=1320 tot_time_queue=1126 queue_visited=1
+
+[User 659]: products=57 tot_time_market=799 tot_time_queue=673 queue_visited=1
+
+[User 626]: products=11 tot_time_market=2253 tot_time_queue=2230 queue_visited=1
+
+[User 616]: products=96 tot_time_market=2710 tot_time_queue=2616 queue_visited=1
+
+[User 657]: products=60 tot_time_market=961 tot_time_queue=834 queue_visited=1
+
+[User 654]: products=74 tot_time_market=1080 tot_time_queue=1043 queue_visited=1
+
+[User 618]: products=40 tot_time_market=2661 tot_time_queue=2611 queue_visited=1
+
+[User 664]: products=17 tot_time_market=827 tot_time_queue=669 queue_visited=1
+
+[User 625]: products=97 tot_time_market=2490 tot_time_queue=2379 queue_visited=1
+
+[User 622]: products=34 tot_time_market=2657 tot_time_queue=2609 queue_visited=1
+
+[User 658]: products=83 tot_time_market=1171 tot_time_queue=1033 queue_visited=1
+
+[User 668]: products=32 tot_time_market=777 tot_time_queue=749 queue_visited=1
+
+[User 624]: products=27 tot_time_market=2631 tot_time_queue=2453 queue_visited=1
+
+[User 671]: products=18 tot_time_market=693 tot_time_queue=562 queue_visited=1
+
+[User 627]: products=68 tot_time_market=2544 tot_time_queue=2471 queue_visited=1
+
+[User 669]: products=38 tot_time_market=748 tot_time_queue=701 queue_visited=1
+
+[User 629]: products=33 tot_time_market=2651 tot_time_queue=2526 queue_visited=1
+
+[User 636]: products=55 tot_time_market=2262 tot_time_queue=2134 queue_visited=1
+
+[User 672]: products=70 tot_time_market=788 tot_time_queue=731 queue_visited=1
+
+[User 674]: products=56 tot_time_market=826 tot_time_queue=726 queue_visited=1
+
+[User 677]: products=40 tot_time_market=760 tot_time_queue=594 queue_visited=1
+
+[User 642]: products=88 tot_time_market=2211 tot_time_queue=2168 queue_visited=1
+
+[User 633]: products=91 tot_time_market=2630 tot_time_queue=2550 queue_visited=1
+
+[User 675]: products=88 tot_time_market=904 tot_time_queue=751 queue_visited=1
+
+[User 641]: products=48 tot_time_market=2459 tot_time_queue=2289 queue_visited=1
+
+[User 632]: products=51 tot_time_market=2839 tot_time_queue=2693 queue_visited=1
+
+[User 692]: products=75 tot_time_market=438 tot_time_queue=372 queue_visited=1
+
+[User 685]: products=15 tot_time_market=638 tot_time_queue=509 queue_visited=1
+
+[User 639]: products=15 tot_time_market=2527 tot_time_queue=2349 queue_visited=1
+
+[User 650]: products=3 tot_time_market=2214 tot_time_queue=2182 queue_visited=1
+
+[User 694]: products=37 tot_time_market=427 tot_time_queue=278 queue_visited=1
+
+[User 646]: products=14 tot_time_market=2422 tot_time_queue=2226 queue_visited=1
+
+[User 684]: products=55 tot_time_market=796 tot_time_queue=654 queue_visited=1
+
+[User 634]: products=94 tot_time_market=3000 tot_time_queue=2863 queue_visited=1
+
+[User 697]: products=71 tot_time_market=462 tot_time_queue=424 queue_visited=1
+
+[User 648]: products=60 tot_time_market=2437 tot_time_queue=2307 queue_visited=1
+
+[User 635]: products=32 tot_time_market=3106 tot_time_queue=2940 queue_visited=1
+
+[User 688]: products=95 tot_time_market=946 tot_time_queue=892 queue_visited=1
+
+[User 704]: products=58 tot_time_market=427 tot_time_queue=314 queue_visited=1
+
+[User 662]: products=67 tot_time_market=2145 tot_time_queue=2085 queue_visited=1
+
+[User 640]: products=68 tot_time_market=2992 tot_time_queue=2933 queue_visited=1
+
+[User 644]: products=9 tot_time_market=2933 tot_time_queue=2860 queue_visited=1
+
+[User 689]: products=46 tot_time_market=1086 tot_time_queue=1029 queue_visited=1
+
+[User 660]: products=60 tot_time_market=2303 tot_time_queue=2142 queue_visited=1
+
+[User 643]: products=64 tot_time_market=3100 tot_time_queue=3008 queue_visited=1
+
+[User 667]: products=34 tot_time_market=2076 tot_time_queue=1964 queue_visited=1
+
+[User 691]: products=70 tot_time_market=1197 tot_time_queue=1146 queue_visited=1
+
+[User 690]: products=4 tot_time_market=1252 tot_time_queue=1130 queue_visited=1
+
+[User 717]: products=45 tot_time_market=299 tot_time_queue=132 queue_visited=1
+
+[User 645]: products=53 tot_time_market=3150 tot_time_queue=2989 queue_visited=1
+
+[User 673]: products=62 tot_time_market=2000 tot_time_queue=1929 queue_visited=1
+
+[User 695]: products=50 tot_time_market=1273 tot_time_queue=1144 queue_visited=1
+
+[User 670]: products=42 tot_time_market=2206 tot_time_queue=2023 queue_visited=1
+
+[User 652]: products=57 tot_time_market=3007 tot_time_queue=2892 queue_visited=1
+
+[User 721]: products=88 tot_time_market=350 tot_time_queue=260 queue_visited=1
+
+[User 676]: products=23 tot_time_market=2055 tot_time_queue=2008 queue_visited=1
+
+[User 698]: products=60 tot_time_market=1293 tot_time_queue=1161 queue_visited=1
+
+[User 727]: products=25 tot_time_market=217 tot_time_queue=122 queue_visited=1
+
+[User 661]: products=60 tot_time_market=2857 tot_time_queue=2787 queue_visited=1
+
+[User 701]: products=57 tot_time_market=1324 tot_time_queue=1242 queue_visited=1
+
+[User 679]: products=86 tot_time_market=2137 tot_time_queue=2126 queue_visited=1
+
+[User 663]: products=42 tot_time_market=2814 tot_time_queue=2780 queue_visited=1
+
+[User 680]: products=5 tot_time_market=2183 tot_time_queue=2128 queue_visited=1
+
+[User 665]: products=13 tot_time_market=2878 tot_time_queue=2794 queue_visited=1
+
+[User 678]: products=26 tot_time_market=2271 tot_time_queue=2193 queue_visited=1
+
+[User 708]: products=51 tot_time_market=1228 tot_time_queue=1077 queue_visited=1
+
+[User 682]: products=9 tot_time_market=2206 tot_time_queue=2128 queue_visited=1
+
+[User 710]: products=26 tot_time_market=1329 tot_time_queue=1175 queue_visited=1
+
+[User 666]: products=75 tot_time_market=2910 tot_time_queue=2876 queue_visited=1
+
+[User 713]: products=7 tot_time_market=1287 tot_time_queue=1162 queue_visited=1
+
+[User 681]: products=12 tot_time_market=2344 tot_time_queue=2181 queue_visited=1
+
+[User 736]: products=100 tot_time_market=370 tot_time_queue=240 queue_visited=1
+
+[User 683]: products=80 tot_time_market=2403 tot_time_queue=2267 queue_visited=1
+
+[User 686]: products=58 tot_time_market=2452 tot_time_queue=2402 queue_visited=1
+
+[User 714]: products=94 tot_time_market=1372 tot_time_queue=1348 queue_visited=1
+
+[User 687]: products=97 tot_time_market=2386 tot_time_queue=2296 queue_visited=1
+
+[User 703]: products=6 tot_time_market=1862 tot_time_queue=1841 queue_visited=1
+
+[User 742]: products=95 tot_time_market=413 tot_time_queue=381 queue_visited=1
+
+[User 716]: products=9 tot_time_market=1442 tot_time_queue=1313 queue_visited=1
+
+[User 693]: products=15 tot_time_market=2249
