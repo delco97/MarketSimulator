@@ -423,7 +423,9 @@ void * Market_main(void * p_arg){
 			while(Market_isEmpty(m)!=1) {		
 				if(SQueue_pop(Market_getUsersExit(m), &data)==1){
 					u_aux = (User *) data;
-					User_log(u_aux);			
+					User_log(u_aux);	
+					if(User_joinThread(u_aux) != 0)
+						err_quit("An error occurred joining User %d thread.", User_getId(u_aux));
 					User_delete(u_aux);
 				}
 			}
@@ -447,6 +449,8 @@ void * Market_main(void * p_arg){
 			exit++;
 			//Log user info.
 			User_log(u_aux);
+			if(User_joinThread(u_aux) != 0)
+				err_quit("An error occurred joining User %d thread.", User_getId(u_aux));			
 			//Reset user structure for next reuse
 			User_reset(u_aux, getRandom(0, Market_getP(m), Market_getSeed(m)), getRandom(10, Market_getT(m), Market_getSeed(m)), m);
 			SQueue_push(newGroup, u_aux);
