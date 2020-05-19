@@ -122,7 +122,6 @@ void CashDesk_addUser(CashDesk * p_c, User * p_u) {
 void * CashDesk_main(void * p_arg){
 	CashDesk * c = (CashDesk *) p_arg;
     Market * m = CashDesk_getMarket(c);
-	SQueue * users = CashDesk_getUsersPay(c);
 	User * servedUser = NULL;
     void * data = NULL;
 
@@ -137,7 +136,6 @@ void * CashDesk_main(void * p_arg){
         if(waitMs(c->serviceConst + User_getProducts(servedUser) * Market_getNP(m)) == -1)
             err_sys("[User %d]: an error occurred during waiting for shopping time.\n", User_getId(servedUser));
         printf("[CashDesk %d]: user served %d.\n", CashDesk_getId(c), User_getId(servedUser));
-        //TODO: move user to exit queue
         Market_moveToExit(m, servedUser);
     }
     
