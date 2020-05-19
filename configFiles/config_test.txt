@@ -1,0 +1,20 @@
+//Max number of open cash desks
+K=6
+//Starting open cash desks
+KS=3
+//Max number of users inside the market
+C=50
+//Number of users which must exit before other E user can enter the market
+E=3
+//Max ms for shopping
+T=200
+//Max number of products
+P=100
+//Time interval for change queue
+S=20
+//Threshold for desk closing
+S1=2
+//Threshold for desk opening
+S2=10
+//Number of ms required to process a product
+NP=2

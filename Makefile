@@ -11,6 +11,8 @@ SRC		:= src
 INCLUDE	:= include
 LIB		:= lib
 OBJ		:= obj
+LOG		:= logFiles
+CONF	:= configFiles
 
 #List of c file with main function inside
 #**IMPORTANT**
@@ -42,7 +44,7 @@ OBJS    := $(patsubst $(SRC)/%,$(OBJ)/%,$(SRCS:.c=.o))
 CINCLUDES	:= $(patsubst %,-I%, $(INCLUDEDIRS:%/=%))
 CLIBS		:= $(patsubst %,-L%, $(LIBDIRS:%/=%))
 
-.PHONY: all dir clean clean_all doc docker_build docker_run
+.PHONY: all dir clean doc docker_build docker_run test
 
 all: $(EXES) $(OBJS)
 
@@ -74,6 +76,8 @@ doc:
 clean:
 	-rm -r $(BIN)
 	-rm -r $(OBJ)
+	-rm -r $(LOG)/*
+	-rm main.PID
 
 #Build docker image for the project
 docker_build:
@@ -81,3 +85,11 @@ docker_build:
 
 docker_run:
 	docker run --rm -ti -v $(shell pwd):/usr/src market:0.1
+
+test:
+	-rm $(LOG)/log_test.txt
+	(valgrind --leak-check=full ./bin/main $(CONF)/config_test.txt $(LOG)/log_test.txt & echo $$! > main.PID) &
+	sleep 8s; \
+	kill -s HUP $$(cat main.PID); \
+	./analisi.sh $$(cat main.PID); \
+

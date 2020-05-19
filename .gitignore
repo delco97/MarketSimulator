@@ -5,3 +5,4 @@ img/
 doxyDocs/
 .vscode/
 logFiles/
+*.PID
