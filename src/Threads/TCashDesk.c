@@ -132,10 +132,10 @@ void * CashDesk_main(void * p_arg){
             err_quit("[CashDesk %d]: an error occurred when trying to get user to serve.\n", c->id);
         servedUser = (User *)data;
         User_setStartPaymentTime(servedUser, getCurrentTime());
-        printf("[CashDesk %d]: started to serve user %d.\n", CashDesk_getId(c), User_getId(servedUser));
+        //printf("[CashDesk %d]: started to serve user %d.\n", CashDesk_getId(c), User_getId(servedUser));
         if(waitMs(c->serviceConst + User_getProducts(servedUser) * Market_getNP(m)) == -1)
             err_sys("[User %d]: an error occurred during waiting for shopping time.\n", User_getId(servedUser));
-        printf("[CashDesk %d]: user served %d.\n", CashDesk_getId(c), User_getId(servedUser));
+        //printf("[CashDesk %d]: user served %d.\n", CashDesk_getId(c), User_getId(servedUser));
         Market_moveToExit(m, servedUser);
     }
     

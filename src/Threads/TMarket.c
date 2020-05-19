@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <signal.h>
 
 /**
  * @file TMarket.c
@@ -57,6 +58,34 @@ static void pDeallocUser(void * p_arg){
 	User * u = (User *) p_arg;
 	User_delete(u);
 }
+
+/**
+ * @brief Signal handler thread
+ * 
+ * @param arg 
+ * @return void* 
+ */
+static void * Market_sigHandler(void *arg) {
+    sigset_t *set = arg;
+    int sig;
+
+    while (1) {
+        if (sigwait(set, &sig) != 0)
+            err_quit("sigwait error");
+        switch (sig) {
+			case SIGQUIT:
+				printf("[SignalThread]: ============== Signal SIGQUIT\n");
+				break;
+			case SIGHUP:
+				printf("[SignalThread]: ============== Signal SIGHUP\n");
+				break;       
+			default:
+				printf("[SignalThread]: ============== Signal %d not handled!\n", sig);
+				break;
+        }
+    }
+}
+
 
 unsigned int * Market_getSeed(Market * p_m) {return &p_m->seed;}
 long Market_getK(Market * p_m) {return p_m->K;}
@@ -169,7 +198,8 @@ Market * Market_init(const char * p_conf, const char * p_log){
 	int res = 1;
 	char userChoice;
 	int isLockInit = 0;
-	
+	sigset_t set;
+
 	//Check the log file path
 	f_log = fopen(p_log, "r");
 	if( f_log != NULL ) {
@@ -207,6 +237,21 @@ Market * Market_init(const char * p_conf, const char * p_log){
 		err_ret("An error occurred during memory allocation.");
 		goto err;
 	}
+
+    //Block SIGQUIT and SIGHUP. Other threads created
+    //will inherit a copy of the signal mask set for the main thread.
+    sigemptyset(&set);
+    sigaddset(&set, SIGQUIT);
+    sigaddset(&set, SIGHUP);
+	
+	//Apply signal mask
+	if (pthread_sigmask(SIG_BLOCK, &set, NULL) != 0)
+        err_quit("pthread_sigmask failed.");
+	
+	//Create signal handler thread
+	if(pthread_create(&m->thSignalHandler, NULL, &Market_sigHandler, (void *) &set) != 0)
+        err_quit("Creation of signal handler thread failed.");
+
 	m->seed = time(NULL); //init seed for rand_r
 	m->f_log = f_log;
 	//Default values
@@ -416,6 +461,5 @@ void * Market_main(void * p_arg){
 		
     return (void *)NULL;
 }
-
 
 

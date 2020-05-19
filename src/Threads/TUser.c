@@ -276,25 +276,25 @@ void * User_main(void * p_arg){
     User * u = (User *)p_arg;
 
     User_setMarketEntryTime(u, getCurrentTime());
-    printf("[User %d]: main thread start!\n", User_getId(u));
+    //printf("[User %d]: main thread start!\n", User_getId(u));
     
     //Shopping time
-    printf("[User %d]: start shopping!\n", User_getId(u));
+    //printf("[User %d]: start shopping!\n", User_getId(u));
     if(waitMs(User_getShoppingTime(u)) == -1)
         err_sys("[User %d]: an error occurred during waiting for shopping time.\n", User_getId(u));
-    printf("[User %d]: end shopping!\n", User_getId(u));
+    //printf("[User %d]: end shopping!\n", User_getId(u));
     //End of shopping, move to one cashdesk or to authorization queue
     if(User_getProducts(u) > 0){//Has something in the cart
-        printf("[User %d]: move to a open cash desk for payment.\n", User_getId(u));
+        //printf("[User %d]: move to a open cash desk for payment.\n", User_getId(u));
         Market_FromShoppingToPay(User_getMarket(u), u);
         //Wait Exit authorization
     }else{//Nothing in the cart
-        printf("[User %d]: move to the authorization queue.\n", User_getId(u));
+        //printf("[User %d]: move to the authorization queue.\n", User_getId(u));
         //Move User struct to queue of users waiting director authorization before exit.
         Market_FromShoppingToAuth(User_getMarket(u), u);
         //Wait to be served
     }
     
-    printf("[User %d]: end of thread.\n", User_getId(u));
+    //printf("[User %d]: end of thread.\n", User_getId(u));
     return (void *)NULL;
 }

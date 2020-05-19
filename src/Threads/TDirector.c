@@ -107,7 +107,6 @@ void * Director_main(void * p_arg){
     //Create auxiliary thread for managing auth queue
     if(pthread_create(&thAuthHandler, NULL, Director_handleAuth, d->market) !=0)
         err_quit("[Director]: an error occurred during creation of authorizations handler thread."); 
-
     //Handle cashdesks
 
 

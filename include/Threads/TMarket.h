@@ -17,6 +17,7 @@ typedef struct CashDesk CashDesk;
 
 struct Market {
     pthread_t thread;   /**< Market  thread */
+    pthread_t thSignalHandler; /**< Thread used for signal handling */
     pthread_mutex_t lock;  /**< lock variable */
     unsigned int seed;  /**< seed used by the market thread for generating random number */
     long K; 	/**< Maximum number of open cashdesk. {K>0} */
