@@ -50,6 +50,7 @@ void User_setMarketEntryTime(User * p_u, struct timespec p_x);
 void User_setMarketExitTime(User * p_u, struct timespec p_x);
 void User_setQueueStartTime(User * p_u, struct timespec p_x);
 void User_setStartPaymentTime(User * p_u, struct timespec p_x);
+void User_setProducts(User * p_u, int p_prd);
 void User_changeQueue(User * p_u);
 
 void * User_main(void * arg);

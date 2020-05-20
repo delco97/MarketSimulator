@@ -84,6 +84,7 @@ void * Director_handleAuth(void * p_arg) {
     void * data = NULL;
     User * user = NULL;
     while (1) {
+		//if(sig_hup == 1 || sig_quit == 1) {        
         if(sig_hup == 1) {
             //Empties the user auth queue and wait until no other users are in shopping area
             while (SQueue_isEmpty(m->usersShopping) != 1 || SQueue_isEmpty(auth) !=1) {
@@ -95,7 +96,6 @@ void * Director_handleAuth(void * p_arg) {
             }
             break;
         }
-        //TODO:SIGQUIT
         if(SQueue_pop(auth, &data) == 1){
             user = (User *) data;
             //Move user to exit

@@ -89,7 +89,7 @@ docker_run:
 test:
 	-rm $(LOG)/log_test.txt
 	(valgrind --leak-check=full ./bin/main $(CONF)/config_test.txt $(LOG)/log_test.txt & echo $$! > main.PID) &
-	sleep 8s; \
+	sleep 25s; \
 	kill -s HUP $$(cat main.PID); \
 	./analisi.sh $$(cat main.PID); \
 

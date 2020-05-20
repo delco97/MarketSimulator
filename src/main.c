@@ -50,24 +50,33 @@ static void useInfo(char * p_argv[]){
 	fprintf(stderr, "	%s <config_file> <log_file>\n", p_argv[0]);
 }
 
+static void setSetMask() {
+    sigset_t set;	
+	if(sigemptyset(&set)==-1) err_quit("impossible to set mask. (1)");
+	if(sigaddset(&set, SIGQUIT)==-1) err_quit("impossible to set mask. (2)");
+	if(sigaddset(&set, SIGHUP)==-1) err_quit("impossible to set mask. (3)");
+	if(pthread_sigmask(SIG_BLOCK, &set, NULL)==-1) err_quit("impossible to set mask (4)");	
+
+}
+
+static void removeSigMask() {
+    sigset_t set;	
+	if(sigemptyset(&set)==-1) err_quit("impossible to set mask. (1)");
+	if(sigaddset(&set, SIGQUIT)==-1) err_quit("impossible to set mask. (2)");
+	if(sigaddset(&set, SIGHUP)==-1) err_quit("impossible to set mask. (3)");
+	if(pthread_sigmask(SIG_UNBLOCK, &set, NULL)==-1) err_quit("impossible to set mask (4)");	
+}
+
 /**
  * @brief Setup signal handlers managed by the application.
  */
 static void setupHandlers() {
-    sigset_t set;
 	struct sigaction s;
-	//Mask all signals untill all custom
-	//handlers have been installed
-	if(sigfillset(&set)==-1) err_quit("impossible to set mask");
-	if(pthread_sigmask(SIG_SETMASK, &set, NULL)==-1) err_quit("pthread_sigmask");	
 	memset(&s,0,sizeof(s));
 	//Add custom handlers
     s.sa_handler=sigHandler;
     if (sigaction(SIGHUP,&s,NULL)==-1) err_quit("impossible to setup signal handler (1).");
     if (sigaction(SIGQUIT,&s,NULL)==-1) err_quit("impossible to setup signal handler (2).");
-	//Remove the mask
-	if(sigemptyset(&set)==-1) err_quit("impossible to remove mask.");
-	if(pthread_sigmask(SIG_SETMASK,&set,NULL)==-1) err_quit("impossible to remove mask.");
 }
 
 int main(int argc, char * argv[]) {
@@ -78,18 +87,20 @@ int main(int argc, char * argv[]) {
 		useInfo(argv);
 		err_exit(EXIT_FAILURE, "Exit...");
 	}
-
+	setSetMask();
 	//Set signal handler
 	setupHandlers();
 
 	//Try to init market
 	if((m = Market_init(argv[1], argv[2])) == NULL)
 		err_quit("An error occurred during market initialization. Exit...");
-	
+
 	//Market is correctly initialized
 	if(Market_startThread(m) != 0)
 		err_quit("An error occurred during market startup (1). Exit...");
 	
+	removeSigMask();
+
 	//Wait Market
 	if(Market_joinThread(m) != 0)
 		err_quit("An error occurred during market startup (2). Exit...");

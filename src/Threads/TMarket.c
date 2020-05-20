@@ -416,9 +416,10 @@ void * Market_main(void * p_arg){
 
 	//Wait E users exits
 	while (1) {
-		if(sig_hup == 1) {
-			printf("Market is closing (SLOW)...\n");
-			//If SIGHUP occurs no new users are allowed inside the market and
+		//if(sig_hup == 1 || sig_quit == 1) {
+		if(sig_hup == 1) {	
+			printf("Market is closing...\n");
+			//When SIGHUP or SIQQUIT occurs no new users are allowed inside the market and
 			//And all the users inside are waited.
 			while(Market_isEmpty(m)!=1) {		
 				if(SQueue_pop(Market_getUsersExit(m), &data)==1){
@@ -437,12 +438,6 @@ void * Market_main(void * p_arg){
 				if(CashDesk_joinThread(&m->desks[i])!=0) err_quit("An error occurred during cash desk thread join.");
 			break;					
 		}
-	
-		//TODO:SIGQUIT
-		if(sig_quit == 1) {
-			printf("Market is closing (FAST)...\n");
-		}
-
 		//Market is not closing
 		if(SQueue_pop(Market_getUsersExit(m), &data) == 1){
 			u_aux = (User *) data;		
