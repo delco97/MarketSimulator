@@ -21,6 +21,7 @@ extern volatile sig_atomic_t sig_quit;
 struct Market {
     pthread_t thread;   /**< Market  thread */
     pthread_mutex_t lock;  /**< lock variable */
+    pthread_cond_t cv_MarketNews; /**< used to notify updates inside the market to threads */
     unsigned int seed;  /**< seed used by the market thread for generating random number */
     long K; 	/**< Maximum number of open cashdesk. {K>0} */
     long KS; 	/**< Number of open cashdesks at opening. {0<KS<=K} */

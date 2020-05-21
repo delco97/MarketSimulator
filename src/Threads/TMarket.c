@@ -108,6 +108,7 @@ void Market_FromShoppingToPay(Market * p_m, User * p_u) {
 	deskChoosen = (CashDesk *) aux;
 
 	CashDesk_addUser(deskChoosen, p_u);
+	Broadcast(&p_m->cv_MarketNews);
 	Unlock(&p_m->lock);
 }
 
@@ -130,6 +131,7 @@ void Market_FromShoppingToExit(Market * p_m, User * p_u) {
 	User_setMarketExitTime(p_u, cur);
 	if(SQueue_push(p_m->usersExit, p_u) != 1)
 		err_quit("Impossible to move User %d in exit queue.", User_getId(p_u));
+	Broadcast(&p_m->cv_MarketNews);
 	Unlock(&p_m->lock);
 }
 
@@ -148,6 +150,7 @@ void Market_FromShoppingToAuth(Market * p_m, User * p_u) {
 	User_changeQueue(p_u);
 	if(SQueue_push(p_m->usersAuthQueue, p_u) != 1)
 		err_quit("Impossible to move User %d in authorization queue.", User_getId(p_u));
+	Broadcast(&p_m->cv_MarketNews);
 	Unlock(&p_m->lock);
 }
 
@@ -162,6 +165,7 @@ void Market_moveToExit(Market * p_m, User * p_u){
 	User_setMarketExitTime(p_u, getCurrentTime());
 	if(SQueue_push(p_m->usersExit, p_u) != 1)
 		err_quit("Impossible to move User %d in exit queue.", User_getId(p_u));
+	Broadcast(&p_m->cv_MarketNews);
 	Unlock(&p_m->lock);
 }
 
@@ -306,7 +310,8 @@ Market * Market_init(const char * p_conf, const char * p_log){
 	}
 
 	//Init lock system
-	if (pthread_mutex_init(&(m->lock), NULL) != 0) {
+	if (pthread_mutex_init(&(m->lock), NULL) != 0 ||
+		pthread_cond_init(&m->cv_MarketNews, NULL) != 0) {
 		err_msg("An error occurred during locking system initialization. Impossible to setup the market.");
 		goto err;
 	}
@@ -327,7 +332,10 @@ err:
 			for(int i = 0;i < m->K; i++) CashDesk_delete(&m->desks[i]);
 			free(m->desks);
 		}
-		if(isLockInit) pthread_mutex_destroy(&m->lock);
+		if(isLockInit){
+			pthread_mutex_destroy(&m->lock);
+			pthread_cond_destroy(&m->cv_MarketNews);
+		}
 		free(m);
 	}
 	return NULL;
@@ -374,6 +382,7 @@ int Market_delete(Market * p_m) {
 	for(int i = 0;i < p_m->K; i++) CashDesk_delete(&p_m->desks[i]);
 	free(p_m->desks);
 	pthread_mutex_destroy(&p_m->lock);
+	pthread_cond_destroy(&p_m->cv_MarketNews);
     free(p_m);
     return 1;
 }
@@ -438,6 +447,11 @@ void * Market_main(void * p_arg){
 	Unlock(&m->lock);
 	//Wait E users exits
 	while (1) {
+		//Wait a signal or new user in exit queue to proceed
+		Lock(&m->lock);
+		while (sig_hup != 1 && sig_quit != 1 && SQueue_isEmpty(m->usersExit)==1) 
+			pthread_cond_wait(&m->cv_MarketNews, &m->lock);
+		Unlock(&m->lock);
 		if(sig_hup == 1 || sig_quit == 1) {
 			printf("Market is closing...\n");
 			//When SIGHUP or SIQQUIT occurs no new users are allowed inside the market and

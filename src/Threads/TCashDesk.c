@@ -128,6 +128,11 @@ void * CashDesk_main(void * p_arg){
     printf("[CashDesk %d]: start of thread.\n", CashDesk_getId(c));
     
     while (1) {
+       	//Wait a signal or new user in desk queue to proceed
+		Lock(&m->lock);
+		while (sig_hup != 1 && sig_quit != 1 && SQueue_isEmpty(c->usersPay)==1) 
+			pthread_cond_wait(&m->cv_MarketNews, &m->lock);
+		Unlock(&m->lock);
 		if(sig_hup == 1 || sig_quit == 1) {
             //Empties the user desk queue and wait until no other users are in the market
             while (Market_isEmpty(m)!=1) {

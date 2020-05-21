@@ -222,4 +222,5 @@ void Lock(pthread_mutex_t * p_lock) {if(pthread_mutex_lock(p_lock) != 0) err_qui
 void Unlock(pthread_mutex_t * p_lock) {if(pthread_mutex_unlock(p_lock) != 0) err_quit("An error occurred during unlocking.");}
 void Wait(pthread_cond_t * p_cond, pthread_mutex_t * p_lock) {if(pthread_cond_wait(p_cond, p_lock) != 0) err_quit("An error occurred during cond wait.");}
 void Signal(pthread_cond_t * p_cond) {if(pthread_cond_signal(p_cond) != 0) err_quit("An error occurred during a condition singal.");}
+void Broadcast(pthread_cond_t * p_cond) {if(pthread_cond_broadcast(p_cond) != 0) err_quit("An error occurred during a brodcast.");}
 

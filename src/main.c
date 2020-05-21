@@ -18,8 +18,14 @@
 volatile sig_atomic_t sig_hup=0; /**< SIGHUP signal indicator */
 volatile sig_atomic_t sig_quit=0; /**< SIGQUIT signal indicator */
 
+typedef struct _input_handler_par_t {
+	Market * m;
+	sigset_t * set;
+} input_handler_par_t;
+
 static void * sigHandler(void * p_arg) {
-    sigset_t *set = p_arg;
+	sigset_t * set = ((input_handler_par_t *) p_arg)->set;
+	Market * m = ((input_handler_par_t *) p_arg)->m;
     int sig;
 
     while (1) {
@@ -28,11 +34,13 @@ static void * sigHandler(void * p_arg) {
 			case SIGQUIT:
 				printf("Received signal SIGQUIT.\n");
 				sig_quit = 1;
+				Broadcast(&m->cv_MarketNews);
 				return (void *) NULL;			
 				break;
 			case SIGHUP:
 				printf("Received signal SIGHUP.\n");
 				sig_hup = 1;
+				Broadcast(&m->cv_MarketNews);
 				return (void *) NULL;
 				break;       
 			default:
@@ -53,8 +61,9 @@ static void useInfo(char * p_argv[]){
 }
 
 int main(int argc, char * argv[]) {
-	Market * m;
+	Market * m = NULL;
 	pthread_t thSigHandler;
+	input_handler_par_t in;
 	sigset_t set;	
 	printf("PID: %d\n", getpid());
 	if(argc != 3){//Wrong use
@@ -70,8 +79,6 @@ int main(int argc, char * argv[]) {
 	if(sigaddset(&set, SIGHUP) == -1) err_quit("impossible to set mask. (2)");
 	if(sigaddset(&set, SIGQUIT) == -1) err_quit("impossible to set mask. (3)");
 	if(pthread_sigmask(SIG_BLOCK, &set, NULL)==-1) err_quit("impossible to set mask (4)");	
-	if(pthread_create(&thSigHandler, NULL, &sigHandler, (void *) &set) != 0)
-		err_quit("impossible to execute signal handler thread.");
 
 	//Try to init market
 	if((m = Market_init(argv[1], argv[2])) == NULL)
@@ -80,6 +87,12 @@ int main(int argc, char * argv[]) {
 	//Market is correctly initialized
 	if(Market_startThread(m) != 0)
 		err_quit("An error occurred during market startup (1). Exit...");
+
+	//Start signal handler thread
+	in.m = m;
+	in.set = &set;
+	if(pthread_create(&thSigHandler, NULL, sigHandler, &in) != 0)
+		err_quit("impossible to execute signal handler thread.");
 
 	//Wait Market
 	if(Market_joinThread(m) != 0)
