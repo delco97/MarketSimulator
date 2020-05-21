@@ -26,6 +26,16 @@ static int pUser_getNextId() {
     if(pthread_mutex_unlock(&g_lock) != 0) err_quit("An error occurred during unlocking.");
     return next;
 }
+static void pUser_toString(User * p_u, char * p_buff){
+    double marketTime = (double)elapsedTime(p_u->tMarketEntry, p_u->tMarketExit);
+    double queueTime = (double)elapsedTime(p_u->tQueueStart, p_u->tMarketExit);
+    sprintf(p_buff, "[User %d]: products=%d tot_time_market=%.3f tot_time_queue=%.3f queue_visited=%d\n", 
+            p_u->id,
+            p_u->products, 
+            (double)(marketTime > 0 ? marketTime/1000:0),
+            (double)(queueTime > 0 ? queueTime/1000:0),
+            p_u->queueChanges);
+}
 
 /**
  * @brief Create a new User object.
@@ -91,17 +101,6 @@ void User_reset(User * p_u, int p_products, int p_shoppingTime, Market * p_m){
     pUser_Unlock(p_u);
 }
 
-void pUser_toString(User * p_u, char * p_buff){
-    double marketTime = (double)elapsedTime(p_u->tMarketEntry, p_u->tMarketExit);
-    double queueTime = (double)elapsedTime(p_u->tQueueStart, p_u->tMarketExit);
-    sprintf(p_buff, "[User %d]: products=%d tot_time_market=%.3f tot_time_queue=%.3f queue_visited=%d\n", 
-            p_u->id,
-            p_u->products, 
-            (double)(marketTime > 0 ? marketTime/1000:0),
-            (double)(queueTime > 0 ? queueTime/1000:0),
-            p_u->queueChanges);
-}
-
 /**
  * @brief Log user info.
  * 
@@ -111,14 +110,14 @@ void User_log(User * p_u){
     pUser_Lock(p_u);
     char aux[MAX_USR_STR];
     pUser_toString(p_u, aux);
-    Market_log(p_u->market, aux);
     pUser_Unlock(p_u);
+    Market_log(p_u->market, aux);
 }
 
 /**
  * @brief Comapre two user object by subtracting their ids.
- * @param p_1 must be a User *
- * @param p_2 must be a User *
+ * @param p_1 Requirements: p_u != NULL and must refer to a User object created with #User_init.
+ * @param p_2 Requirements: p_u != NULL and must refer to a User object created with #User_init.
  * @return int: result code
  * <0: p_u1 has a littler id then p_u2
  * >0: p_u1 has a greater id then p_u2
@@ -266,7 +265,12 @@ void User_setProducts(User * p_u, int p_prd) {
     pUser_Lock(p_u); p_u->products = p_prd; pUser_Unlock(p_u);
 }
 
-
+/**
+ * @brief Get the market where user p_u is located.
+ * 
+ * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
+ * @return Market* 
+ */
 Market * User_getMarket(User * p_u) {return p_u->market;}
 
 
@@ -281,7 +285,14 @@ void User_changeQueue(User * p_u){ pUser_Lock(p_u); p_u->queueChanges++; pUser_U
 /**
  * @brief Entry point for a User thread.
  * 
- * Function to use on User thread creation as entry point.  
+ * Function to use on User thread creation. This
+ * function handle the User data structure passed as argument in the following way:
+ *  1. Set user entry time in the market.
+ *  2. Wait for simulate shopping
+ *  3. Move the user in to one open cash desk if he has at least one product, otherwise
+ *     he is moved to authorization queue.
+ *  During these three consecutive steps is checked if a fast closing signal has been rised (sig_quit ==1).
+ *  In that case the user is moved directly to exit queue.
  * @param p_arg argument passed to the User thread. User type expected.
  * @return void* 
  */
