@@ -33,14 +33,18 @@ static void * sigHandler(void * p_arg) {
         switch (sig) {
 			case SIGQUIT:
 				printf("Received signal SIGQUIT.\n");
+				Lock(&m->lock);
 				sig_quit = 1;
 				Broadcast(&m->cv_MarketNews);
+				Unlock(&m->lock);
 				return (void *) NULL;			
 				break;
 			case SIGHUP:
 				printf("Received signal SIGHUP.\n");
+				Lock(&m->lock);
 				sig_hup = 1;
 				Broadcast(&m->cv_MarketNews);
+				Unlock(&m->lock);
 				return (void *) NULL;
 				break;       
 			default:
