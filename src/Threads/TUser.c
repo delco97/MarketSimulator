@@ -288,36 +288,34 @@ void * User_main(void * p_arg){
 
     User_setMarketEntryTime(u, getCurrentTime());
     //printf("[User %d]: main thread start!\n", User_getId(u));
-    
     //Shopping time
     //printf("[User %d]: start shopping!\n", User_getId(u));
-    // if(sig_quit == 1) {
-    //     Market_moveToExit(User_getMarket(u), u);
-    //     User_setProducts(u, 0);
-    //     return (void *)NULL;
-    // }
+    if(sig_quit == 1) {
+        Market_FromShoppingToExit(User_getMarket(u), u);
+        return (void *)NULL;
+    }
     if(waitMs(User_getShoppingTime(u)) == -1)
         err_sys("[User %d]: an error occurred during waiting for shopping time.\n", User_getId(u));
-    // if(sig_quit == 1) {
-    //     Market_moveToExit(User_getMarket(u), u);
-    //     return (void *)NULL;
-    // }
+    if(sig_quit == 1) {
+        Market_FromShoppingToExit(User_getMarket(u), u);
+        return (void *)NULL;
+    }
     //printf("[User %d]: end shopping!\n", User_getId(u));
     //End of shopping, move to one cashdesk or to authorization queue
     if(User_getProducts(u) > 0){//Has something in the cart
         //printf("[User %d]: move to a open cash desk for payment.\n", User_getId(u));
-        // if(sig_quit == 1) {
-        //     Market_moveToExit(User_getMarket(u), u);
-        //     return (void *)NULL;
-        // }
+        if(sig_quit == 1) {
+            Market_FromShoppingToExit(User_getMarket(u), u);
+            return (void *)NULL;
+        }
         Market_FromShoppingToPay(User_getMarket(u), u);
     }else{//Nothing in the cart
         //printf("[User %d]: move to the authorization queue.\n", User_getId(u));
         //Move User struct to queue of users waiting director authorization before exit.
-        // if(sig_quit == 1) {
-        //     Market_moveToExit(User_getMarket(u), u);
-        //     return (void *)NULL;
-        // }
+        if(sig_quit == 1) {
+            Market_FromShoppingToExit(User_getMarket(u), u);
+            return (void *)NULL;
+        }
         Market_FromShoppingToAuth(User_getMarket(u), u);
     }
     

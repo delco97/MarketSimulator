@@ -18,26 +18,28 @@
 volatile sig_atomic_t sig_hup=0; /**< SIGHUP signal indicator */
 volatile sig_atomic_t sig_quit=0; /**< SIGQUIT signal indicator */
 
-static void sigHandler(int p_sig) {
-	switch (p_sig){
-		case SIGHUP:
-			if(sig_quit ==0){
-				sig_hup=1;
-				write(1,"Received signal SIGHUP\n",24);
-			}else write(1,"Signal SIGHUP ignored\n",23);
-			
-			break;
-		case SIGQUIT:
-			if(sig_hup == 0){
-				sig_quit=1;
-				write(1,"Received signal SIGQUIT\n",25);
-			} else write(1,"Signal SIGQUIT ignored\n",24);
-			break;
-		default:
-			write(2,"Received unexpected signal\n",28);
-			_exit(EXIT_FAILURE);
-			break;
-	}
+static void * sigHandler(void * p_arg) {
+    sigset_t *set = p_arg;
+    int sig;
+
+    while (1) {
+        if (sigwait(set, &sig) != 0) err_quit("sigwait");
+        switch (sig) {
+			case SIGQUIT:
+				printf("Received signal SIGQUIT.\n");
+				sig_quit = 1;
+				return (void *) NULL;			
+				break;
+			case SIGHUP:
+				printf("Received signal SIGHUP.\n");
+				sig_hup = 1;
+				return (void *) NULL;
+				break;       
+			default:
+				err_msg("Received unknown signal: %d!\n", sig);
+				break;
+        }
+    }	
 }
 
 /**
@@ -50,46 +52,26 @@ static void useInfo(char * p_argv[]){
 	fprintf(stderr, "	%s <config_file> <log_file>\n", p_argv[0]);
 }
 
-static void setSetMask() {
-    sigset_t set;	
-	if(sigemptyset(&set)==-1) err_quit("impossible to set mask. (1)");
-	if(sigaddset(&set, SIGQUIT)==-1) err_quit("impossible to set mask. (2)");
-	if(sigaddset(&set, SIGHUP)==-1) err_quit("impossible to set mask. (3)");
-	if(pthread_sigmask(SIG_BLOCK, &set, NULL)==-1) err_quit("impossible to set mask (4)");	
-
-}
-
-static void removeSigMask() {
-    sigset_t set;	
-	if(sigemptyset(&set)==-1) err_quit("impossible to set mask. (1)");
-	if(sigaddset(&set, SIGQUIT)==-1) err_quit("impossible to set mask. (2)");
-	if(sigaddset(&set, SIGHUP)==-1) err_quit("impossible to set mask. (3)");
-	if(pthread_sigmask(SIG_UNBLOCK, &set, NULL)==-1) err_quit("impossible to set mask (4)");	
-}
-
-/**
- * @brief Setup signal handlers managed by the application.
- */
-static void setupHandlers() {
-	struct sigaction s;
-	memset(&s,0,sizeof(s));
-	//Add custom handlers
-    s.sa_handler=sigHandler;
-    if (sigaction(SIGHUP,&s,NULL)==-1) err_quit("impossible to setup signal handler (1).");
-    if (sigaction(SIGQUIT,&s,NULL)==-1) err_quit("impossible to setup signal handler (2).");
-}
-
 int main(int argc, char * argv[]) {
 	Market * m;
+	pthread_t thSigHandler;
+	sigset_t set;	
 	printf("PID: %d\n", getpid());
 	if(argc != 3){//Wrong use
 		printf("Wrong use.");
 		useInfo(argv);
 		err_exit(EXIT_FAILURE, "Exit...");
 	}
-	setSetMask();
-	//Set signal handler
-	setupHandlers();
+    
+	//Setup signal handler thread
+    //Block SIGHUP and SIGQUIT; other threads created by main()
+	//will inherit a copy of the signal mask.	
+	if(sigemptyset(&set) == -1) err_quit("impossible to set mask. (1)");
+	if(sigaddset(&set, SIGHUP) == -1) err_quit("impossible to set mask. (2)");
+	if(sigaddset(&set, SIGQUIT) == -1) err_quit("impossible to set mask. (3)");
+	if(pthread_sigmask(SIG_BLOCK, &set, NULL)==-1) err_quit("impossible to set mask (4)");	
+	if(pthread_create(&thSigHandler, NULL, &sigHandler, (void *) &set) != 0)
+		err_quit("impossible to execute signal handler thread.");
 
 	//Try to init market
 	if((m = Market_init(argv[1], argv[2])) == NULL)
@@ -98,8 +80,6 @@ int main(int argc, char * argv[]) {
 	//Market is correctly initialized
 	if(Market_startThread(m) != 0)
 		err_quit("An error occurred during market startup (1). Exit...");
-	
-	removeSigMask();
 
 	//Wait Market
 	if(Market_joinThread(m) != 0)
@@ -107,6 +87,10 @@ int main(int argc, char * argv[]) {
 
 	if(Market_delete(m) != 1)
 		err_quit( "An error occurred during market closing. Exit...");
+	
+	//Wait signal handler thread
+	if(pthread_join(thSigHandler, NULL) != 0)
+		err_quit("pthread_join: thSigHandler");
 
 	printf("Market closed\n");
 

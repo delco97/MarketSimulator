@@ -69,9 +69,11 @@ SQueue * Market_getUsersShopping(Market * p_m);
 SQueue * Market_getUsersExit(Market * p_m);
 SQueue * Market_getUsersAuth(Market * p_m);
 CashDesk * Market_getDesks(Market * p_m);
+int Market_isEmpty(Market * p_m);
 
 void Market_FromShoppingToPay(Market * p_m, User * p_u);
 void Market_FromShoppingToAuth(Market * p_m, User * p_u);
+void Market_FromShoppingToExit(Market * p_m, User * p_u);
 void Market_moveToExit(Market * p_m, User * p_u);
 void Market_log(Market * p_m, char * p_data);
 #endif	/* _TMARKET_H */
