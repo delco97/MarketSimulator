@@ -1,3 +1,7 @@
+/**
+ * @file TDirector.h
+ * @brief Header file for TDirector.c
+ */
 #ifndef	_TDIRECTOR_H
 #define	_TDIRECTOR_H
 

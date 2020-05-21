@@ -1,8 +1,15 @@
+/**
+ * @file Config.h
+ * @brief Header file for Config.c
+ */
 #ifndef	_CONFIG_H
 #define	_CONFIG_H
 
 #include <stdio.h>
 
+/**
+ * @brief Max string length expected from a config file
+ */
 #define MAX_DIM_STR_CONF 1024
 
 int Config_getValue(FILE * p_f, const char * p_key, char * p_buff);

@@ -1,3 +1,7 @@
+/**
+ * @file TUser.h
+ * @brief Header file for TUser.c
+ */
 #ifndef	_TUSER_H
 #define	_TUSER_H
 

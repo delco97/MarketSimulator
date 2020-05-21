@@ -1,3 +1,7 @@
+/**
+ * @file TCashDesk.h
+ * @brief Header file for TCashDesk.c
+ */
 #ifndef	_TCASHDESK_H
 #define	_TCASHDESK_H
 

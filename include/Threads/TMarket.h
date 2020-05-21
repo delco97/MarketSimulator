@@ -1,3 +1,7 @@
+/**
+ * @file TDirector.h
+ * @brief Header file for TDirector.c
+ */
 #ifndef	_TMARKET_H
 #define	_TMARKET_H
 
