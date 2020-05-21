@@ -92,11 +92,13 @@ void User_reset(User * p_u, int p_products, int p_shoppingTime, Market * p_m){
 }
 
 void pUser_toString(User * p_u, char * p_buff){
-    sprintf(p_buff, "[User %d]: products=%d tot_time_market=%ld tot_time_queue=%ld queue_visited=%d\n", 
+    double marketTime = (double)elapsedTime(p_u->tMarketEntry, p_u->tMarketExit);
+    double queueTime = (double)elapsedTime(p_u->tQueueStart, p_u->tMarketExit);
+    sprintf(p_buff, "[User %d]: products=%d tot_time_market=%.3f tot_time_queue=%.3f queue_visited=%d\n", 
             p_u->id,
             p_u->products, 
-            elapsedTime(p_u->tMarketEntry, p_u->tMarketExit),
-            elapsedTime(p_u->tQueueStart, p_u->tMarketExit),
+            (double)(marketTime > 0 ? marketTime/1000:0),
+            (double)(queueTime > 0 ? queueTime/1000:0),
             p_u->queueChanges);
 }
 

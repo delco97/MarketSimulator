@@ -23,6 +23,11 @@ struct CashDesk {
     pthread_mutex_t lock;  /**< lock variable */
     int id; /** desk id */
     int serviceConst; /**< costant service time */
+    int productsProcessed; /**< number of products processed */
+    int usersProcessed; /**< number of users served */
+    int numClosure; /**< number of closure */
+    int totOpenTime; /**< tot open time in ms */
+    float avgSeviceTime; /**< average service time for a user*/
     CashDeskState state;    /**< current cashdesk state */
     SQueue * usersPay; /**< Users waiting for payment. */
     Market * market;  /**< Reference to the market where the director is. */
@@ -42,5 +47,7 @@ SQueue * CashDesk_getUsersPay(CashDesk * p_c);
 Market * CashDesk_getMarket(CashDesk * p_c);
 //Setters
 void CashDesk_addUser(CashDesk * p_c, User * p_u);
+
+void CashDesk_log(CashDesk * p_c);
 
 #endif	/* _TCASHDESK_H */

@@ -16,7 +16,6 @@ extern volatile sig_atomic_t sig_quit;
 struct Director {
     pthread_t thread;   /**< Director thread */
     Market * market;  /**< Reference to the market where the director is. */
-
 };
 
 Director * Director_init(Market * m);

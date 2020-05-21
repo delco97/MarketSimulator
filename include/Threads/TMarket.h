@@ -37,6 +37,7 @@ struct Market {
                     In particular, S2 is the maximum number of users in a single queue. So if there is at least
                     one queue with a number of user in queue equals or greater then S2. {S2>0} */
     long NP; 	/**< Time required to process a single product. {NP>0} */
+    long TD;     /**< Time interval followed by each open cash desk to notify director*/
     FILE * f_log; /**< FILE used for log simulation results*/
     Director * director;  /**< Director of the market */
     SQueue * usersShopping;  /**< Users in shopping area */

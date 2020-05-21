@@ -129,6 +129,7 @@ void Market_FromShoppingToExit(Market * p_m, User * p_u) {
 	User_setQueueStartTime(p_u, cur);
 	User_setStartPaymentTime(p_u, cur);
 	User_setMarketExitTime(p_u, cur);
+	User_setProducts(p_u, 0);
 	if(SQueue_push(p_m->usersExit, p_u) != 1)
 		err_quit("Impossible to move User %d in exit queue.", User_getId(p_u));
 	Broadcast(&p_m->cv_MarketNews);
@@ -254,6 +255,7 @@ Market * Market_init(const char * p_conf, const char * p_log){
 	res = pGetLong(f_conf, "S1", &m->S1) != 1 ? 0:res;
 	res = pGetLong(f_conf, "S2", &m->S2) != 1 ? 0:res;
 	res = pGetLong(f_conf, "NP", &m->NP) != 1 ? 0:res;
+	res = pGetLong(f_conf, "TD", &m->TD) != 1 ? 0:res;
 
 	fclose(f_conf);
 	f_conf = NULL;
@@ -275,6 +277,7 @@ Market * Market_init(const char * p_conf, const char * p_log){
 	res = pCheckContraint(m->S1 > 0, "{S1>0}") != 1 ? 0:res;
 	res = pCheckContraint(m->S2 > 0, "{S2>0}") != 1 ? 0:res;
 	res = pCheckContraint(m->NP > 0, "{NP>0}") != 1 ? 0:res;
+	res = pCheckContraint(m->TD > 0, "{TD>0}") != 1 ? 0:res;
 	
 	if(res != 1) {
 		printf("Some constraint are not satisfied. Edit the configuration file and try again.\n");
@@ -436,7 +439,6 @@ void * Market_main(void * p_arg){
 		err_quit("[Market]: An error occurred during desk thread start. (CashDesk startThread failed)");
 
 	//Create and add C users in shopping area
-	Lock(&m->lock);
 	for(int i = 0; i <m->C;i ++){
 		if((u_aux = User_init(getRandom(0, m->P, &m->seed), getRandom(10, m->T, &m->seed), m)) == NULL)
 			err_quit("[Market]: An error occurred during market startup. (User init failed)");
@@ -444,7 +446,6 @@ void * Market_main(void * p_arg){
 		if(User_startThread(u_aux) != 0)
 			err_quit("[Market]: An error occurred during market startup. (User startThread failed)");		
 	}
-	Unlock(&m->lock);
 	//Wait E users exits
 	while (1) {
 		//Wait a signal or new user in exit queue to proceed
@@ -470,6 +471,9 @@ void * Market_main(void * p_arg){
 					err_quit("An error occurred joining User %d thread.", User_getId(u_aux));
 				User_delete(u_aux);
 			}			
+			//Log all cash desks data
+			for(int i = 0; i < m->K; i++) 
+				CashDesk_log(&m->desks[i]);
 			
 			break;					
 		}

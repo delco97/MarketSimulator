@@ -18,3 +18,5 @@ S1=2
 S2=10
 //Number of ms required to process a product
 NP=2
+//Time interval followed by each open cash desk to notify director
+TD=10
