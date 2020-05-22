@@ -77,7 +77,7 @@ SQueue * Market_getUsersAuth(Market * p_m) {return p_m->usersAuthQueue;}
 CashDesk * Market_getDesks(Market * p_m) {return p_m->desks;}
 
 /**
- * @brief Move user p_u from shopping are to a open cashdesk
+ * @brief Move user p_u from shopping to a open cashdesk.
  * 
  * @param p_m reference to the market in which the action is performed
  * @param p_u user who is moving
@@ -125,7 +125,6 @@ void Market_FromShoppingToExit(Market * p_m, User * p_u) {
 	if( SQueue_remove(p_m->usersShopping, p_u, User_compare) != 1)
 		err_quit("Impossible to find User %d in shopping area.", User_getId(p_u));
 	cur = getCurrentTime();
-	User_setMarketExitTime(p_u, cur);
 	User_setQueueStartTime(p_u, cur);
 	User_setStartPaymentTime(p_u, cur);
 	User_setMarketExitTime(p_u, cur);
@@ -416,6 +415,17 @@ int Market_isEmpty(Market * p_m){
 	return res_fun;
 }
 
+/**
+ * @brief Entry point for the Market thread.
+ * 
+ * Function to use on Market thread creation. This
+ * function handle the Market data structure passed as argument in the following way:
+ *  1. Start Cashdesks and Director threads.
+ * 	2. Create C users and put theme in shopping area
+ *  2. When E users left the market they are inserted again in shoppig area.
+ * @param p_arg argument passed to the Market thread. Market type expected.
+ * @return void* 
+ */
 void * Market_main(void * p_arg){
 	Market * m = (Market *) p_arg;
 	User * u_aux = NULL;
@@ -424,6 +434,7 @@ void * Market_main(void * p_arg){
 	SQueue * newGroup = NULL;
 	CashDesk * desks = Market_getDesks(m);
 	Director * director = Market_getDirector(m);
+	unsigned int * seed = Market_getSeed(m);
 
 	if((newGroup = SQueue_init(-1)) == NULL)
 		err_quit("[Market]: An error occurred during market startup. (newGroup init failed)");
@@ -439,8 +450,8 @@ void * Market_main(void * p_arg){
 		err_quit("[Market]: An error occurred during desk thread start. (CashDesk startThread failed)");
 
 	//Create and add C users in shopping area
-	for(int i = 0; i <m->C;i ++){
-		if((u_aux = User_init(getRandom(0, m->P, &m->seed), getRandom(10, m->T, &m->seed), m)) == NULL)
+	for(int i = 0; i <Market_getC(m);i ++){
+		if((u_aux = User_init(getRandom(0, Market_getP(m), seed), getRandom(10, Market_getT(m), seed), m)) == NULL)
 			err_quit("[Market]: An error occurred during market startup. (User init failed)");
 		SQueue_push(Market_getUsersShopping(m), u_aux);
 		if(User_startThread(u_aux) != 0)
@@ -452,11 +463,12 @@ void * Market_main(void * p_arg){
 		Lock(&m->lock);
 		while (sig_hup != 1 && sig_quit != 1 && SQueue_isEmpty(m->usersExit)==1) 
 			pthread_cond_wait(&m->cv_MarketNews, &m->lock);
-		Unlock(&m->lock);
+		
 		if(sig_hup == 1 || sig_quit == 1) {
+			Unlock(&m->lock);
 			printf("Market is closing...\n");
 			//When SIGHUP or SIQQUIT occurs no new users are allowed inside the market and
-			//And all the users inside are waited.
+			//all the users inside are waited.
 			//Wait all threads
 			printf("Wait director termination...\n");
 			if(Director_joinThread(m->director)!=0) err_quit("An error occurred during director thread join.");
@@ -464,14 +476,14 @@ void * Market_main(void * p_arg){
 			for(int i = 0;i < m->K;i++) 
 				if(CashDesk_joinThread(&m->desks[i])!=0) err_quit("An error occurred during cash desk thread join.");
 			//Remove all users from exit queue
-			while(SQueue_pop(Market_getUsersExit(m), &data)==1) {		
+			while(SQueue_pop(m->usersExit, &data)==1) {		
 				u_aux = (User *) data;
 				User_log(u_aux);	
 				if(User_joinThread(u_aux) != 0)
 					err_quit("An error occurred joining User %d thread.", User_getId(u_aux));
 				User_delete(u_aux);
 			}			
-			//Log all cash desks data
+			//Log all cashdesks data
 			for(int i = 0; i < m->K; i++) 
 				CashDesk_log(&m->desks[i]);
 			
@@ -489,7 +501,6 @@ void * Market_main(void * p_arg){
 			User_reset(u_aux, getRandom(0, Market_getP(m), Market_getSeed(m)), getRandom(10, Market_getT(m), Market_getSeed(m)), m);
 			SQueue_push(newGroup, u_aux);
 			if(exit == Market_getE(m)) {//E exits
-				Lock(&m->lock);
 				//Move all users in newGroup into shopping area
 				while(SQueue_pop(newGroup, &data) != -2) {
 					u_aux = (User *) data;
@@ -498,9 +509,9 @@ void * Market_main(void * p_arg){
 						err_quit("[Market]: An error occurred during market startup. (User startThread failed)");
 				}
 				exit = 0;
-				Unlock(&m->lock);
 			}
 		}
+		Unlock(&m->lock);
 	}
 
 	SQueue_deleteQueue(newGroup, pDeallocUser);
