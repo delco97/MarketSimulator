@@ -176,9 +176,9 @@ void Market_moveToExit(Market * p_m, User * p_u){
  * @param p_data string to write into file
  */
 void Market_log(Market * p_m, char * p_data) {
-	Lock(&p_m->lock);
+	Lock(&p_m->lock_Logfile);
 	fprintf(p_m->f_log, "%s\n", p_data);
-	Unlock(&p_m->lock);
+	Unlock(&p_m->lock_Logfile);
 }
 
 
@@ -313,7 +313,8 @@ Market * Market_init(const char * p_conf, const char * p_log){
 
 	//Init lock system
 	if (pthread_mutex_init(&(m->lock), NULL) != 0 ||
-		pthread_cond_init(&m->cv_MarketNews, NULL) != 0) {
+		pthread_cond_init(&m->cv_MarketNews, NULL) != 0 ||
+		pthread_mutex_init(&m->lock_Logfile, NULL) != 0) {
 		err_msg("An error occurred during locking system initialization. Impossible to setup the market.");
 		goto err;
 	}
@@ -337,6 +338,7 @@ err:
 		if(isLockInit){
 			pthread_mutex_destroy(&m->lock);
 			pthread_cond_destroy(&m->cv_MarketNews);
+			pthread_mutex_destroy(&m->lock_Logfile);
 		}
 		free(m);
 	}
@@ -385,6 +387,7 @@ int Market_delete(Market * p_m) {
 	free(p_m->desks);
 	pthread_mutex_destroy(&p_m->lock);
 	pthread_cond_destroy(&p_m->cv_MarketNews);
+	pthread_mutex_destroy(&m->lock_Logfile);
     free(p_m);
     return 1;
 }
