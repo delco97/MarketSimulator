@@ -8,6 +8,7 @@
 #include <TUser.h>
 #include <utilities.h>
 #include <Config.h>
+#include <stdlib.h>
 
 #define MAX_DESK_STR 2048
 
@@ -24,42 +25,55 @@ void CashDesk_Unlock(CashDesk * p_c) {Unlock(&p_c->lock);}
  * @brief Create a new CashDesk object.
  * 
  * @param p_m Market in which the CashDesk operate
- * @param p_c Where the new CashDesk will be placed
  * @param p_id id number
  * @param p_serviceConst service costant time for each users served
  * @param p_state starting state
  * @return int: result codes
  * 1: Good init
  */
-int CashDesk_init(Market * p_m, CashDesk * p_c, int p_id, int p_serviceConst, CashDeskState p_state) {
-    CashDesk aux;
+CashDesk * CashDesk_init(Market * p_m, int p_id, int p_serviceConst, CashDeskState p_state) {
+    CashDesk * aux = NULL;
     int isLockInit = 0;
 
-    aux.id = p_id;
-    aux.usersPay = NULL;
-    aux.serviceConst = p_serviceConst;
-    aux.state = p_state;
-    aux.market = p_m;
-    aux.productsProcessed = 0;
-    aux.usersProcessed = 0;
-    aux.numClosure = 0;
-    aux.totOpenTime = 0;
-    aux.avgSeviceTime = 0;
+    if((aux = malloc(sizeof(CashDesk))) == NULL) {
+		err_msg("An error occurred during cash desk creation. ");
+		goto err;
+	}
 
-    if((aux.usersPay = SQueue_init(-1)) == NULL) goto err;
+    aux->id = p_id;
+    aux->usersPay = NULL;
+    aux->serviceConst = p_serviceConst;
+    aux->state = p_state;
+    aux->market = p_m;
+    aux->productsProcessed = 0;
+    aux->usersProcessed = 0;
+    aux->numClosure = 0;
+    aux->totOpenTime = 0;
+    aux->avgSeviceTime = 0;
+
+    if((aux->usersPay = SQueue_init(-1)) == NULL) {
+        err_msg("An error occurred during creation of queue. Impossible to setup CashDesk.");
+        goto err;
+    }
 	//Init lock system
-	if (pthread_mutex_init(&(aux.lock), NULL) != 0) {
+	if (pthread_mutex_init(&(aux->lock), NULL) != 0 ||
+        pthread_cond_init(&aux->cv_DeskNews, NULL) != 0) {
 		err_msg("An error occurred during locking system initialization. Impossible to setup CashDesk.");
 		goto err;
 	}
 	isLockInit = 1;    
 
-    *p_c = aux;
-    return 1;
+    return aux;
 err:
-    if(aux.usersPay != NULL) SQueue_deleteQueue(aux.usersPay, NULL);
-    if(isLockInit) pthread_mutex_destroy(&aux.lock);
-    return -1;
+    if(aux != NULL) {
+        if(aux->usersPay != NULL) SQueue_deleteQueue(aux->usersPay, NULL);
+        if(isLockInit) {
+            pthread_mutex_destroy(&aux->lock);
+            pthread_cond_destroy(&aux->cv_DeskNews);
+        }
+        free(aux);
+    }
+    return NULL;
 }
 
 /**
@@ -77,6 +91,8 @@ int CashDesk_delete(CashDesk * p_c){
     if(p_c == NULL) return -1;
     SQueue_deleteQueue(p_c->usersPay, pDeallocUser);
     pthread_mutex_destroy(&p_c->lock);
+    pthread_cond_destroy(&p_c->cv_DeskNews);
+    free(p_c);
     return 1;
 }
 
@@ -117,7 +133,7 @@ void CashDesk_addUser(CashDesk * p_c, User * p_u) {
     CashDesk_Lock(p_c);
     if(SQueue_push(p_c->usersPay, p_u) != 1)
         err_quit("Impossible to add user to queue of cash desk %d", p_c->id);
-    Signal(&p_c->market->cv_MarketNews);
+    Broadcast(&p_c->market->cv_MarketNews);
     CashDesk_Unlock(p_c);
 }
 
@@ -167,8 +183,8 @@ void * CashDesk_main(void * p_arg){
 		Lock(&m->lock);
 		while ( sig_hup != 1 && sig_quit != 1 && SQueue_isEmpty(c->usersPay)==1 && 
                 (currentState = CashDesk_getSate(c)) == lastState) 
-			pthread_cond_wait(&m->cv_MarketNews, &m->lock);
-        Unlock(&m->lock);
+			pthread_cond_wait(&c->cv_DeskNews, &m->lock);
+        
         if(currentState != lastState) {//Desk state change
             lastState = currentState;
             printf("[CashDesk %d]:  now is %s.\n", CashDesk_getId(c), currentState==DESK_OPEN ? "OPEN":"CLOSE");
@@ -181,6 +197,7 @@ void * CashDesk_main(void * p_arg){
         }
        
 		if(sig_hup == 1 || sig_quit == 1) {
+             Unlock(&m->lock);
             //Empties the user desk queue and wait until no other users are in the market
             while (Market_isEmpty(m)!=1) {
                 if(SQueue_pop(c->usersPay, &data) == 1) {
@@ -202,16 +219,18 @@ void * CashDesk_main(void * p_arg){
         }
         //Market is not closing
         if(SQueue_pop(c->usersPay, &data) == 1 && c->state == DESK_OPEN){
+            Unlock(&m->lock);
             servedUser = (User *)data;
             User_setStartPaymentTime(servedUser, getCurrentTime());
             //printf("[CashDesk %d]: started to serve user %d.\n", CashDesk_getId(c), User_getId(servedUser));
             if(waitMs(c->serviceConst + User_getProducts(servedUser) * Market_getNP(m)) == -1)
                 err_sys("[User %d]: an error occurred during waiting for shopping time.\n", User_getId(servedUser));
-            //printf("[CashDesk %d]: user served %d.\n", CashDesk_getId(c), User_getId(servedUser));
+            printf("[CashDesk %d]: user %d served.\n", CashDesk_getId(c), User_getId(servedUser));
             c->usersProcessed++;
             c->productsProcessed+=User_getProducts(servedUser);            
             Market_moveToExit(m, servedUser);
         }
+        Unlock(&m->lock);
     }
     
 	printf("[CashDesk %d]: end of thread.\n", CashDesk_getId(c));

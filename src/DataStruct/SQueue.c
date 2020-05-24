@@ -459,6 +459,21 @@ int SQueue_removePos(SQueue * p_q, int p_pos, void ** p_removed) {
     return res_fun;
 }
 
+/**
+ * @brief Apply function p_funMap over data contained in each node.
+ * 
+ * @param p_q Requirements: p_q != NULL and must refer to a SQueue object created with #SQueue_init. Target SQueue.
+ * @param p_funMap function to applay
+ */
+void SQueue_map(SQueue * p_q, funMap p_funMap) {
+    pSQueue_Lock(p_q);
+    Node * aux = p_q->h;
+    while(aux != NULL) {
+        p_funMap(aux->data);
+        aux = aux->next;
+    }
+    pSQueue_Unlock(p_q);  
+}
 
 
 

@@ -13,6 +13,7 @@
 #include <pthread.h>
 
 typedef	void (*funDealloc)(void *); /**< function to dealloc data inside nodes */
+typedef	void (*funMap)(void *); /**< function to applay to data contained in each node of the list */
 typedef	int (*funCmp)(void *, void *); /**< function to compare data inside nodes */
 typedef	void (*funPrint)(char *buf, size_t s, void * data); /**< function to print data inside nodes */
 
@@ -51,5 +52,6 @@ int SQueue_dim(SQueue * p_q);
 int SQueue_find(SQueue * p_q, void * p_target, funCmp p_funCmp);
 int SQueue_remove(SQueue * p_q, void * p_target, funCmp p_funCmp);
 int SQueue_removePos(SQueue * p_q, int p_pos, void ** p_removed);
+void SQueue_map(SQueue * p_q, funMap p_funMap);
 
 #endif /* SQueue_h */

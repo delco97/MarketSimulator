@@ -26,7 +26,7 @@ struct Market {
     pthread_t thread;   /**< Market  thread */
     pthread_mutex_t lock;  /**< lock variable */
     pthread_mutex_t lock_Logfile;  /**< lock for log file */
-    pthread_cond_t cv_MarketNews; /**< used to notify updates inside the market to threads */
+    pthread_cond_t cv_MarketNews; /**< used to notify updates to Market thread */
     unsigned int seed;  /**< seed used by the market thread for generating random number */
     long K; 	/**< Maximum number of open cashdesk. {K>0} */
     long KS; 	/**< Number of open cashdesks at opening. {0<KS<=K} */
@@ -48,7 +48,7 @@ struct Market {
     SQueue * usersShopping;  /**< Users in shopping area */
     SQueue * usersExit;  /**< Users who have left the market */
     SQueue * usersAuthQueue; /**< Users waiting for director authorization. */
-    CashDesk * desks; /**< Array of cashdesk in the market */    
+    CashDesk ** desks; /**< Array of cashdesk in the market */    
 };
 
 Market * Market_init(const char * p_conf, const char * p_log);
@@ -75,7 +75,7 @@ Director * Market_getDirector(Market * p_m);
 SQueue * Market_getUsersShopping(Market * p_m);
 SQueue * Market_getUsersExit(Market * p_m);
 SQueue * Market_getUsersAuth(Market * p_m);
-CashDesk * Market_getDesks(Market * p_m);
+CashDesk ** Market_getDesks(Market * p_m);
 int Market_isEmpty(Market * p_m);
 
 void Market_FromShoppingToPay(Market * p_m, User * p_u);

@@ -23,6 +23,19 @@ typedef struct _input_handler_par_t {
 	sigset_t * set;
 } input_handler_par_t;
 
+static void SignalUser(void * p_arg){
+	User * u = (User *) p_arg;
+	Signal(&u->cv_UserNews);
+}
+
+static void signalAll(Market * m) {
+	Signal(&m->cv_MarketNews);
+	Signal(&m->director->cv_DirectorNews);
+	for(int i=0;i<m->K;i++) Signal(&m->desks[i]->cv_DeskNews);
+	SQueue_map(m->usersShopping, SignalUser);
+	Signal(&m->director->cv_DirectorNews);
+}
+
 static void * sigHandler(void * p_arg) {
 	sigset_t * set = ((input_handler_par_t *) p_arg)->set;
 	Market * m = ((input_handler_par_t *) p_arg)->m;
@@ -35,20 +48,20 @@ static void * sigHandler(void * p_arg) {
 				printf("Received signal SIGQUIT.\n");
 				Lock(&m->lock);
 				sig_quit = 1;
-				Broadcast(&m->cv_MarketNews);
 				Unlock(&m->lock);
+				signalAll(m);
 				return (void *) NULL;			
 				break;
 			case SIGHUP:
 				printf("Received signal SIGHUP.\n");
 				Lock(&m->lock);
 				sig_hup = 1;
-				Broadcast(&m->cv_MarketNews);
 				Unlock(&m->lock);
+				signalAll(m);
 				return (void *) NULL;
 				break;       
 			default:
-				err_msg("Received unknown signal: %d!\n", sig);
+				//err_msg("Received unknown signal: %d!\n", sig);
 				break;
         }
     }	

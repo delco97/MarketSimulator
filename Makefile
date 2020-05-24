@@ -91,5 +91,6 @@ test:
 	(valgrind --leak-check=full ./bin/main $(CONF)/config_test.txt $(LOG)/log_test.txt & echo $$! > main.PID) &
 	sleep 25s; \
 	kill -s HUP $$(cat main.PID); \
+	tail --pid=$$(cat main.PID) -f /dev/null; \
 	./analisi.sh $$(cat main.PID); \
 

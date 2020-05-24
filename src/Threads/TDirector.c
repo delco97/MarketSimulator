@@ -24,7 +24,14 @@ Director * Director_init(Market * p_m) {
     if( (aux = malloc(sizeof(Director))) == NULL )
 		goto err;
 	
-	aux->market = p_m;
+    aux->market = p_m;
+
+	if (pthread_cond_init(&aux->cv_DirectorNews, NULL) != 0) {
+		err_msg("An error occurred during locking system initialization. Impossible to setup the director.");
+        goto err;
+	}
+
+	
     return aux;
 err:
     if(aux != NULL) free(aux);
@@ -65,6 +72,7 @@ int Director_joinThread(Director * p_d) {
  */
 int Director_delete(Director * p_d) {
 	if(p_d == NULL) return -1; 
+    pthread_cond_destroy(&p_d->cv_DirectorNews);
 	free(p_d);
 	return 1;
 }
@@ -80,6 +88,7 @@ Market * Director_getMarket(Director * p_d) {return p_d->market;}
  */
 void * Director_handleAuth(void * p_arg) {
     Market * m = (Market *) p_arg;
+    Director * d = Market_getDirector(m);
     SQueue * auth = Market_getUsersAuth(m);
     void * data = NULL;
     User * user = NULL;
@@ -87,9 +96,10 @@ void * Director_handleAuth(void * p_arg) {
        	//Wait a signal or new user in auth queue to proceed
 		Lock(&m->lock);
 		while (sig_hup != 1 && sig_quit != 1 && SQueue_isEmpty(auth)==1) 
-			pthread_cond_wait(&m->cv_MarketNews, &m->lock);
-		Unlock(&m->lock);
+			pthread_cond_wait(&d->cv_DirectorNews, &m->lock);
+		
 		if(sig_hup == 1 || sig_quit == 1) {        
+            Unlock(&m->lock);
             //Empties the user auth queue and wait until no other users are in the market
             while (Market_isEmpty(m)!=1) {
                 if(SQueue_pop(auth, &data) == 1) {
@@ -103,9 +113,11 @@ void * Director_handleAuth(void * p_arg) {
         //Market is not closing
         if(SQueue_pop(auth, &data) == 1){
             user = (User *) data;
+            printf("[Director]: user %d is authorized for exit.\n", User_getId(user));
             //Move user to exit
             Market_moveToExit(m, user);
         }
+        Unlock(&m->lock);
     }
 
     return (void *) NULL;

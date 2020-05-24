@@ -74,7 +74,7 @@ Director * Market_getDirector(Market * p_m) {return p_m->director;}
 SQueue * Market_getUsersShopping(Market * p_m) {return p_m->usersShopping;}
 SQueue * Market_getUsersExit(Market * p_m) {return p_m->usersExit;}
 SQueue * Market_getUsersAuth(Market * p_m) {return p_m->usersAuthQueue;}
-CashDesk * Market_getDesks(Market * p_m) {return p_m->desks;}
+CashDesk ** Market_getDesks(Market * p_m) {return p_m->desks;}
 
 /**
  * @brief Move user p_u from shopping to a open cashdesk.
@@ -83,7 +83,7 @@ CashDesk * Market_getDesks(Market * p_m) {return p_m->desks;}
  * @param p_u user who is moving
  */
 void Market_FromShoppingToPay(Market * p_m, User * p_u) {
-	Lock(&p_m->lock);
+	//Lock(&p_m->lock);
 	//Remove user from shopping
 	if( SQueue_remove(p_m->usersShopping, p_u, User_compare) != 1)
 		err_quit("Impossible to find User %d in shopping area.", User_getId(p_u));
@@ -96,8 +96,8 @@ void Market_FromShoppingToPay(Market * p_m, User * p_u) {
 	if( (desksOpen = SQueue_init(-1)) == NULL) 
 		err_quit("Malloc error.");
 	for(int i=0;i < p_m->K; i++) {//Get id of all desks currently open
-		if(CashDesk_getSate(&p_m->desks[i]) == DESK_OPEN){
-			if(SQueue_push(desksOpen, &p_m->desks[i]) != 1)
+		if(CashDesk_getSate(p_m->desks[i]) == DESK_OPEN){
+			if(SQueue_push(desksOpen, p_m->desks[i]) != 1)
 				err_quit("An error occurred during open desk search. (1)");
 		}
 	}
@@ -106,10 +106,9 @@ void Market_FromShoppingToPay(Market * p_m, User * p_u) {
 		err_quit("An error occurred during open desk search. (2)");
 	SQueue_deleteQueue(desksOpen, NULL);
 	deskChoosen = (CashDesk *) aux;
-
 	CashDesk_addUser(deskChoosen, p_u);
-	Broadcast(&p_m->cv_MarketNews);
-	Unlock(&p_m->lock);
+	Signal(&deskChoosen->cv_DeskNews);
+	//Unlock(&p_m->lock);
 }
 
 /**
@@ -120,7 +119,7 @@ void Market_FromShoppingToPay(Market * p_m, User * p_u) {
  */
 void Market_FromShoppingToExit(Market * p_m, User * p_u) {
 	struct timespec cur;
-	Lock(&p_m->lock);
+	//Lock(&p_m->lock);
 	//Remove user from shopping
 	if( SQueue_remove(p_m->usersShopping, p_u, User_compare) != 1)
 		err_quit("Impossible to find User %d in shopping area.", User_getId(p_u));
@@ -131,8 +130,8 @@ void Market_FromShoppingToExit(Market * p_m, User * p_u) {
 	User_setProducts(p_u, 0);
 	if(SQueue_push(p_m->usersExit, p_u) != 1)
 		err_quit("Impossible to move User %d in exit queue.", User_getId(p_u));
-	Broadcast(&p_m->cv_MarketNews);
-	Unlock(&p_m->lock);
+	Signal(&p_m->cv_MarketNews);
+	//Unlock(&p_m->lock);
 }
 
 /**
@@ -142,7 +141,7 @@ void Market_FromShoppingToExit(Market * p_m, User * p_u) {
  * @param p_u user who is moving
  */
 void Market_FromShoppingToAuth(Market * p_m, User * p_u) {
-	Lock(&p_m->lock);
+	//Lock(&p_m->lock);
 	//Remove user from shopping
 	if( SQueue_remove(p_m->usersShopping, p_u, User_compare) != 1)
 		err_quit("Impossible to find User %d in shopping area.", User_getId(p_u));
@@ -150,8 +149,8 @@ void Market_FromShoppingToAuth(Market * p_m, User * p_u) {
 	User_changeQueue(p_u);
 	if(SQueue_push(p_m->usersAuthQueue, p_u) != 1)
 		err_quit("Impossible to move User %d in authorization queue.", User_getId(p_u));
-	Broadcast(&p_m->cv_MarketNews);
-	Unlock(&p_m->lock);
+	Signal(&p_m->director->cv_DirectorNews);
+	//Unlock(&p_m->lock);
 }
 
 /**
@@ -161,12 +160,12 @@ void Market_FromShoppingToAuth(Market * p_m, User * p_u) {
  * @param p_u user to move
  */
 void Market_moveToExit(Market * p_m, User * p_u){
-	Lock(&p_m->lock);
+	//Lock(&p_m->lock);
 	User_setMarketExitTime(p_u, getCurrentTime());
 	if(SQueue_push(p_m->usersExit, p_u) != 1)
 		err_quit("Impossible to move User %d in exit queue.", User_getId(p_u));
-	Broadcast(&p_m->cv_MarketNews);
-	Unlock(&p_m->lock);
+	Signal(&p_m->cv_MarketNews);
+	//Unlock(&p_m->lock);
 }
 
 /**
@@ -300,12 +299,12 @@ Market * Market_init(const char * p_conf, const char * p_log){
 	}
 
 	//Init cash desk array
-	if( (m->desks = malloc(m->K * sizeof(CashDesk))) == NULL){
+	if( (m->desks = malloc(m->K * sizeof(CashDesk *))) == NULL){
 		err_ret("An error occurred during memory allocation. (cashdesks array malloc)");
 		goto err;
 	}
 	for(int i = 0;i < m->K; i++){
-		if( CashDesk_init(m, &m->desks[i], i, getRandom(20, 80, &m->seed), (i<=m->K/2) ? DESK_OPEN:DESK_CLOSE) != 1 ) {
+		if( (m->desks[i] = CashDesk_init(m, i, getRandom(20, 80, &m->seed), (i<=m->K/2) ? DESK_OPEN:DESK_CLOSE)) == NULL ) {
 			err_msg("An error occurred during cashdesk creation. Impossible to setup the market.");
 			goto err;
 		}
@@ -332,7 +331,7 @@ err:
 		if(m->usersExit != NULL) SQueue_deleteQueue(m->usersExit, NULL);
 		if(m->usersAuthQueue != NULL) SQueue_deleteQueue(m->usersAuthQueue, NULL);
 		if(m->desks != NULL) {
-			for(int i = 0;i < m->K; i++) CashDesk_delete(&m->desks[i]);
+			for(int i = 0;i < m->K; i++) CashDesk_delete(m->desks[i]);
 			free(m->desks);
 		}
 		if(isLockInit){
@@ -383,11 +382,11 @@ int Market_delete(Market * p_m) {
 	SQueue_deleteQueue(p_m->usersShopping, pDeallocUser);
 	SQueue_deleteQueue(p_m->usersExit, pDeallocUser);
 	SQueue_deleteQueue(p_m->usersAuthQueue, NULL);
-	for(int i = 0;i < p_m->K; i++) CashDesk_delete(&p_m->desks[i]);
+	for(int i = 0;i < p_m->K; i++) CashDesk_delete(p_m->desks[i]);
 	free(p_m->desks);
 	pthread_mutex_destroy(&p_m->lock);
 	pthread_cond_destroy(&p_m->cv_MarketNews);
-	pthread_mutex_destroy(&m->lock_Logfile);
+	pthread_mutex_destroy(&p_m->lock_Logfile);
     free(p_m);
     return 1;
 }
@@ -405,16 +404,16 @@ void Market_Unlock(Market * p_m) {Unlock(&p_m->lock);}
  */
 int Market_isEmpty(Market * p_m){
 	int res_fun = 1;
-	Lock(&p_m->lock);
+	//Lock(&p_m->lock);
 	res_fun = res_fun!=1 || SQueue_isEmpty(p_m->usersShopping)!=1 ? 0:res_fun;
 	res_fun = res_fun!=1 || SQueue_isEmpty(p_m->usersAuthQueue)!=1 ? 0:res_fun;
 	//res_fun = res_fun!=1 || SQueue_isEmpty(p_m->usersExit)!=1 ? 0:res_fun;
 	//Check if all cash desk are empty
 	for(int i = 0;i < p_m->K;i++) {
 		if(res_fun != 1) break;
-		res_fun = res_fun!=1 || SQueue_isEmpty(p_m->desks[i].usersPay)!=1 ? 0:res_fun;
+		res_fun = res_fun!=1 || SQueue_isEmpty(p_m->desks[i]->usersPay)!=1 ? 0:res_fun;
 	}
-	Unlock(&p_m->lock);
+	//Unlock(&p_m->lock);
 	return res_fun;
 }
 
@@ -435,7 +434,7 @@ void * Market_main(void * p_arg){
 	int exit = 0; //count users exit until E is reached
 	void * data;
 	SQueue * newGroup = NULL;
-	CashDesk * desks = Market_getDesks(m);
+	CashDesk ** desks = Market_getDesks(m);
 	Director * director = Market_getDirector(m);
 	unsigned int * seed = Market_getSeed(m);
 
@@ -444,7 +443,7 @@ void * Market_main(void * p_arg){
 	
 	//Start CashDesks Threads
 	for(int i = 0; i < Market_getK(m);i ++){
-		if(CashDesk_startThread(&desks[i]) != 0)
+		if(CashDesk_startThread(desks[i]) != 0)
 			err_quit("[Market]: An error occurred during desk thread start. (CashDesk startThread failed)");
 	}
 
@@ -453,6 +452,7 @@ void * Market_main(void * p_arg){
 		err_quit("[Market]: An error occurred during desk thread start. (CashDesk startThread failed)");
 
 	//Create and add C users in shopping area
+	//Lock(&m->lock);
 	for(int i = 0; i <Market_getC(m);i ++){
 		if((u_aux = User_init(getRandom(0, Market_getP(m), seed), getRandom(10, Market_getT(m), seed), m)) == NULL)
 			err_quit("[Market]: An error occurred during market startup. (User init failed)");
@@ -460,6 +460,7 @@ void * Market_main(void * p_arg){
 		if(User_startThread(u_aux) != 0)
 			err_quit("[Market]: An error occurred during market startup. (User startThread failed)");		
 	}
+	//Unlock(&m->lock);
 	//Wait E users exits
 	while (1) {
 		//Wait a signal or new user in exit queue to proceed
@@ -477,18 +478,22 @@ void * Market_main(void * p_arg){
 			if(Director_joinThread(m->director)!=0) err_quit("An error occurred during director thread join.");
 			printf("Cashdesks termination...\n");
 			for(int i = 0;i < m->K;i++) 
-				if(CashDesk_joinThread(&m->desks[i])!=0) err_quit("An error occurred during cash desk thread join.");
+				if(CashDesk_joinThread(m->desks[i])!=0) err_quit("An error occurred during cash desk thread join.");
 			//Remove all users from exit queue
+			printf("Removing users from exit queue..\n");
 			while(SQueue_pop(m->usersExit, &data)==1) {		
 				u_aux = (User *) data;
-				User_log(u_aux);	
+				User_log(u_aux);
+				User_setState(u_aux, USR_QUIT);	
+				Signal(&u_aux->cv_UserNews);
 				if(User_joinThread(u_aux) != 0)
 					err_quit("An error occurred joining User %d thread.", User_getId(u_aux));
 				User_delete(u_aux);
 			}			
 			//Log all cashdesks data
+			printf("Log all cash desks statistics..\n");
 			for(int i = 0; i < m->K; i++) 
-				CashDesk_log(&m->desks[i]);
+				CashDesk_log(m->desks[i]);
 			
 			break;					
 		}
@@ -497,9 +502,7 @@ void * Market_main(void * p_arg){
 			u_aux = (User *) data;		
 			exit++;
 			//Log user info.
-			User_log(u_aux);
-			if(User_joinThread(u_aux) != 0)
-				err_quit("An error occurred joining User %d thread.", User_getId(u_aux));			
+			User_log(u_aux);	
 			//Reset user structure for next reuse
 			User_reset(u_aux, getRandom(0, Market_getP(m), Market_getSeed(m)), getRandom(10, Market_getT(m), Market_getSeed(m)), m);
 			SQueue_push(newGroup, u_aux);
@@ -507,9 +510,9 @@ void * Market_main(void * p_arg){
 				//Move all users in newGroup into shopping area
 				while(SQueue_pop(newGroup, &data) != -2) {
 					u_aux = (User *) data;
+					User_setState(u_aux, USR_READY);
 					SQueue_push(Market_getUsersShopping(m), u_aux);
-					if(User_startThread(u_aux) != 0)
-						err_quit("[Market]: An error occurred during market startup. (User startThread failed)");
+					Signal(&u_aux->cv_UserNews);
 				}
 				exit = 0;
 			}

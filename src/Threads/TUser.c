@@ -50,12 +50,14 @@ User * User_init(int p_products, int p_shoppingTime, Market * p_m){
     
     if( (aux = malloc(sizeof(User))) != NULL ){
         aux->id = pUser_getNextId();
+        aux->state = USR_READY;
         aux->products = p_products;
         aux->queueChanges = 0;
         aux->shoppingTime = p_shoppingTime;
         aux->market = p_m;
         //Locking system setup
-        if (pthread_mutex_init(&(aux->lock), NULL) != 0)  goto err;
+        if (pthread_mutex_init(&(aux->lock), NULL) != 0 ||
+            pthread_cond_init(&aux->cv_UserNews, NULL) != 0)  goto err;
     }
     return aux;
 err:
@@ -77,6 +79,7 @@ err:
 int User_delete(User * p_u) {
     if(p_u == NULL) return -1; 
     pthread_mutex_destroy(&p_u->lock);
+    pthread_cond_destroy(&p_u->cv_UserNews);
     free(p_u);
     return 1;
 }
@@ -157,6 +160,15 @@ int User_joinThread(User * p_u){
 int User_getId(User * p_u){ int x; pUser_Lock(p_u); x = p_u->id; pUser_Unlock(p_u); return x; }
 
 /**
+ * @brief Get current user state
+ * 
+ * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
+ * @return UserState 
+ */
+UserState User_getState(User * p_u) { UserState x; pUser_Lock(p_u); x = p_u->state; pUser_Unlock(p_u); return x; }
+
+
+/**
  * @brief Get the number of products in cart.
  * 
  * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
@@ -216,6 +228,14 @@ struct timespec User_getStartPaymentTime(User * p_u)
  * @return int 
  */
 int User_getShoppingTime(User * p_u){ int x; pUser_Lock(p_u); x = p_u->shoppingTime; pUser_Unlock(p_u); return x; }
+
+/**
+ * @brief Set user state
+ * 
+ * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
+ */
+void User_setState(User * p_u, UserState p_s) {pUser_Lock(p_u); p_u->state = p_s; pUser_Unlock(p_u);}
+
 
 /**
  * @brief Set time of when p_u entered the market.
@@ -296,42 +316,48 @@ void User_changeQueue(User * p_u){ pUser_Lock(p_u); p_u->queueChanges++; pUser_U
  * @param p_arg argument passed to the User thread. User type expected.
  * @return void* 
  */
-void * User_main(void * p_arg){
+void * User_main(void * p_arg) {
     User * u = (User *)p_arg;
+    Market * m = User_getMarket(u);
+    int x = 0;
+    while (1) {
+        Lock(&m->lock);
+        //Wait to beign ready to start next simulation
+        while (User_getState(u) == USR_NOT_READY)
+            x = pthread_cond_wait(&u->cv_UserNews, &m->lock);
+        
+        if(User_getState(u) == USR_QUIT) break;
+        //USR_READY => Is in shopping area ready to start simulation
+        User_setMarketEntryTime(u, getCurrentTime());
+        if(sig_quit) {
+            Market_FromShoppingToExit(m, u);
+            break;
+        }
 
-    User_setMarketEntryTime(u, getCurrentTime());
-    //printf("[User %d]: main thread start!\n", User_getId(u));
-    //Shopping time
-    //printf("[User %d]: start shopping!\n", User_getId(u));
-    if(sig_quit == 1) {
-        Market_FromShoppingToExit(User_getMarket(u), u);
-        return (void *)NULL;
-    }
-    if(waitMs(User_getShoppingTime(u)) == -1)
-        err_sys("[User %d]: an error occurred during waiting for shopping time.\n", User_getId(u));
-    if(sig_quit == 1) {
-        Market_FromShoppingToExit(User_getMarket(u), u);
-        return (void *)NULL;
-    }
-    //printf("[User %d]: end shopping!\n", User_getId(u));
-    //End of shopping, move to one cashdesk or to authorization queue
-    if(User_getProducts(u) > 0){//Has something in the cart
-        //printf("[User %d]: move to a open cash desk for payment.\n", User_getId(u));
+        //Shopping time
+        printf("[User %d]: start shopping!\n", User_getId(u));
+        Unlock(&m->lock);
+        if(waitMs(User_getShoppingTime(u)) == -1)
+            err_sys("[User %d]: an error occurred during waiting for shopping time.\n", User_getId(u));
+        Lock(&m->lock);
         if(sig_quit == 1) {
             Market_FromShoppingToExit(User_getMarket(u), u);
-            return (void *)NULL;
+            break;
         }
-        Market_FromShoppingToPay(User_getMarket(u), u);
-    }else{//Nothing in the cart
-        //printf("[User %d]: move to the authorization queue.\n", User_getId(u));
-        //Move User struct to queue of users waiting director authorization before exit.
-        if(sig_quit == 1) {
-            Market_FromShoppingToExit(User_getMarket(u), u);
-            return (void *)NULL;
+        //printf("[User %d]: end shopping!\n", User_getId(u));
+        //End of shopping, move to one cashdesk or to authorization queue
+        if(User_getProducts(u) > 0){//Has something in the cart
+            printf("[User %d]: move to a open cash desk for payment.\n", User_getId(u));
+            Market_FromShoppingToPay(User_getMarket(u), u);
+        }else{//Nothing in the cart
+            printf("[User %d]: move to the authorization queue.\n", User_getId(u));
+            //Move User struct to queue of users waiting director authorization before exit.
+            Market_FromShoppingToAuth(User_getMarket(u), u);
         }
-        Market_FromShoppingToAuth(User_getMarket(u), u);
+        User_setState(u, USR_NOT_READY);
+        Unlock(&m->lock);
     }
-    
+    Unlock(&m->lock);
     //printf("[User %d]: end of thread.\n", User_getId(u));
     return (void *)NULL;
 }
