@@ -3,9 +3,9 @@ K=1
 //Starting open cash desks
 KS=1
 //Max number of users inside the market
-C=6
+C=50
 //Number of users which must exit before other E user can enter the market
-E=2
+E=1
 //Max ms for shopping
 T=200
 //Max number of products

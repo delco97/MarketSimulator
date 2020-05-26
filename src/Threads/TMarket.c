@@ -267,8 +267,8 @@ Market * Market_init(const char * p_conf, const char * p_log){
 	//Check values constraints
 	res = pCheckContraint(m->K > 0, "{K>0}") != 1 ? 0:res;
 	res = pCheckContraint(m->KS > 0 && m->KS <= m->K, "{0<KS<=K}") != 1 ? 0:res;
-	res = pCheckContraint(m->C > 1, "{C>1}") != 1 ? 0:res;			
-	res = pCheckContraint(m->E > 0 && m->E < m->C, "{0<E<C}") != 1 ? 0:res;
+	res = pCheckContraint(m->C >= 1, "{C>=1}") != 1 ? 0:res;			
+	res = pCheckContraint(m->E > 0 && m->E <= m->C, "{0<E<=C}") != 1 ? 0:res;
 	res = pCheckContraint(m->T > 10, "{T>10}") != 1 ? 0:res;
 	res = pCheckContraint(m->P > 0, "{P>0}") != 1 ? 0:res;
 	res = pCheckContraint(m->S > 0, "{S>0}") != 1 ? 0:res;
@@ -304,7 +304,7 @@ Market * Market_init(const char * p_conf, const char * p_log){
 		goto err;
 	}
 	for(int i = 0;i < m->K; i++){
-		if( (m->desks[i] = CashDesk_init(m, i, getRandom(20, 80, &m->seed), (i<=m->K/2) ? DESK_OPEN:DESK_CLOSE)) == NULL ) {
+		if( (m->desks[i] = CashDesk_init(m, i, getRandom(20, 80, &m->seed), (i<m->KS) ? DESK_OPEN:DESK_CLOSE)) == NULL ) {
 			err_msg("An error occurred during cashdesk creation. Impossible to setup the market.");
 			goto err;
 		}
