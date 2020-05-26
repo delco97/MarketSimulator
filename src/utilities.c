@@ -218,10 +218,7 @@ int getRandom(int p_lower, int p_upper, unsigned int * p_seed) {
 } 
 
 //Locking utilities
-void Lock(pthread_mutex_t * p_lock) {
-	int x = 0;
-	if((x = pthread_mutex_lock(p_lock)) != 0) 
-		err_quit("An error occurred during locking.");}
+void Lock(pthread_mutex_t * p_lock) {if((pthread_mutex_lock(p_lock)) != 0) err_quit("An error occurred during locking.");}
 void Unlock(pthread_mutex_t * p_lock) {if(pthread_mutex_unlock(p_lock) != 0) err_quit("An error occurred during unlocking.");}
 void Wait(pthread_cond_t * p_cond, pthread_mutex_t * p_lock) {if(pthread_cond_wait(p_cond, p_lock) != 0) err_quit("An error occurred during cond wait.");}
 void Signal(pthread_cond_t * p_cond) {if(pthread_cond_signal(p_cond) != 0) err_quit("An error occurred during a condition singal.");}

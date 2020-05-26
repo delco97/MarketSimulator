@@ -322,7 +322,7 @@ void * User_main(void * p_arg) {
     int x = 0;
     while (1) {
         Lock(&m->lock);
-        //Wait to beign ready to start next simulation
+        //Wait to being ready to start next simulation
         while (User_getState(u) == USR_NOT_READY)
             x = pthread_cond_wait(&u->cv_UserNews, &m->lock);
         

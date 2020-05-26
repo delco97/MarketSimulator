@@ -133,7 +133,7 @@ void CashDesk_addUser(CashDesk * p_c, User * p_u) {
     CashDesk_Lock(p_c);
     if(SQueue_push(p_c->usersPay, p_u) != 1)
         err_quit("Impossible to add user to queue of cash desk %d", p_c->id);
-    Broadcast(&p_c->market->cv_MarketNews);
+    Signal(&p_c->market->cv_MarketNews);
     CashDesk_Unlock(p_c);
 }
 

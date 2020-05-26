@@ -9,4 +9,4 @@ How to compile the program:
 
 How to run:
 1) Place a terminal session in the root directory of the project
-2) ./bin/main <config_path> <loh_path> (for example: ./bin/main ./configFiles/config_test.txt ./logFiles/log_test.txt)
+2) ./bin/main <config_path> <log_path> (for example: ./bin/main ./configFiles/config_test.txt ./logFiles/log_test.txt)
