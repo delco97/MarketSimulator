@@ -176,7 +176,7 @@ void * CashDesk_main(void * p_arg){
     currentState = lastState;
     lastOpenTime = getCurrentTime();
     Unlock(&c->lock);
-    printf("[CashDesk %d]: start of thread.\n", CashDesk_getId(c));
+    DEBUG_PRINT("[CashDesk %d]: start of thread.\n", CashDesk_getId(c));
     
     while (1) {
        	//Wait a signal or new user in desk queue to proceed
@@ -187,7 +187,7 @@ void * CashDesk_main(void * p_arg){
         
         if(currentState != lastState) {//Desk state change
             lastState = currentState;
-            printf("[CashDesk %d]:  now is %s.\n", CashDesk_getId(c), currentState==DESK_OPEN ? "OPEN":"CLOSE");
+            DEBUG_PRINT("[CashDesk %d]:  now is %s.\n", CashDesk_getId(c), currentState==DESK_OPEN ? "OPEN":"CLOSE");
             if(currentState == DESK_OPEN){
                 lastOpenTime = getCurrentTime();
             } else{//DESK_CLOSE
@@ -203,14 +203,14 @@ void * CashDesk_main(void * p_arg){
                 if(SQueue_pop(c->usersPay, &data) == 1) {
                     servedUser = (User *)data;
                     User_setStartPaymentTime(servedUser, getCurrentTime());
-                    //printf("[CashDesk %d]: started to serve user %d.\n", CashDesk_getId(c), User_getId(servedUser));
+                    DEBUG_PRINT("[CashDesk %d]: started to serve user %d.\n", CashDesk_getId(c), User_getId(servedUser));
                     if(sig_hup == 1 && c->state == DESK_OPEN) {//Serve users only if it is a slow closing and cash dek is open
                         c->usersProcessed++;
                         c->avgSeviceTime += c->serviceConst + User_getProducts(servedUser) * Market_getNP(m);
                         if(waitMs(c->serviceConst + User_getProducts(servedUser) * Market_getNP(m)) == -1)
                             err_sys("[User %d]: an error occurred during waiting for shopping time.\n", User_getId(servedUser));
                     }
-                    //printf("[CashDesk %d]: user served %d.\n", CashDesk_getId(c), User_getId(servedUser));
+                    DEBUG_PRINT("[CashDesk %d]: user served %d.\n", CashDesk_getId(c), User_getId(servedUser));
                     Market_moveToExit(m, servedUser);
                 }
             }
@@ -222,10 +222,10 @@ void * CashDesk_main(void * p_arg){
             Unlock(&m->lock);
             servedUser = (User *)data;
             User_setStartPaymentTime(servedUser, getCurrentTime());
-            //printf("[CashDesk %d]: started to serve user %d.\n", CashDesk_getId(c), User_getId(servedUser));
+            DEBUG_PRINT("[CashDesk %d]: started to serve user %d.\n", CashDesk_getId(c), User_getId(servedUser));
             if(waitMs(c->serviceConst + User_getProducts(servedUser) * Market_getNP(m)) == -1)
                 err_sys("[User %d]: an error occurred during waiting for shopping time.\n", User_getId(servedUser));
-            printf("[CashDesk %d]: user %d served.\n", CashDesk_getId(c), User_getId(servedUser));
+            DEBUG_PRINT("[CashDesk %d]: user %d served.\n", CashDesk_getId(c), User_getId(servedUser));
             c->usersProcessed++;
             c->productsProcessed+=User_getProducts(servedUser);            
             Market_moveToExit(m, servedUser);
@@ -233,6 +233,6 @@ void * CashDesk_main(void * p_arg){
         Unlock(&m->lock);
     }
     
-	printf("[CashDesk %d]: end of thread.\n", CashDesk_getId(c));
+	DEBUG_PRINT("[CashDesk %d]: end of thread.\n", CashDesk_getId(c));
     return (void *)NULL;
 }

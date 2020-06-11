@@ -2,7 +2,7 @@
 #	START OF PARAMETERS AREA
 #************************************************************
 CC		:= gcc
-CFLAGS	:= -Wall -Wextra -g -D_POSIX_C_SOURCE=200112L -pthread
+CFLAGS	:= -Wall -Wextra -g -D_POSIX_C_SOURCE=200112L -pthread -D_DEBUG
 LIBRARIES	:=
 
 #Folders

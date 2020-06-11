@@ -113,7 +113,7 @@ void * Director_handleAuth(void * p_arg) {
         //Market is not closing
         if(SQueue_pop(auth, &data) == 1){
             user = (User *) data;
-            printf("[Director]: user %d is authorized for exit.\n", User_getId(user));
+            DEBUG_PRINT("[Director]: user %d is authorized for exit.\n", User_getId(user));
             //Move user to exit
             Market_moveToExit(m, user);
         }
@@ -133,7 +133,7 @@ void * Director_handleAuth(void * p_arg) {
 void * Director_main(void * p_arg){
 	Director * d = (Director *) p_arg;
 	pthread_t thAuthHandler;
-	printf("[Director]: start of thread.\n");
+	DEBUG_PRINT("[Director]: start of thread.\n");
 
     //Create auxiliary thread for managing auth queue
     if(pthread_create(&thAuthHandler, NULL, Director_handleAuth, d->market) !=0)
@@ -144,6 +144,6 @@ void * Director_main(void * p_arg){
     if(pthread_join(thAuthHandler, NULL) !=0)
         err_quit("[Director]: an error occurred during join of authorizations handler thread."); 
 
-	printf("[Director]: end of thread.\n");
+	DEBUG_PRINT("[Director]: end of thread.\n");
     return (void *)NULL;
 }

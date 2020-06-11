@@ -7,8 +7,17 @@
 
 #include <time.h>
 #include <pthread.h>
+#include <stdio.h>
 
 #define	MAXLINE	4096			/* max line length for messages*/
+
+//**Debug messages **
+#ifdef _DEBUG
+	#define DEBUG_PRINT(M, ...) \
+        fprintf(stdout, "[INFO] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#else
+	#define DEBUG_PRINT(M, ...) do {} while (0)
+#endif
 
 //** Log/Error handling functions **
 void	err_msg(const char *, ...);	

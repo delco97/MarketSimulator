@@ -319,12 +319,11 @@ void User_changeQueue(User * p_u){ pUser_Lock(p_u); p_u->queueChanges++; pUser_U
 void * User_main(void * p_arg) {
     User * u = (User *)p_arg;
     Market * m = User_getMarket(u);
-    int x = 0;
     while (1) {
         Lock(&m->lock);
         //Wait to being ready to start next simulation
         while (User_getState(u) == USR_NOT_READY)
-            x = pthread_cond_wait(&u->cv_UserNews, &m->lock);
+            pthread_cond_wait(&u->cv_UserNews, &m->lock);
         
         if(User_getState(u) == USR_QUIT) break;
         //USR_READY => Is in shopping area ready to start simulation
@@ -335,7 +334,7 @@ void * User_main(void * p_arg) {
         }
 
         //Shopping time
-        printf("[User %d]: start shopping!\n", User_getId(u));
+        DEBUG_PRINT("[User %d]: start shopping!\n", User_getId(u));
         Unlock(&m->lock);
         if(waitMs(User_getShoppingTime(u)) == -1)
             err_sys("[User %d]: an error occurred during waiting for shopping time.\n", User_getId(u));
@@ -344,13 +343,13 @@ void * User_main(void * p_arg) {
             Market_FromShoppingToExit(User_getMarket(u), u);
             break;
         }
-        //printf("[User %d]: end shopping!\n", User_getId(u));
+        DEBUG_PRINT("[User %d]: end shopping!\n", User_getId(u));
         //End of shopping, move to one cashdesk or to authorization queue
         if(User_getProducts(u) > 0){//Has something in the cart
-            printf("[User %d]: move to a open cash desk for payment.\n", User_getId(u));
+            DEBUG_PRINT("[User %d]: move to a open cash desk for payment.\n", User_getId(u));
             Market_FromShoppingToPay(User_getMarket(u), u);
         }else{//Nothing in the cart
-            printf("[User %d]: move to the authorization queue.\n", User_getId(u));
+            DEBUG_PRINT("[User %d]: move to the authorization queue.\n", User_getId(u));
             //Move User struct to queue of users waiting director authorization before exit.
             Market_FromShoppingToAuth(User_getMarket(u), u);
         }
@@ -358,6 +357,6 @@ void * User_main(void * p_arg) {
         Unlock(&m->lock);
     }
     Unlock(&m->lock);
-    //printf("[User %d]: end of thread.\n", User_getId(u));
+    DEBUG_PRINT("[User %d]: end of thread.\n", User_getId(u));
     return (void *)NULL;
 }

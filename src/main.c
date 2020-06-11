@@ -82,7 +82,9 @@ int main(int argc, char * argv[]) {
 	pthread_t thSigHandler;
 	input_handler_par_t in;
 	sigset_t set;	
-	printf("PID: %d\n", getpid());
+
+	DEBUG_PRINT("PID: %d\n", getpid());
+
 	if(argc != 3){//Wrong use
 		printf("Wrong use.");
 		useInfo(argv);
