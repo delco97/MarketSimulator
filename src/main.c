@@ -31,7 +31,7 @@ static void SignalUser(void * p_arg){
 static void signalAll(Market * m) {
 	Signal(&m->cv_MarketNews);
 	Signal(&m->director->cv_DirectorNews);
-	for(int i=0;i<m->K;i++) Signal(&m->desks[i]->cv_DeskNews);
+	for(int i=0;i<m->K;i++) Signal(&m->payArea->desks[i]->cv_DeskNews);
 	SQueue_map(m->usersShopping, SignalUser);
 	Signal(&m->director->cv_DirectorNews);
 }

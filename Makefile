@@ -23,7 +23,7 @@ EXE_2	:= $(BIN)/test_squeue
 EXE_3	:= $(BIN)/Test_Config
 EXES	:= $(EXE_1) $(EXE_2) $(EXE_3)
 #List of object files needed by each program
-OBJECTS_1	:= $(OBJ)/main.o $(OBJ)/utilities.o $(OBJ)/Config.o $(OBJ)/DataStruct/SQueue.o $(OBJ)/Threads/TMarket.o $(OBJ)/Threads/TDirector.o $(OBJ)/Threads/TCashDesk.o $(OBJ)/Threads/TUser.o
+OBJECTS_1	:= $(OBJ)/main.o $(OBJ)/utilities.o $(OBJ)/Config.o $(OBJ)/DataStruct/SQueue.o $(OBJ)/Threads/TMarket.o $(OBJ)/Threads/TDirector.o $(OBJ)/Threads/TCashDesk.o $(OBJ)/Threads/TUser.o $(OBJ)/DataStruct/PayArea.o
 OBJECTS_2	:= $(OBJ)/Test/Test_SQueue.o  $(OBJ)/DataStruct/SQueue.o  $(OBJ)/utilities.o
 OBJECTS_3	:= $(OBJ)/Test/Test_Config.o  $(OBJ)/Config.o $(OBJ)/DataStruct/SQueue.o $(OBJ)/utilities.o
 

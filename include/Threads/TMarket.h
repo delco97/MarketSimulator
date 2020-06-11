@@ -12,6 +12,7 @@
 #include <TUser.h>
 #include <Config.h>
 #include <TCashDesk.h>
+#include <PayArea.h>
 
 #define MARKET_NAME_MAX 100
 
@@ -19,6 +20,8 @@ typedef struct Market Market;
 typedef struct Director Director;
 typedef struct User User;
 typedef struct CashDesk CashDesk;
+typedef struct PayArea PayArea;
+
 extern volatile sig_atomic_t sig_hup;
 extern volatile sig_atomic_t sig_quit;
 
@@ -48,7 +51,8 @@ struct Market {
     SQueue * usersShopping;  /**< Users in shopping area */
     SQueue * usersExit;  /**< Users who have left the market */
     SQueue * usersAuthQueue; /**< Users waiting for director authorization. */
-    CashDesk ** desks; /**< Array of cashdesk in the market */    
+    PayArea * payArea; /**< Payment area.*/
+    //CashDesk ** desks; /**< Array of cashdesk in the market */    
 };
 
 Market * Market_init(const char * p_conf, const char * p_log);

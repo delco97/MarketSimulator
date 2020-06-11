@@ -14,7 +14,7 @@
 //**Debug messages **
 #ifdef _DEBUG
 	#define DEBUG_PRINT(M, ...) \
-        fprintf(stdout, "[INFO] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+        fprintf(stdout, "[INFO] (%s:%d) " M, __FILE__, __LINE__, ##__VA_ARGS__)
 #else
 	#define DEBUG_PRINT(M, ...) do {} while (0)
 #endif
