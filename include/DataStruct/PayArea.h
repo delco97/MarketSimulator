@@ -25,6 +25,11 @@ struct PayArea {
 
 PayArea * PayArea_init(Market * p_m, int p_tot, int p_open);
 void PayArea_delete(PayArea * p_a);
+int PayArea_isEmpty(PayArea *p_a);
+void PayArea_Signal(PayArea *p_a);
+void PayArea_startDeskThreads(PayArea *p_a);
+void PayArea_joinDeskThreads(PayArea *p_a);
+
 void PayArea_Lock(PayArea * p_a);
 void PayArea_Unlock(PayArea * p_a);
 

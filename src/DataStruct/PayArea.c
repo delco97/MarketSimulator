@@ -49,7 +49,7 @@ PayArea * PayArea_init(Market * p_m, int p_tot, int p_open) {
  * @warning This function should be called by only one thread when no other thread is working on p_c object.
  *          Typically the main thread call this function after all slave threads have terminated.
  * 
- * @param p_c Requirements: p_a != NULL and must refer to a PayArea object created with #PayArea_init.
+ * @param p_a Requirements: p_a != NULL and must refer to a PayArea object created with #PayArea_init.
  */
 void PayArea_delete(PayArea * p_a) {
     if(p_a == NULL) err_quit("An error occurred during PayArea deletion. p_a == NULL.");
@@ -58,6 +58,62 @@ void PayArea_delete(PayArea * p_a) {
 	free(p_a->desks);
     free(p_a);
 }
+
+/**
+ * @brief Check if the payarea is empty (no users)
+ * 
+ * @param p_a Requirements: p_a != NULL and must refer to a PayArea object created with #PayArea_init.
+ * @return int: result code:
+ * 1: is empty
+ * otherwise: is NOT empty
+ */
+int PayArea_isEmpty(PayArea *p_a) {
+    int res_fun = 1;
+    if(p_a == NULL) err_quit("p_a == NULL");
+	PayArea_Lock(p_a);
+    for(int i = 0;i < p_a->nTot && res_fun == 1;i++) 
+		res_fun = SQueue_isEmpty(p_a->desks[i]->usersPay)!=1 ? 0:res_fun;
+	PayArea_Unlock(p_a);
+    return res_fun;
+}
+
+/**
+ * @brief Start all desk threads.
+ * 
+ * @param p_a Requirements: p_a != NULL and must refer to a PayArea object created with #PayArea_init.
+ */
+void PayArea_startDeskThreads(PayArea *p_a) {
+	if(p_a == NULL) err_quit("p_a == NULL");
+    
+	for(int i = 0; i < p_a->nTot; i++){
+		if(CashDesk_startThread(p_a->desks[i]) != 0)
+			err_quit("[Market]: An error occurred during desk thread start. (CashDesk startThread failed)");
+	}
+}
+
+/**
+ * @brief Join all desk threads.
+ * 
+ * @param p_a Requirements: p_a != NULL and must refer to a PayArea object created with #PayArea_init.
+ */
+void PayArea_joinDeskThreads(PayArea * p_a) {
+	if(p_a == NULL) err_quit("p_a == NULL");
+        
+    for(int i = 0;i < p_a->nTot;i++) 
+        if(CashDesk_joinThread(p_a->desks[i])!=0) err_quit("An error occurred during cash desk thread join.");    
+}
+
+
+/**
+ * @brief Send signal to all desks.
+ * 
+ * @param p_a Requirements: p_a != NULL and must refer to a PayArea object created with #PayArea_init.
+ */
+void PayArea_Signal(PayArea *p_a) {
+    if(p_a == NULL) err_quit("p_a == NULL");
+    for(int i=0;i<p_a->nTot;i++) Signal(&p_a->desks[i]->cv_DeskNews);
+}
+
 
 void PayArea_Lock(PayArea * p_a) {Lock(&p_a->lock);}
 void PayArea_Unlock(PayArea * p_a) {Unlock(&p_a->lock);}

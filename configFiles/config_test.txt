@@ -1,11 +1,11 @@
 //Max number of open cash desks
-K=1
+K=10
 //Starting open cash desks
-KS=1
+KS=5
 //Max number of users inside the market
 C=50
 //Number of users which must exit before other E user can enter the market
-E=1
+E=5
 //Max ms for shopping
 T=200
 //Max number of products

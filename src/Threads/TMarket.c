@@ -60,6 +60,11 @@ static void pDeallocUser(void * p_arg){
 	User_delete(u);
 }
 
+static void SignalUser(void * p_arg){
+	User * u = (User *) p_arg;
+	Signal(&u->cv_UserNews);
+}
+
 unsigned int * Market_getSeed(Market * p_m) {return &p_m->seed;}
 long Market_getK(Market * p_m) {return p_m->K;}
 long Market_getKS(Market * p_m) {return p_m->KS;}
@@ -88,8 +93,6 @@ void Market_FromShoppingToPay(Market * p_m, User * p_u) {
 	//Remove user from shopping
 	if( SQueue_remove(p_m->usersShopping, p_u, User_compare) != 1)
 		err_quit("Impossible to find User %d in shopping area.", User_getId(p_u));
-	User_setQueueStartTime(p_u, getCurrentTime());
-	User_changeQueue(p_u);
 	//Choose a random open cashk desk
 	PayArea_Lock(p_m->payArea);
 	SQueue * desksOpen = NULL;
@@ -108,6 +111,8 @@ void Market_FromShoppingToPay(Market * p_m, User * p_u) {
 		err_quit("An error occurred during open desk search. (2)");
 	SQueue_deleteQueue(desksOpen, NULL);
 	deskChoosen = (CashDesk *) aux;
+	User_setQueueStartTime(p_u, getCurrentTime());
+	User_changeQueue(p_u);	
 	CashDesk_addUser(deskChoosen, p_u);
 	Signal(&deskChoosen->cv_DeskNews);
 	PayArea_Unlock(p_m->payArea);
@@ -400,12 +405,8 @@ int Market_isEmpty(Market * p_m){
 	//Lock(&p_m->lock);
 	res_fun = res_fun!=1 || SQueue_isEmpty(p_m->usersShopping)!=1 ? 0:res_fun;
 	res_fun = res_fun!=1 || SQueue_isEmpty(p_m->usersAuthQueue)!=1 ? 0:res_fun;
-	//res_fun = res_fun!=1 || SQueue_isEmpty(p_m->usersExit)!=1 ? 0:res_fun;
 	//Check if all cash desk are empty
-	for(int i = 0;i < p_m->K;i++) {
-		if(res_fun != 1) break;
-		res_fun = res_fun!=1 || SQueue_isEmpty(p_m->payArea->desks[i]->usersPay)!=1 ? 0:res_fun;
-	}
+	res_fun = res_fun!=1 || PayArea_isEmpty(p_m->payArea)!=1 ? 0:res_fun;
 	//Unlock(&p_m->lock);
 	return res_fun;
 }
@@ -430,15 +431,13 @@ void * Market_main(void * p_arg){
 	CashDesk ** desks = Market_getDesks(m);
 	Director * director = Market_getDirector(m);
 	unsigned int * seed = Market_getSeed(m);
+	int removedUsers = 0;
 
 	if((newGroup = SQueue_init(-1)) == NULL)
 		err_quit("[Market]: An error occurred during market startup. (newGroup init failed)");
 	
 	//Start CashDesks Threads
-	for(int i = 0; i < Market_getK(m);i ++){
-		if(CashDesk_startThread(desks[i]) != 0)
-			err_quit("[Market]: An error occurred during desk thread start. (CashDesk startThread failed)");
-	}
+	PayArea_startDeskThreads(m->payArea);
 
 	//Start Director thread
 	if(Director_startThread(Market_getDirector(m)) != 0)
@@ -460,21 +459,30 @@ void * Market_main(void * p_arg){
 		Lock(&m->lock);
 		while (sig_hup != 1 && sig_quit != 1 && SQueue_isEmpty(m->usersExit)==1) 
 			pthread_cond_wait(&m->cv_MarketNews, &m->lock);
-		
+		Unlock(&m->lock);
+
 		if(sig_hup == 1 || sig_quit == 1) {
-			Unlock(&m->lock);
 			printf("Market is closing...\n");
 			//When SIGHUP or SIQQUIT occurs no new users are allowed inside the market and
 			//all the users inside are waited.
-			//Wait all threads
+			//Singla closure to all threads and wait them
+			Signal(&m->director->cv_DirectorNews);
+			PayArea_Signal(m->payArea);
+			Signal(&m->director->cv_DirectorNews);
 			printf("Wait director termination...\n");
 			if(Director_joinThread(m->director)!=0) err_quit("An error occurred during director thread join.");
 			printf("Cashdesks termination...\n");
-			for(int i = 0;i < m->K;i++) 
-				if(CashDesk_joinThread(m->payArea->desks[i])!=0) err_quit("An error occurred during cash desk thread join.");
+			PayArea_joinDeskThreads(m->payArea);
 			//Remove all users from exit queue
 			printf("Removing users from exit queue..\n");
-			while(SQueue_pop(m->usersExit, &data)==1) {		
+			//Move all users in newGroup into exit 
+			while(SQueue_pop(newGroup, &data) != -2) {
+				u_aux = (User *) data;
+				SQueue_push(m->usersExit, u_aux);
+			}
+			//Delete all users
+			while(removedUsers < m->C) {		
+				SQueue_popWait(m->usersExit, &data);
 				u_aux = (User *) data;
 				User_log(u_aux);
 				User_setState(u_aux, USR_QUIT);	
@@ -482,8 +490,10 @@ void * Market_main(void * p_arg){
 				if(User_joinThread(u_aux) != 0)
 					err_quit("An error occurred joining User %d thread.", User_getId(u_aux));
 				User_delete(u_aux);
-			}			
+				removedUsers++;
+			}	
 			//Log all cashdesks data
+			DEBUG_PRINT("Market_isEmpty: %d\n", Market_isEmpty(m));
 			printf("Log all cash desks statistics..\n");
 			for(int i = 0; i < m->K; i++) 
 				CashDesk_log(m->payArea->desks[i]);
@@ -503,14 +513,13 @@ void * Market_main(void * p_arg){
 				//Move all users in newGroup into shopping area
 				while(SQueue_pop(newGroup, &data) != -2) {
 					u_aux = (User *) data;
-					User_setState(u_aux, USR_READY);
 					SQueue_push(Market_getUsersShopping(m), u_aux);
+					User_setState(u_aux, USR_READY);
 					Signal(&u_aux->cv_UserNews);
 				}
 				exit = 0;
 			}
 		}
-		Unlock(&m->lock);
 	}
 
 	SQueue_deleteQueue(newGroup, pDeallocUser);

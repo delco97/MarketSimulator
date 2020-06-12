@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include <utilities.h>
 
+void Director_Lock(Director * p_d) {Lock(&p_d->lock);}
+void Director_Unlock(Director * p_d) {Unlock(&p_d->lock);}
 
 /**
  * @brief Create a new Director object.
@@ -26,7 +28,8 @@ Director * Director_init(Market * p_m) {
 	
     aux->market = p_m;
 
-	if (pthread_cond_init(&aux->cv_DirectorNews, NULL) != 0) {
+	if (pthread_cond_init(&aux->cv_DirectorNews, NULL) != 0 ||
+        pthread_mutex_init(&(aux->lock), NULL) != 0) {
 		err_msg("An error occurred during locking system initialization. Impossible to setup the director.");
         goto err;
 	}
@@ -61,7 +64,7 @@ int Director_joinThread(Director * p_d) {
 
 /**
  * @brief Dealloc a Director object.
- * 
+ *
  * @warning This function should be called by only one thread when no other thread is working on p_d object.
  *          Typically the main thread call this function after all slave threads have terminated.
  * 
@@ -73,6 +76,7 @@ int Director_joinThread(Director * p_d) {
 int Director_delete(Director * p_d) {
 	if(p_d == NULL) return -1; 
     pthread_cond_destroy(&p_d->cv_DirectorNews);
+    pthread_mutex_destroy(&p_d->lock);
 	free(p_d);
 	return 1;
 }
@@ -94,12 +98,11 @@ void * Director_handleAuth(void * p_arg) {
     User * user = NULL;
     while (1) {
        	//Wait a signal or new user in auth queue to proceed
-		Lock(&m->lock);
+		Lock(&d->lock);
 		while (sig_hup != 1 && sig_quit != 1 && SQueue_isEmpty(auth)==1) 
-			pthread_cond_wait(&d->cv_DirectorNews, &m->lock);
-		
+			pthread_cond_wait(&d->cv_DirectorNews, &d->lock);
+		Unlock(&d->lock);
 		if(sig_hup == 1 || sig_quit == 1) {        
-            Unlock(&m->lock);
             //Empties the user auth queue and wait until no other users are in the market
             while (Market_isEmpty(m)!=1) {
                 if(SQueue_pop(auth, &data) == 1) {
@@ -113,11 +116,10 @@ void * Director_handleAuth(void * p_arg) {
         //Market is not closing
         if(SQueue_pop(auth, &data) == 1){
             user = (User *) data;
-            DEBUG_PRINT("[Director]: user %d is authorized for exit.\n", User_getId(user));
+            printf("[Director]: user %d is authorized for exit.\n", User_getId(user));
             //Move user to exit
             Market_moveToExit(m, user);
         }
-        Unlock(&m->lock);
     }
 
     return (void *) NULL;
@@ -133,7 +135,7 @@ void * Director_handleAuth(void * p_arg) {
 void * Director_main(void * p_arg){
 	Director * d = (Director *) p_arg;
 	pthread_t thAuthHandler;
-	DEBUG_PRINT("[Director]: start of thread.\n");
+	printf("[Director]: start of thread.\n");
 
     //Create auxiliary thread for managing auth queue
     if(pthread_create(&thAuthHandler, NULL, Director_handleAuth, d->market) !=0)
@@ -144,6 +146,6 @@ void * Director_main(void * p_arg){
     if(pthread_join(thAuthHandler, NULL) !=0)
         err_quit("[Director]: an error occurred during join of authorizations handler thread."); 
 
-	DEBUG_PRINT("[Director]: end of thread.\n");
+	printf("[Director]: end of thread.\n");
     return (void *)NULL;
 }

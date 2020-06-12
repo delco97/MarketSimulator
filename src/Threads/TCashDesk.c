@@ -176,41 +176,30 @@ void * CashDesk_main(void * p_arg){
     currentState = lastState;
     lastOpenTime = getCurrentTime();
     Unlock(&c->lock);
-    DEBUG_PRINT("[CashDesk %d]: start of thread.\n", CashDesk_getId(c));
+    printf("[CashDesk %d]: start of thread.\n", CashDesk_getId(c));
     
     while (1) {
        	//Wait a signal or new user in desk queue to proceed
-		Lock(&m->lock);
+		Lock(&c->lock);
 		while ( sig_hup != 1 && sig_quit != 1 && SQueue_isEmpty(c->usersPay)==1 && 
                 (currentState = CashDesk_getSate(c)) == lastState) 
-			pthread_cond_wait(&c->cv_DeskNews, &m->lock);
-        
-        if(currentState != lastState) {//Desk state change
-            lastState = currentState;
-            DEBUG_PRINT("[CashDesk %d]:  now is %s.\n", CashDesk_getId(c), currentState==DESK_OPEN ? "OPEN":"CLOSE");
-            if(currentState == DESK_OPEN){
-                lastOpenTime = getCurrentTime();
-            } else{//DESK_CLOSE
-                c->totOpenTime += elapsedTime(lastOpenTime, getCurrentTime());
-                c->numClosure++;
-            }
-        }
+			pthread_cond_wait(&c->cv_DeskNews, &c->lock);
+        Unlock(&c->lock);
        
 		if(sig_hup == 1 || sig_quit == 1) {
-             Unlock(&m->lock);
             //Empties the user desk queue and wait until no other users are in the market
             while (Market_isEmpty(m)!=1) {
                 if(SQueue_pop(c->usersPay, &data) == 1) {
                     servedUser = (User *)data;
                     User_setStartPaymentTime(servedUser, getCurrentTime());
-                    DEBUG_PRINT("[CashDesk %d]: started to serve user %d.\n", CashDesk_getId(c), User_getId(servedUser));
+                    printf("[CashDesk %d]: started to serve user %d.\n", CashDesk_getId(c), User_getId(servedUser));
                     if(sig_hup == 1 && c->state == DESK_OPEN) {//Serve users only if it is a slow closing and cash dek is open
                         c->usersProcessed++;
                         c->avgSeviceTime += c->serviceConst + User_getProducts(servedUser) * Market_getNP(m);
                         if(waitMs(c->serviceConst + User_getProducts(servedUser) * Market_getNP(m)) == -1)
                             err_sys("[User %d]: an error occurred during waiting for shopping time.\n", User_getId(servedUser));
                     }
-                    DEBUG_PRINT("[CashDesk %d]: user served %d.\n", CashDesk_getId(c), User_getId(servedUser));
+                    printf("[CashDesk %d]: user served %d.\n", CashDesk_getId(c), User_getId(servedUser));
                     Market_moveToExit(m, servedUser);
                 }
             }
@@ -218,21 +207,29 @@ void * CashDesk_main(void * p_arg){
             break;
         }
         //Market is not closing
+        if(currentState != lastState) {//Desk state change
+            lastState = currentState;
+            printf("[CashDesk %d]:  now is %s.\n", CashDesk_getId(c), currentState==DESK_OPEN ? "OPEN":"CLOSE");
+            if(currentState == DESK_OPEN){
+                lastOpenTime = getCurrentTime();
+            } else{//DESK_CLOSE
+                c->totOpenTime += elapsedTime(lastOpenTime, getCurrentTime());
+                c->numClosure++;
+            }
+        }        
         if(SQueue_pop(c->usersPay, &data) == 1 && c->state == DESK_OPEN){
-            Unlock(&m->lock);
             servedUser = (User *)data;
             User_setStartPaymentTime(servedUser, getCurrentTime());
-            DEBUG_PRINT("[CashDesk %d]: started to serve user %d.\n", CashDesk_getId(c), User_getId(servedUser));
+            printf("[CashDesk %d]: started to serve user %d.\n", CashDesk_getId(c), User_getId(servedUser));
             if(waitMs(c->serviceConst + User_getProducts(servedUser) * Market_getNP(m)) == -1)
                 err_sys("[User %d]: an error occurred during waiting for shopping time.\n", User_getId(servedUser));
-            DEBUG_PRINT("[CashDesk %d]: user %d served.\n", CashDesk_getId(c), User_getId(servedUser));
+            printf("[CashDesk %d]: user %d served.\n", CashDesk_getId(c), User_getId(servedUser));
             c->usersProcessed++;
             c->productsProcessed+=User_getProducts(servedUser);            
             Market_moveToExit(m, servedUser);
         }
-        Unlock(&m->lock);
     }
     
-	DEBUG_PRINT("[CashDesk %d]: end of thread.\n", CashDesk_getId(c));
+	printf("[CashDesk %d]: end of thread.\n", CashDesk_getId(c));
     return (void *)NULL;
 }

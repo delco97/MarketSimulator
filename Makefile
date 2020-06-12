@@ -77,7 +77,7 @@ clean:
 	-rm -r $(BIN)
 	-rm -r $(OBJ)
 	-rm -r $(LOG)/*
-	-rm main.PID
+	-rm *.PID
 
 #Build docker image for the project
 docker_build:
@@ -94,3 +94,18 @@ test:
 	tail --pid=$$(cat main.PID) -f /dev/null; \
 	./analisi.sh $$(cat main.PID); \
 
+test_1:
+	-rm $(LOG)/log_test.txt
+	(valgrind --leak-check=full ./bin/main $(CONF)/config_test.txt $(LOG)/log_test.txt & echo $$! > main.PID) &
+	sleep 5s; \
+	kill -s HUP $$(cat main.PID); \
+	tail --pid=$$(cat main.PID) -f /dev/null; \
+	./analisi.sh $$(cat main.PID); \
+
+test_2:
+	-rm $(LOG)/log_test.txt
+	(valgrind --leak-check=full ./bin/main $(CONF)/config_test.txt $(LOG)/log_test.txt & echo $$! > main.PID) &
+	sleep 5s; \
+	kill -s QUIT $$(cat main.PID); \
+	tail --pid=$$(cat main.PID) -f /dev/null; \
+	./analisi.sh $$(cat main.PID); \
