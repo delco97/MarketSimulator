@@ -13,6 +13,7 @@
 typedef struct Market Market;
 typedef struct CashDesk CashDesk;
 typedef struct User User;
+typedef struct CashDeskNotify CashDeskNotify;
 typedef enum CashDeskState CashDeskState;
 extern volatile sig_atomic_t sig_hup;
 extern volatile sig_atomic_t sig_quit;
@@ -20,6 +21,13 @@ extern volatile sig_atomic_t sig_quit;
 enum CashDeskState {
     DESK_OPEN,
     DESK_CLOSE
+};
+
+struct CashDeskNotify {
+    int id; //**< cash desk id who sent this notify*/
+    int users; //**< user in queue */
+    CashDeskState state; //** desk state */
+    struct timespec time;  /**< time of notification */ 
 };
 
 struct CashDesk {
@@ -42,6 +50,7 @@ CashDesk * CashDesk_init(Market * p_m, int p_id, int p_serviceConst, CashDeskSta
 int CashDesk_delete(CashDesk * p_c);
 int CashDesk_startThread(CashDesk * p_c);
 int CashDesk_joinThread(CashDesk * p_c);
+void * CashDesk_notifyDirector(void * p_arg);
 void * CashDesk_main(void * p_arg);
 void CashDesk_Lock(CashDesk * p_m);
 void CashDesk_Unlock(CashDesk * p_m);

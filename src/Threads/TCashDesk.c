@@ -156,6 +156,36 @@ void CashDesk_log(CashDesk * p_c) {
 }
 
 /**
+ * @brief Subthread used to periodically notify the director thread  
+ * 
+ * @param p_arg 
+ * @return void* 
+ */
+void * CashDesk_notifyDirector(void * p_arg) {
+    CashDesk * c = (CashDesk *) p_arg;
+    Market * m = c->market;
+    Director * d = m->director;
+    CashDeskNotify * msg = NULL;
+    while (1) {
+        if(sig_hup || sig_quit) break;
+        if(waitMs(m->TD) == -1)
+            err_sys("[User %d]: an error occurred during waiting to notify director thread.\n", c->id);
+        //Prepare info for director thread
+        //msg = NULL;
+        if((msg = malloc(sizeof(CashDeskNotify))) == NULL)
+            err_quit("An error occurred during malloc for notify message allocation.");
+        msg->id = c->id;
+        msg->state = c->state;
+        msg->users = SQueue_dim(c->usersPay);
+        msg->time = getCurrentTime();
+        //Send info to director thread
+        SQueue_push(d->notifications, msg);
+        Signal(&d->cv_Director_DesksNews);
+    }
+    return (void *)NULL;
+}
+
+/**
  * @brief Start CashDesk thread.
  *        The behaviour is undefined if p_u has not been previously initialized with #CashDesk_init.
  * 
@@ -170,10 +200,18 @@ void * CashDesk_main(void * p_arg){
     CashDeskState lastState = CashDesk_getSate(c);
     CashDeskState currentState = lastState;
     struct timespec lastOpenTime = getCurrentTime();
+    pthread_t thNotifyHandler;
+
+
 
     lastState = CashDesk_getSate(c);
     currentState = lastState;
     lastOpenTime = getCurrentTime();
+
+    //Create sub thread used to notify director thread
+    if(pthread_create(&thNotifyHandler, NULL, CashDesk_notifyDirector, c) !=0)
+        err_quit("[Director]: an error occurred during creation of notify thread."); 
+
 
     printf("[CashDesk %d]: start of thread.\n", CashDesk_getId(c));
     
@@ -222,6 +260,7 @@ void * CashDesk_main(void * p_arg){
             } else{//DESK_CLOSE
                 c->totOpenTime += elapsedTime(lastOpenTime, getCurrentTime());
                 c->numClosure++;
+                ///Move all users to another desk
             }
         }        
         if(SQueue_pop(c->usersPay, &data) == 1 && c->state == DESK_OPEN){
@@ -236,7 +275,9 @@ void * CashDesk_main(void * p_arg){
             Market_moveToExit(m, servedUser);
         }
     }
-    
+    if(pthread_join(thNotifyHandler, NULL) !=0)
+        err_quit("[Director]: an error occurred during join of notify thread."); 
+
 	printf("[CashDesk %d]: end of thread.\n", CashDesk_getId(c));
     return (void *)NULL;
 }

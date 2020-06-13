@@ -19,10 +19,11 @@ extern volatile sig_atomic_t sig_quit;
 
 struct Director {
     pthread_t thread;   /**< Director thread */
-    pthread_mutex_t lock; /**< lock */
+    pthread_mutex_t lock; /**< lock variable */
     Market * market;  /**< Reference to the market where the director is. */
-    pthread_cond_t cv_DirectorNews; /**< used to notify updates to Director thread */
-
+    pthread_cond_t cv_Director_AuthNews; /**< used to notify updates to Director thread that handles auth queue */
+    pthread_cond_t cv_Director_DesksNews; /**< used to notify updates to Director thread that handles cash desk notifications*/
+    SQueue * notifications; /**< notification received from cashdesks */
 };
 
 Director * Director_init(Market * m);

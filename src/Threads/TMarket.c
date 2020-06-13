@@ -60,11 +60,6 @@ static void pDeallocUser(void * p_arg){
 	User_delete(u);
 }
 
-static void SignalUser(void * p_arg){
-	User * u = (User *) p_arg;
-	Signal(&u->cv_UserNews);
-}
-
 unsigned int * Market_getSeed(Market * p_m) {return &p_m->seed;}
 long Market_getK(Market * p_m) {return p_m->K;}
 long Market_getKS(Market * p_m) {return p_m->KS;}
@@ -156,7 +151,7 @@ void Market_FromShoppingToAuth(Market * p_m, User * p_u) {
 	User_changeQueue(p_u);
 	if(SQueue_push(p_m->usersAuthQueue, p_u) != 1)
 		err_quit("Impossible to move User %d in authorization queue.", User_getId(p_u));
-	Signal(&p_m->director->cv_DirectorNews);
+	Signal(&p_m->director->cv_Director_AuthNews);
 	//Unlock(&p_m->lock);
 }
 
@@ -379,7 +374,7 @@ int Market_delete(Market * p_m) {
 	Director_delete(p_m->director);
 	SQueue_deleteQueue(p_m->usersShopping, pDeallocUser);
 	SQueue_deleteQueue(p_m->usersExit, pDeallocUser);
-	SQueue_deleteQueue(p_m->usersAuthQueue, NULL);
+	SQueue_deleteQueue(p_m->usersAuthQueue, pDeallocUser);
 	PayArea_delete(p_m->payArea);
 	pthread_mutex_destroy(&p_m->lock);
 	pthread_cond_destroy(&p_m->cv_MarketNews);
@@ -427,8 +422,6 @@ void * Market_main(void * p_arg){
 	int exit = 0; //count users exit until E is reached
 	void * data;
 	SQueue * newGroup = NULL;
-	CashDesk ** desks = Market_getDesks(m);
-	Director * director = Market_getDirector(m);
 	unsigned int * seed = Market_getSeed(m);
 	int removedUsers = 0;
 
@@ -465,13 +458,13 @@ void * Market_main(void * p_arg){
 			//When SIGHUP or SIQQUIT occurs no new users are allowed inside the market and
 			//all the users inside are waited.
 			//Singla closure to all threads and wait them
-			Signal(&m->director->cv_DirectorNews);
 			PayArea_Signal(m->payArea);
-			Signal(&m->director->cv_DirectorNews);
-			printf("Wait director termination...\n");
-			if(Director_joinThread(m->director)!=0) err_quit("An error occurred during director thread join.");
 			printf("Cashdesks termination...\n");
 			PayArea_joinDeskThreads(m->payArea);
+			printf("Wait director termination...\n");
+			Signal(&m->director->cv_Director_AuthNews);
+			Signal(&m->director->cv_Director_DesksNews);			
+			if(Director_joinThread(m->director)!=0) err_quit("An error occurred during director thread join.");			
 			//Remove all users from exit queue
 			printf("Removing users from exit queue..\n");
 			//Move all users in newGroup into exit 

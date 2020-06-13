@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <utilities.h>
+#include <TCashDesk.h>
 
 void Director_Lock(Director * p_d) {Lock(&p_d->lock);}
 void Director_Unlock(Director * p_d) {Unlock(&p_d->lock);}
@@ -27,8 +28,15 @@ Director * Director_init(Market * p_m) {
 		goto err;
 	
     aux->market = p_m;
+    aux->notifications = NULL;
 
-	if (pthread_cond_init(&aux->cv_DirectorNews, NULL) != 0 ||
+    if((aux->notifications = SQueue_init(-1)) == NULL) {
+		err_msg("An error occurred during notification queue setup. Impossible to setup the director.");
+        goto err;
+	}
+
+	if (pthread_cond_init(&aux->cv_Director_AuthNews, NULL) != 0 ||
+        pthread_cond_init(&aux->cv_Director_DesksNews, NULL) != 0 ||
         pthread_mutex_init(&(aux->lock), NULL) != 0) {
 		err_msg("An error occurred during locking system initialization. Impossible to setup the director.");
         goto err;
@@ -38,6 +46,7 @@ Director * Director_init(Market * p_m) {
     return aux;
 err:
     if(aux != NULL) free(aux);
+    if(aux->notifications != NULL) SQueue_deleteQueue(aux->notifications, NULL);
     return NULL;
 }
 
@@ -75,8 +84,10 @@ int Director_joinThread(Director * p_d) {
  */
 int Director_delete(Director * p_d) {
 	if(p_d == NULL) return -1; 
-    pthread_cond_destroy(&p_d->cv_DirectorNews);
+    pthread_cond_destroy(&p_d->cv_Director_AuthNews);
+    pthread_cond_destroy(&p_d->cv_Director_DesksNews);
     pthread_mutex_destroy(&p_d->lock);
+    SQueue_deleteQueue(p_d->notifications, free);
 	free(p_d);
 	return 1;
 }
@@ -100,7 +111,7 @@ void * Director_handleAuth(void * p_arg) {
        	//Wait a signal or new user in auth queue to proceed
 		Lock(&d->lock);
 		while (sig_hup != 1 && sig_quit != 1 && SQueue_isEmpty(auth)==1) 
-			pthread_cond_wait(&d->cv_DirectorNews, &d->lock);
+			pthread_cond_wait(&d->cv_Director_AuthNews, &d->lock);
 		Unlock(&d->lock);
 		if(sig_hup == 1 || sig_quit == 1) {        
             //Empties the user auth queue and wait until no other users are in the market
@@ -134,14 +145,74 @@ void * Director_handleAuth(void * p_arg) {
  */
 void * Director_main(void * p_arg){
 	Director * d = (Director *) p_arg;
+    Market * m = d->market;
+    void * data = NULL;
+    CashDeskNotify * msg = NULL;
+    CashDeskNotify ** lastReceivedMsg = NULL;
+    int desksMsg = 0;
+    int tryOpen = 0, tryClose = 0;
+    int numDeskNoWork = 0; //counter for the number of desk with low amount of work
 	pthread_t thAuthHandler;
 	printf("[Director]: start of thread.\n");
+
+    if((lastReceivedMsg = calloc(d->market->K, sizeof(CashDesk **))) == NULL)
+        err_quit("Malloc error");
+
 
     //Create auxiliary thread for managing auth queue
     if(pthread_create(&thAuthHandler, NULL, Director_handleAuth, d->market) !=0)
         err_quit("[Director]: an error occurred during creation of authorizations handler thread."); 
-    //Handle cashdesks
+    
+    //Handle cashdesks notifications
+    while (1) {
+		Lock(&d->lock);
+		while (sig_hup != 1 && sig_quit != 1 && SQueue_isEmpty(d->notifications)==1) 
+			pthread_cond_wait(&d->cv_Director_DesksNews, &d->lock);
+		Unlock(&d->lock);
+		
+        if(sig_hup == 1 || sig_quit == 1) break;
+        
+        if(SQueue_pop(d->notifications, &data) == 1) {
+            //New notification received
+            msg = (CashDeskNotify *) data;
+            printf("[Director]: recived notification from desk %d\n", msg->id);
 
+            if(lastReceivedMsg[msg->id] == NULL) desksMsg++;
+            else free(lastReceivedMsg[msg->id]);
+
+            lastReceivedMsg[msg->id] = msg;
+            if(desksMsg == m->K) {//All desk have communicated their status. Now it's time to take a decision.
+                desksMsg = 0;
+                tryOpen = 0;
+                tryClose = 0;
+                numDeskNoWork = 0;
+                //Check if it's time to close/open a desk
+                for(int i=0;i<m->K;i++) {
+                    if(lastReceivedMsg[i]->state == DESK_OPEN && lastReceivedMsg[i]->users<=1) numDeskNoWork++;
+                    if(lastReceivedMsg[i]->state == DESK_OPEN && lastReceivedMsg[i]->users>=m->S2) tryOpen=1;
+                }
+                if(numDeskNoWork >= m->S1) tryClose = 1;
+                
+                if(tryOpen){
+                    //Try to open a desk
+                    printf("[Director]: Try to open a desk\n");
+                }
+                if(tryClose){
+                    //Try to close a desk
+                    printf("[Director]: Try to close a desk\n");
+
+                }
+                //Reset
+                for(int i=0;i<m->K;i++) {free(lastReceivedMsg[i]); lastReceivedMsg[i] = NULL;}
+            }
+        }
+
+    }
+    
+    for(int i=0;i<m->K;i++) 
+        if(lastReceivedMsg[i] != NULL) free(lastReceivedMsg[i]);
+    free(lastReceivedMsg);
+    
 
     if(pthread_join(thAuthHandler, NULL) !=0)
         err_quit("[Director]: an error occurred during join of authorizations handler thread."); 
