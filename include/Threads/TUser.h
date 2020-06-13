@@ -34,7 +34,6 @@ struct User {
     struct timespec tMarketEntry;  /**< Entry time in the market */
     struct timespec tMarketExit;  /**< Exit time from the market */
     struct timespec tQueueStart;  /**< Time when users start to wait in a queue to pay o to be authorized for exit*/
-    struct timespec tStartPayment;  /**< Time when a cashier start to serve the user */
     int shoppingTime; /**< Time to spend in shopping area in ms. */
     Market * market;  /**< Reference to the market where the user is. */
 };
@@ -55,7 +54,6 @@ int User_getQueueChanges(User * p_u);
 struct timespec User_getMarketEntryTime(User * p_u);
 struct timespec User_getMarketExitTime(User * p_u);
 struct timespec User_getQueueStartTime(User * p_u);
-struct timespec User_getStartPaymentTime(User * p_u);
 int User_getShoppingTime(User * p_u);
 Market * User_getMarket(User * p_u);
 //Setters
@@ -63,7 +61,6 @@ void User_setState(User * p_u, UserState p_s);
 void User_setMarketEntryTime(User * p_u, struct timespec p_x);
 void User_setMarketExitTime(User * p_u, struct timespec p_x);
 void User_setQueueStartTime(User * p_u, struct timespec p_x);
-void User_setStartPaymentTime(User * p_u, struct timespec p_x);
 void User_setProducts(User * p_u, int p_prd);
 void User_changeQueue(User * p_u);
 

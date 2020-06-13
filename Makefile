@@ -92,20 +92,18 @@ test:
 	sleep 25s; \
 	kill -s HUP $$(cat main.PID); \
 	tail --pid=$$(cat main.PID) -f /dev/null; \
-	./analisi.sh $$(cat main.PID); \
-
+	./analisi.sh ./logFiles/log_test.txt;
 test_1:
 	-rm $(LOG)/log_test.txt
 	(valgrind --leak-check=full ./bin/main $(CONF)/config_test.txt $(LOG)/log_test.txt & echo $$! > main.PID) &
 	sleep 5s; \
 	kill -s HUP $$(cat main.PID); \
 	tail --pid=$$(cat main.PID) -f /dev/null; \
-	./analisi.sh $$(cat main.PID); \
-
+	./analisi.sh ./logFiles/log_test.txt;
 test_2:
 	-rm $(LOG)/log_test.txt
 	(valgrind --leak-check=full ./bin/main $(CONF)/config_test.txt $(LOG)/log_test.txt & echo $$! > main.PID) &
 	sleep 5s; \
 	kill -s QUIT $$(cat main.PID); \
 	tail --pid=$$(cat main.PID) -f /dev/null; \
-	./analisi.sh $$(cat main.PID); \
+	./analisi.sh ./logFiles/log_test.txt;

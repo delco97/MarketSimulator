@@ -213,15 +213,6 @@ struct timespec User_getQueueStartTime(User * p_u)
 { struct timespec x; pUser_Lock(p_u); x = p_u->tQueueStart; pUser_Unlock(p_u); return x; }
 
 /**
- * @brief Get time when a cashier started to serve it
- * 
- * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- * @return struct timespec 
- */
-struct timespec User_getStartPaymentTime(User * p_u)
-{ struct timespec x; pUser_Lock(p_u); x = p_u->tStartPayment; pUser_Unlock(p_u); return x; }
-
-/**
  * @brief Get the shopping time to spend in shopping area.
  * 
  * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
@@ -264,15 +255,6 @@ void User_setMarketExitTime(User * p_u, struct timespec p_x){
  */
 void User_setQueueStartTime(User * p_u, struct timespec p_x){
     pUser_Lock(p_u); p_u->tQueueStart = p_x; pUser_Unlock(p_u);
-}
-/**
- * @brief Set time of when a cashier started to process p_u products.
- * 
- * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- * @param p_x time of when a cashier started to process p_u products.
- */
-void User_setStartPaymentTime(User * p_u, struct timespec p_x){
-    pUser_Lock(p_u); p_u->tStartPayment = p_x; pUser_Unlock(p_u);
 }
 
 /**

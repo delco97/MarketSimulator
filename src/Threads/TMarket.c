@@ -133,7 +133,6 @@ void Market_FromShoppingToExit(Market * p_m, User * p_u) {
 		err_quit("Impossible to find User %d in shopping area.", User_getId(p_u));
 	cur = getCurrentTime();
 	User_setQueueStartTime(p_u, cur);
-	User_setStartPaymentTime(p_u, cur);
 	User_setMarketExitTime(p_u, cur);
 	User_setProducts(p_u, 0);
 	if(SQueue_push(p_m->usersExit, p_u) != 1)

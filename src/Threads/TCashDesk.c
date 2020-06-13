@@ -142,8 +142,8 @@ static void pCashDesk_toString(CashDesk * p_c, char * p_buff){
             p_c->id,
             p_c->productsProcessed, 
             p_c->usersProcessed,
-            (double)(p_c->totOpenTime > 0 ? p_c->totOpenTime/1000:0),
-            (double)(p_c->avgSeviceTime > 0 ? p_c->avgSeviceTime/1000:0),
+            (double)(p_c->totOpenTime > 0 ? (double)p_c->totOpenTime/1000:0),
+            (double)(p_c->avgSeviceTime > 0 ? (double)p_c->avgSeviceTime/1000:0),
             p_c->numClosure);
 }
 
@@ -171,11 +171,10 @@ void * CashDesk_main(void * p_arg){
     CashDeskState currentState = lastState;
     struct timespec lastOpenTime = getCurrentTime();
 
-    Lock(&c->lock);
     lastState = CashDesk_getSate(c);
     currentState = lastState;
     lastOpenTime = getCurrentTime();
-    Unlock(&c->lock);
+
     printf("[CashDesk %d]: start of thread.\n", CashDesk_getId(c));
     
     while (1) {
@@ -191,18 +190,26 @@ void * CashDesk_main(void * p_arg){
             while (Market_isEmpty(m)!=1) {
                 if(SQueue_pop(c->usersPay, &data) == 1) {
                     servedUser = (User *)data;
-                    User_setStartPaymentTime(servedUser, getCurrentTime());
-                    printf("[CashDesk %d]: started to serve user %d.\n", CashDesk_getId(c), User_getId(servedUser));
+                    
                     if(sig_hup == 1 && c->state == DESK_OPEN) {//Serve users only if it is a slow closing and cash dek is open
+                        printf("[CashDesk %d]: started to serve user %d.\n", CashDesk_getId(c), User_getId(servedUser));
                         c->usersProcessed++;
+                        c->productsProcessed+=User_getProducts(servedUser);            
                         c->avgSeviceTime += c->serviceConst + User_getProducts(servedUser) * Market_getNP(m);
                         if(waitMs(c->serviceConst + User_getProducts(servedUser) * Market_getNP(m)) == -1)
                             err_sys("[User %d]: an error occurred during waiting for shopping time.\n", User_getId(servedUser));
+                        printf("[CashDesk %d]: user served %d.\n", CashDesk_getId(c), User_getId(servedUser));
+
+                    }else {
+                        printf("[CashDesk %d]: user %d exit without paying.\n", CashDesk_getId(c), User_getId(servedUser));
                     }
-                    printf("[CashDesk %d]: user served %d.\n", CashDesk_getId(c), User_getId(servedUser));
+                    
                     Market_moveToExit(m, servedUser);
                 }
             }
+            if(c->state == DESK_OPEN)
+                c->totOpenTime += elapsedTime(lastOpenTime, getCurrentTime());
+            
             c->avgSeviceTime=c->avgSeviceTime/c->usersProcessed;
             break;
         }
@@ -219,13 +226,13 @@ void * CashDesk_main(void * p_arg){
         }        
         if(SQueue_pop(c->usersPay, &data) == 1 && c->state == DESK_OPEN){
             servedUser = (User *)data;
-            User_setStartPaymentTime(servedUser, getCurrentTime());
             printf("[CashDesk %d]: started to serve user %d.\n", CashDesk_getId(c), User_getId(servedUser));
+            c->usersProcessed++;
+            c->productsProcessed+=User_getProducts(servedUser);       
+            c->avgSeviceTime += c->serviceConst + User_getProducts(servedUser) * Market_getNP(m);               
             if(waitMs(c->serviceConst + User_getProducts(servedUser) * Market_getNP(m)) == -1)
                 err_sys("[User %d]: an error occurred during waiting for shopping time.\n", User_getId(servedUser));
-            printf("[CashDesk %d]: user %d served.\n", CashDesk_getId(c), User_getId(servedUser));
-            c->usersProcessed++;
-            c->productsProcessed+=User_getProducts(servedUser);            
+            printf("[CashDesk %d]: user %d served.\n", CashDesk_getId(c), User_getId(servedUser));  
             Market_moveToExit(m, servedUser);
         }
     }
