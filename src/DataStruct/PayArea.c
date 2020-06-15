@@ -7,6 +7,48 @@
 #include <PayArea.h>
 #include <TCashDesk.h>
 
+
+static CashDesk * pGetRandomDesk(PayArea *p_a, CashDeskState p_state) {
+	//Choose a random open cashk desk
+	SQueue * selectedDesks = NULL;
+	void * aux = NULL;
+	CashDesk * deskChoosen = NULL;
+	if( (selectedDesks = SQueue_init(-1)) == NULL) 
+		err_quit("Malloc error.");
+	for(int i=0;i < p_a->nTot; i++) {//Get id of all desks currently open
+		if(CashDesk_getSate(p_a->desks[i]) == p_state){
+			if(SQueue_push(selectedDesks, p_a->desks[i]) != 1)
+				err_quit("An error occurred during desk search. (1)");
+		}
+	}
+	int r = getRandom(0,SQueue_dim(selectedDesks)-1, &p_a->market->seed);
+	if(SQueue_removePos(selectedDesks, r, &aux) != 1)
+		err_quit("An error occurred during desk search. (2)");
+	SQueue_deleteQueue(selectedDesks, NULL);
+	deskChoosen = (CashDesk *) aux;
+    return deskChoosen;
+}
+
+// static CashDesk * pGetLessBusyDesk(PayArea *p_a) {
+// 	//Choose desk with min number o users in queue
+// 	CashDesk * selectedDesk = NULL;
+
+//     //Select first open desk
+//     for(int i=0;i < p_a->nTot; i++) {
+//         if(p_a->desks[i]->state == DESK_OPEN){
+//             selectedDesk = p_a->desks[i];
+//             break;
+//         }
+//     }
+//     //Find desk with min number of users in queue
+// 	for(int i=0;i < p_a->nTot; i++) {//Get id of all desks currently open
+// 		if(CashDesk_getSate(p_a->desks[i]) == DESK_OPEN && SQueue_dim(p_a->desks[i]->usersPay) < SQueue_dim(selectedDesk->usersPay)) 
+//             selectedDesk = p_a->desks[i];
+// 	}
+
+//     return selectedDesk;
+// }
+
 /**
  * @brief Create a new PayArea object.
  * 
@@ -29,10 +71,11 @@ PayArea * PayArea_init(Market * p_m, int p_tot, int p_open) {
 		err_quit("An error occurred during memory allocation. (cashdesks array malloc)");
     aux->nTot = p_tot;
     aux->nOpen = p_open;
-    aux->nClose = p_tot - p_open;        
+    aux->nClose = p_tot - p_open;      
+    aux->market = p_m;  
 	//Init all desks
 	for(int i = 0;i < aux->nTot; i++) {
-		if( (aux->desks[i] = CashDesk_init(p_m, i, getRandom(20, 80, &p_m->seed), (i<p_tot) ? DESK_OPEN:DESK_CLOSE)) == NULL )
+		if( (aux->desks[i] = CashDesk_init(p_m, i, getRandom(20, 80, &p_m->seed), (i<p_open) ? DESK_OPEN:DESK_CLOSE)) == NULL )
 			err_quit("An error occurred during cashdesk creation. Impossible to setup the market.");
 		
 	}
@@ -112,6 +155,54 @@ void PayArea_joinDeskThreads(PayArea * p_a) {
 void PayArea_Signal(PayArea *p_a) {
     if(p_a == NULL) err_quit("p_a == NULL");
     for(int i=0;i<p_a->nTot;i++) Signal(&p_a->desks[i]->cv_DeskNews);
+}
+
+/**
+ * @brief Try to open a desk. This works only if there are less then nOpen<nTot.
+ * 
+ * @param p_a 
+ */
+void PayArea_tryOpenDesk(PayArea *p_a) {
+    CashDesk * selected = NULL;    
+    PayArea_Lock(p_a);
+    if(p_a->nOpen != p_a->nTot) {
+        selected = pGetRandomDesk(p_a, DESK_CLOSE);
+        selected->state = DESK_OPEN;
+        p_a->nOpen++;
+        p_a->nClose--;
+        Signal(&selected->cv_DeskNews);
+    }
+    PayArea_Unlock(p_a);
+}
+
+/**
+ * @brief Try to close a desk. This works only if there are at least 2 desks open.
+ * 
+ * @param p_a 
+ */
+void PayArea_tryCloseDesk(PayArea *p_a) {
+    CashDesk * closedDesk = NULL;
+    CashDesk * moveToDesk = NULL;
+    void * data = NULL;
+    User * aux = NULL;
+    PayArea_Lock(p_a);
+    if(p_a->nOpen >= 2) {
+        //closedDesk = pGetLessBusyDesk(p_a); //Removed because director tend to close always the same desk.
+        closedDesk = pGetRandomDesk(p_a, DESK_OPEN);
+        closedDesk->state = DESK_CLOSE;
+        p_a->nOpen--;
+        p_a->nClose++;
+        //Move all users in queue to other randomly choosen open desks (is always possible to find one)
+        while (SQueue_pop(closedDesk->usersPay, &data) == 1) {
+            moveToDesk = pGetRandomDesk(p_a, DESK_OPEN);
+            aux = (User *) data;
+            User_changeQueue(aux);	
+            CashDesk_addUser(moveToDesk, aux);
+        }
+        
+        Signal(&closedDesk->cv_DeskNews);
+    }
+    PayArea_Unlock(p_a);
 }
 
 

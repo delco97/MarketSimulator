@@ -115,7 +115,7 @@ void * Director_handleAuth(void * p_arg) {
 		Unlock(&d->lock);
 		if(sig_hup == 1 || sig_quit == 1) {        
             //Empties the user auth queue and wait until no other users are in the market
-            while (Market_isEmpty(m)!=1) {
+            while (SQueue_isEmpty(m->usersShopping) != 1) {
                 if(SQueue_pop(auth, &data) == 1) {
                     user = (User *) data;
                     //Move user to exit
@@ -196,11 +196,12 @@ void * Director_main(void * p_arg){
                 if(tryOpen){
                     //Try to open a desk
                     printf("[Director]: Try to open a desk\n");
+                    PayArea_tryOpenDesk(m->payArea);
                 }
                 if(tryClose){
                     //Try to close a desk
                     printf("[Director]: Try to close a desk\n");
-
+                    PayArea_tryCloseDesk(m->payArea);
                 }
                 //Reset
                 for(int i=0;i<m->K;i++) {free(lastReceivedMsg[i]); lastReceivedMsg[i] = NULL;}

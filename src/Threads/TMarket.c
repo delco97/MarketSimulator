@@ -431,10 +431,6 @@ void * Market_main(void * p_arg){
 	//Start CashDesks Threads
 	PayArea_startDeskThreads(m->payArea);
 
-	//Start Director thread
-	if(Director_startThread(Market_getDirector(m)) != 0)
-		err_quit("[Market]: An error occurred during desk thread start. (CashDesk startThread failed)");
-
 	//Create and add C users in shopping area
 	//Lock(&m->lock);
 	for(int i = 0; i <Market_getC(m);i ++){
@@ -445,6 +441,12 @@ void * Market_main(void * p_arg){
 			err_quit("[Market]: An error occurred during market startup. (User startThread failed)");		
 	}
 	//Unlock(&m->lock);
+
+	//Start Director thread
+	if(Director_startThread(Market_getDirector(m)) != 0)
+		err_quit("[Market]: An error occurred during desk thread start. (CashDesk startThread failed)");
+
+
 	//Wait E users exits
 	while (1) {
 		//Wait a signal or new user in exit queue to proceed
@@ -483,6 +485,7 @@ void * Market_main(void * p_arg){
 					err_quit("An error occurred joining User %d thread.", User_getId(u_aux));
 				User_delete(u_aux);
 				removedUsers++;
+				printf("[Market]: Users removed: %d\n", removedUsers);
 			}	
 			//Log all cashdesks data
 			DEBUG_PRINT("Market_isEmpty: %d\n", Market_isEmpty(m));
