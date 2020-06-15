@@ -84,6 +84,10 @@ int main(int argc, char * argv[]) {
 		useInfo(argv);
 		ERR_QUIT("Exit...");
 	}
+
+	g_seed = time(NULL); 	//Init seed (each thread has its own seed thanks to keyword _Thread_local)
+							//used to produce random numbers with rand_r.
+
 	//Setup signal handler thread in order to block SIGHUP and SIGHUP signals.
 	//Other threads created by main() thread will inherit a copy of its signal mask, so they
 	//won't receive SIGHUP and SIGHUP as main(), because these signal will handled by the signal handler thread.

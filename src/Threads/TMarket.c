@@ -355,6 +355,7 @@ int Market_isEmpty(Market * p_m){
 	res_fun = res_fun!=1 || SQueue_isEmpty(p_m->usersAuthQueue)!=1 ? 0:res_fun;
 	//Check if all cash desk are empty
 	res_fun = res_fun!=1 || PayArea_isEmpty(p_m->payArea)!=1 ? 0:res_fun;
+	res_fun = res_fun!=1 || SQueue_isEmpty(p_m->usersExit)!=1 ? 0:res_fun;
 	return res_fun;
 }
 
@@ -375,7 +376,6 @@ void * Market_main(void * p_arg){
 	int numExit = 0; //count users exit until E is reached
 	void * data;
 	SQueue * newGroup = NULL;
-	unsigned int * seed = &m->seed;
 	int removedUsers = 0;
 
 	if((newGroup = SQueue_init(-1)) == NULL)
@@ -387,7 +387,7 @@ void * Market_main(void * p_arg){
 	//Create and add C users in shopping area
 	//Lock(&m->lock);
 	for(int i = 0; i < m->C; i++){
-		if((u_aux = User_init(getRandom(0, m->P, seed), getRandom(10, m->T, seed), m)) == NULL)
+		if((u_aux = User_init(getRandom(0, m->P), getRandom(10, m->T), m)) == NULL)
 			ERR_QUIT("[Market]: An error occurred during market startup. (User init failed)");
 		SQueue_push(m->usersShopping, u_aux);
 		if(User_startThread(u_aux) != 0)
@@ -428,17 +428,18 @@ void * Market_main(void * p_arg){
 				SQueue_push(m->usersExit, u_aux);
 			}
 			//Delete all users
-			while(removedUsers < m->C) {		
-				SQueue_popWait(m->usersExit, &data);
-				u_aux = (User *) data;
-				User_log(u_aux);
-				u_aux->state = USR_QUIT;
-				Signal(&u_aux->cv_UserNews);
-				if(User_joinThread(u_aux) != 0)
-					ERR_QUIT("An error occurred joining User %d thread.", u_aux->id);
-				User_delete(u_aux);
-				removedUsers++;
-				printf("[Market]: Users removed: %d\n", removedUsers);
+			while(Market_isEmpty(m)) {		
+				if(SQueue_popWait(m->usersExit, &data) == 1){
+					u_aux = (User *) data;
+					User_log(u_aux);
+					u_aux->state = USR_QUIT;
+					Signal(&u_aux->cv_UserNews);
+					if(User_joinThread(u_aux) != 0)
+						ERR_QUIT("An error occurred joining User %d thread.", u_aux->id);
+					User_delete(u_aux);
+					removedUsers++;
+					printf("[Market]: Users removed: %d\n", removedUsers);
+				}
 			}	
 			//Log all cashdesks data
 			DEBUG_PRINT("Market_isEmpty: %d\n", Market_isEmpty(m));
@@ -455,7 +456,7 @@ void * Market_main(void * p_arg){
 			//Log user info.
 			User_log(u_aux);	
 			//Reset user structure for next reuse
-			User_reset(u_aux, getRandom(0, m->P, &m->seed), getRandom(10, m->T, &m->seed), m);
+			User_reset(u_aux, getRandom(0, m->P), getRandom(10, m->T), m);
 			SQueue_push(newGroup, u_aux);
 			if(numExit == m->E) {//E numExits
 				//Move all users in newGroup into shopping area

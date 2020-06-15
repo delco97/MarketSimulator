@@ -21,7 +21,7 @@ static CashDesk * pGetRandomDesk(PayArea *p_a, CashDeskState p_state) {
 				ERR_QUIT("An error occurred during desk search. (1)");
 		}
 	}
-	int r = getRandom(0,SQueue_dim(selectedDesks)-1, &p_a->market->seed);
+	int r = getRandom(0,SQueue_dim(selectedDesks)-1);
 	if(SQueue_removePos(selectedDesks, r, &aux) != 1)
 		ERR_QUIT("An error occurred during desk search. (2)");
 	SQueue_deleteQueue(selectedDesks, NULL);
@@ -75,7 +75,7 @@ PayArea * PayArea_init(Market * p_m, int p_tot, int p_open) {
     aux->market = p_m;  
 	//Init all desks
 	for(int i = 0;i < aux->nTot; i++) {
-		if( (aux->desks[i] = CashDesk_init(p_m, i, p_m->TD, getRandom(20, 80, &p_m->seed), (i<p_open) ? DESK_OPEN:DESK_CLOSE)) == NULL )
+		if( (aux->desks[i] = CashDesk_init(p_m, i, p_m->TD, getRandom(20, 80), (i<p_open) ? DESK_OPEN:DESK_CLOSE)) == NULL )
 			ERR_QUIT("An error occurred during cashdesk creation. Impossible to setup the market.");
 		
 	}

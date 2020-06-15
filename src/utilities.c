@@ -13,6 +13,10 @@
 #include <pthread.h>
 #include <time.h>
 
+_Thread_local unsigned int g_seed; /**< Seed variable defined for each thread (_Thread_local) used 
+                                        by rand_r calls performed within #utilities.getRandom.
+                                        IMPORTANT: must be initialized.*/
+
 /**
  * @brief Wait a specified amount of milliseconds.
  * 
@@ -70,13 +74,13 @@ struct timespec getCurrentTime(){
  * @brief 	Get a random integer value in the following range [p_lower; p_upper]
  * 			Remember to set a seed using srand before.
  * 
- * @param p_lower 
- * @param p_upper 
- * @return int: 
+ * @param p_lower smallest number that can be produced.
+ * @param p_upper biggest number that can be produced.
+ * @return int: generated number
  */
-int getRandom(int p_lower, int p_upper, unsigned int * p_seed) { 
-    return (rand_r(p_seed) % (p_upper - p_lower + 1)) + p_lower; 
-} 
+int getRandom(int p_lower, int p_upper) {
+    return (rand_r(&g_seed) % (p_upper - p_lower + 1)) + p_lower; 
+}
 
 //Locking utilities
 void Lock(pthread_mutex_t * p_lock) {if((pthread_mutex_lock(p_lock)) != 0) ERR_QUIT("An error occurred during locking.");}

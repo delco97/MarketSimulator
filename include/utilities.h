@@ -12,6 +12,8 @@
 
 #define	MAXLINE	4096			/* max line length for messages*/
 
+extern _Thread_local unsigned int g_seed;
+
 //**Debug messages **
 #ifdef _DEBUG
 	#define DEBUG_PRINT(M, ...) \
@@ -56,6 +58,6 @@ void Signal(pthread_cond_t * p_cond);
 void Broadcast(pthread_cond_t * p_cond);
 
 //** General utilities
-int getRandom(int p_lower, int p_upper, unsigned int * p_seed);
+int getRandom(int p_lower, int p_upper);
 
 #endif	/* _UTILITIES_H */
