@@ -27,6 +27,10 @@ struct Node {
     struct Node * next; /**<  pointer to next node object in the queue*/
 };
 
+/**
+ * @brief SQueue is a mutable thread safe queue in which generic elements (void *) can be added or removed
+ * 
+ */
 struct SQueue{
     pthread_mutex_t lock;  /**< lock variable */
     pthread_cond_t cv_full; /**< used to wait when is full */

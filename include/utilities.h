@@ -8,6 +8,7 @@
 #include <time.h>
 #include <pthread.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define	MAXLINE	4096			/* max line length for messages*/
 
@@ -19,14 +20,28 @@
 	#define DEBUG_PRINT(M, ...) do {} while (0)
 #endif
 
-//** Log/Error handling functions **
-void	err_msg(const char *, ...);	
-void	err_dump(const char *, ...) __attribute__((noreturn));
-void	err_quit(const char *, ...) __attribute__((noreturn));
-void	err_cont(int, const char *, ...);
-void	err_exit(int, const char *, ...) __attribute__((noreturn));
-void	err_ret(const char *, ...);
-void	err_sys(const char *, ...) __attribute__((noreturn));
+//** Log/Error handling macros **
+#define ERR_MSG(M, ...) \
+	fprintf(stderr, "[ERROR] (%s:%d): " M, __FILE__, __LINE__, ##__VA_ARGS__);\
+
+#define ERR_QUIT(M, ...) \
+	do {\
+		fprintf(stderr, "[ERROR] (%s:%d): " M, __FILE__, __LINE__, ##__VA_ARGS__);\
+		exit(1);\
+	} while(0)
+
+#define ERR_SYS_MSG(M, ...) \
+	do {\
+		fprintf(stderr, "[ERROR] (%s:%d): " M, __FILE__, __LINE__, ##__VA_ARGS__);\
+		perror("System call error");\
+	} while(0)
+
+#define ERR_SYS_QUIT(M, ...) \
+	do {\
+		fprintf(stderr, "[ERROR] (%s:%d): " M, __FILE__, __LINE__, ##__VA_ARGS__);\
+		perror("System call error");\
+		exit(1);\
+	} while(0)
 
 //** Time utilities
 int waitMs(long p_msec);

@@ -1,5 +1,5 @@
 # Start from the ubuntu official image
-FROM ubuntu:16.04
+FROM debian:latest
 # Setup image
 RUN apt-get update && apt-get install -y \
     gcc \

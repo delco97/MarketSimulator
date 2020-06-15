@@ -7,23 +7,23 @@
 #include <PayArea.h>
 #include <TCashDesk.h>
 
-
+//Private functions
 static CashDesk * pGetRandomDesk(PayArea *p_a, CashDeskState p_state) {
 	//Choose a random open cashk desk
 	SQueue * selectedDesks = NULL;
 	void * aux = NULL;
 	CashDesk * deskChoosen = NULL;
 	if( (selectedDesks = SQueue_init(-1)) == NULL) 
-		err_quit("Malloc error.");
+		ERR_QUIT("Malloc error.");
 	for(int i=0;i < p_a->nTot; i++) {//Get id of all desks currently open
-		if(CashDesk_getSate(p_a->desks[i]) == p_state){
+		if(p_a->desks[i]->state == p_state){
 			if(SQueue_push(selectedDesks, p_a->desks[i]) != 1)
-				err_quit("An error occurred during desk search. (1)");
+				ERR_QUIT("An error occurred during desk search. (1)");
 		}
 	}
 	int r = getRandom(0,SQueue_dim(selectedDesks)-1, &p_a->market->seed);
 	if(SQueue_removePos(selectedDesks, r, &aux) != 1)
-		err_quit("An error occurred during desk search. (2)");
+		ERR_QUIT("An error occurred during desk search. (2)");
 	SQueue_deleteQueue(selectedDesks, NULL);
 	deskChoosen = (CashDesk *) aux;
     return deskChoosen;
@@ -42,7 +42,7 @@ static CashDesk * pGetRandomDesk(PayArea *p_a, CashDeskState p_state) {
 //     }
 //     //Find desk with min number of users in queue
 // 	for(int i=0;i < p_a->nTot; i++) {//Get id of all desks currently open
-// 		if(CashDesk_getSate(p_a->desks[i]) == DESK_OPEN && SQueue_dim(p_a->desks[i]->usersPay) < SQueue_dim(selectedDesk->usersPay)) 
+// 		if(p_a->desks[i]->state == DESK_OPEN && SQueue_dim(p_a->desks[i]->usersPay) < SQueue_dim(selectedDesk->usersPay)) 
 //             selectedDesk = p_a->desks[i];
 // 	}
 
@@ -59,29 +59,29 @@ static CashDesk * pGetRandomDesk(PayArea *p_a, CashDeskState p_state) {
  */
 PayArea * PayArea_init(Market * p_m, int p_tot, int p_open) {
     PayArea * aux = NULL;
-    if(p_m == NULL) err_quit("p_m == NULL");
-    if(p_tot <= 0 || p_open <= 0)  err_quit("Invalid p_open or p_tot value. p_open: %d; p_tot: %d", p_open, p_tot);
-    if(p_open <= 0 || p_open > p_tot) err_quit("Invalid p_open value. p_open: %d; p_tot: %d", p_open, p_tot);
+    if(p_m == NULL) ERR_QUIT("p_m == NULL");
+    if(p_tot <= 0 || p_open <= 0)  ERR_QUIT("Invalid p_open or p_tot value. p_open: %d; p_tot: %d", p_open, p_tot);
+    if(p_open <= 0 || p_open > p_tot) ERR_QUIT("Invalid p_open value. p_open: %d; p_tot: %d", p_open, p_tot);
     
    	if( (aux = malloc(sizeof(PayArea))) == NULL)
-        err_quit("An error occurred during memory allocation. (payarea malloc)");
+        ERR_QUIT("An error occurred during memory allocation. (payarea malloc)");
     
     //Init array of desks
 	if( (aux->desks = malloc(p_tot * sizeof(CashDesk *))) == NULL)
-		err_quit("An error occurred during memory allocation. (cashdesks array malloc)");
+		ERR_QUIT("An error occurred during memory allocation. (cashdesks array malloc)");
     aux->nTot = p_tot;
     aux->nOpen = p_open;
     aux->nClose = p_tot - p_open;      
     aux->market = p_m;  
 	//Init all desks
 	for(int i = 0;i < aux->nTot; i++) {
-		if( (aux->desks[i] = CashDesk_init(p_m, i, getRandom(20, 80, &p_m->seed), (i<p_open) ? DESK_OPEN:DESK_CLOSE)) == NULL )
-			err_quit("An error occurred during cashdesk creation. Impossible to setup the market.");
+		if( (aux->desks[i] = CashDesk_init(p_m, i, p_m->TD, getRandom(20, 80, &p_m->seed), (i<p_open) ? DESK_OPEN:DESK_CLOSE)) == NULL )
+			ERR_QUIT("An error occurred during cashdesk creation. Impossible to setup the market.");
 		
 	}
     //Init lock system
 	if (pthread_mutex_init(&(aux->lock), NULL) != 0)
-		err_msg("An error occurred during locking system initialization. Impossible to setup CashDesk.");
+		ERR_MSG("An error occurred during locking system initialization. Impossible to setup CashDesk.");
 	
     return aux;
 }
@@ -95,7 +95,7 @@ PayArea * PayArea_init(Market * p_m, int p_tot, int p_open) {
  * @param p_a Requirements: p_a != NULL and must refer to a PayArea object created with #PayArea_init.
  */
 void PayArea_delete(PayArea * p_a) {
-    if(p_a == NULL) err_quit("An error occurred during PayArea deletion. p_a == NULL.");
+    if(p_a == NULL) ERR_QUIT("An error occurred during PayArea deletion. p_a == NULL.");
     pthread_mutex_destroy(&p_a->lock);
 	for(int i = 0;i < p_a->nTot; i++) CashDesk_delete(p_a->desks[i]);
 	free(p_a->desks);
@@ -112,7 +112,7 @@ void PayArea_delete(PayArea * p_a) {
  */
 int PayArea_isEmpty(PayArea *p_a) {
     int res_fun = 1;
-    if(p_a == NULL) err_quit("p_a == NULL");
+    if(p_a == NULL) ERR_QUIT("p_a == NULL");
 	PayArea_Lock(p_a);
     for(int i = 0;i < p_a->nTot && res_fun == 1;i++) 
 		res_fun = SQueue_isEmpty(p_a->desks[i]->usersPay)!=1 ? 0:res_fun;
@@ -126,11 +126,11 @@ int PayArea_isEmpty(PayArea *p_a) {
  * @param p_a Requirements: p_a != NULL and must refer to a PayArea object created with #PayArea_init.
  */
 void PayArea_startDeskThreads(PayArea *p_a) {
-	if(p_a == NULL) err_quit("p_a == NULL");
+	if(p_a == NULL) ERR_QUIT("p_a == NULL");
     
 	for(int i = 0; i < p_a->nTot; i++){
 		if(CashDesk_startThread(p_a->desks[i]) != 0)
-			err_quit("[Market]: An error occurred during desk thread start. (CashDesk startThread failed)");
+			ERR_QUIT("[Market]: An error occurred during desk thread start. (CashDesk startThread failed)");
 	}
 }
 
@@ -140,10 +140,10 @@ void PayArea_startDeskThreads(PayArea *p_a) {
  * @param p_a Requirements: p_a != NULL and must refer to a PayArea object created with #PayArea_init.
  */
 void PayArea_joinDeskThreads(PayArea * p_a) {
-	if(p_a == NULL) err_quit("p_a == NULL");
+	if(p_a == NULL) ERR_QUIT("p_a == NULL");
         
     for(int i = 0;i < p_a->nTot;i++) 
-        if(CashDesk_joinThread(p_a->desks[i])!=0) err_quit("An error occurred during cash desk thread join.");    
+        if(CashDesk_joinThread(p_a->desks[i])!=0) ERR_QUIT("An error occurred during cash desk thread join.");    
 }
 
 
@@ -153,7 +153,7 @@ void PayArea_joinDeskThreads(PayArea * p_a) {
  * @param p_a Requirements: p_a != NULL and must refer to a PayArea object created with #PayArea_init.
  */
 void PayArea_Signal(PayArea *p_a) {
-    if(p_a == NULL) err_quit("p_a == NULL");
+    if(p_a == NULL) ERR_QUIT("p_a == NULL");
     for(int i=0;i<p_a->nTot;i++) Signal(&p_a->desks[i]->cv_DeskNews);
 }
 
@@ -196,7 +196,7 @@ void PayArea_tryCloseDesk(PayArea *p_a) {
         while (SQueue_pop(closedDesk->usersPay, &data) == 1) {
             moveToDesk = pGetRandomDesk(p_a, DESK_OPEN);
             aux = (User *) data;
-            User_changeQueue(aux);	
+            aux->queueChanges++;	
             CashDesk_addUser(moveToDesk, aux);
         }
         
@@ -205,6 +205,22 @@ void PayArea_tryCloseDesk(PayArea *p_a) {
     PayArea_Unlock(p_a);
 }
 
+/**
+ * @brief Add a new user to one randomly choosen open desk.
+ * 
+ * @param p_a Requirements: p_a != NULL and must refer to a PayArea object created with #PayArea_init.
+ * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
+ */
+void PayArea_addUser(PayArea * p_a, User * p_u) {
+	CashDesk * deskChoosen = NULL;	
+    PayArea_Lock(p_a);
+	deskChoosen = pGetRandomDesk(p_a, DESK_OPEN);
+    p_u->tQueueStart = getCurrentTime();
+    p_u->queueChanges++;
+	CashDesk_addUser(deskChoosen, p_u);
+	Signal(&deskChoosen->cv_DeskNews);
+	PayArea_Unlock(p_a);
+}
 
 void PayArea_Lock(PayArea * p_a) {Lock(&p_a->lock);}
 void PayArea_Unlock(PayArea * p_a) {Unlock(&p_a->lock);}

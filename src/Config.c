@@ -1,4 +1,10 @@
 
+/**
+ * @file Config.c
+ * @brief Functions used to handle configuration files.
+ * 
+ */
+
 #include <Config.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -8,9 +14,19 @@
 #include <utilities.h>
 #include <SQueue.h>
 
-static const char g_comment[] = "//";
-static const char g_separatorKeyValue[] = "=";
+static const char g_comment[] = "//"; /**< String that define the begin of a comment line.*/
+static const char g_separatorKeyValue[] = "="; /**< String that separate a configuration item from its value.*/
 
+/**
+ * @brief Check if string p_line is a comment.
+ * 
+ * A comment line must have g_comment string at the beginin.
+ * 
+ * @param p_line string to check.
+ * @return int: result code:
+ * 1: p_line is a comment.
+ * 0: p_line is not a comment line.
+ */
 static int isComment(char * p_line){
 	char * aux = NULL;
 	//A comment line must have g_comment string at the beginin
@@ -18,6 +34,13 @@ static int isComment(char * p_line){
 	return 0;
 }
 
+/**
+ * @brief Comapare two strings using strcmp function.
+ * 
+ * @param p_1 must be of a NULL terminated string (char *)
+ * @param p_1 must be of a NULL terminated string (char *)
+ * @return int: result  codes strcmp return value.
+ */
 static int cmpStr(void * p_1, void * p_2){
 	return strcmp((char *) p_1, (char *) p_2);
 }
@@ -25,7 +48,7 @@ static int cmpStr(void * p_1, void * p_2){
 /**
  * @brief 	Try to pares a configuration line by retrieving label and value of the configuration item.
  * 			
- * 			For a correct parsing p_str must have the following structure.:
+ * 			For a correct parsing p_str must have the following structure:
  * 			    <config_label><p_limit><config_value>
  * 			If the p_str is configured as described above p_label will contain <config_label>
  * 			and p_value will contain <config_value>
@@ -121,7 +144,7 @@ int Config_checkFile(FILE * p_f){
 		}else{//Good line format
 			if(SQueue_find(q_labels, str_label, cmpStr) < 0){//Label never encoutereed
 				if((aux = malloc(MAX_DIM_STR_CONF * sizeof(char))) == NULL) 
-					err_sys("An error occurred during a malloc");
+					ERR_SYS_QUIT("An error occurred during a malloc");
 				strcpy(aux, str_label);
 				SQueue_push(q_labels, aux);
 			} else{ //Label already encountered
@@ -152,7 +175,7 @@ int Config_parseLong(long * p_x, char * p_str_value){
 	val = strtol(p_str_value, NULL, 10);
 	//Check for various possible errors
 	if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN)) || (errno != 0 && val == 0)){
-		err_ret("Parsing error: %s can't be parsed as long.\n");
+		ERR_SYS_MSG("Parsing error: %s can't be parsed as long.\n", p_str_value);
 		res = 0;
 	}else{//Good parsing
 		*p_x = val;

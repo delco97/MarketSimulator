@@ -1,9 +1,3 @@
-/**
- * @file Test_SQueue.c
- * @brief Used to test SQueue funcions.
- * 
- */
-
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>

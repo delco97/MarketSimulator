@@ -1,8 +1,3 @@
-/**
- * @file Test_configFileParser.c
- * @brief Test for configFileParser
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <Config.h>

@@ -17,6 +17,10 @@ typedef struct Director Director;
 extern volatile sig_atomic_t sig_hup;
 extern volatile sig_atomic_t sig_quit;
 
+/**
+ * @brief Data structure used to store information about a director.
+ * 
+ */
 struct Director {
     pthread_t thread;   /**< Director thread */
     pthread_mutex_t lock; /**< lock variable */
@@ -33,8 +37,5 @@ int Director_delete(Director * p_d);
 void * Director_main(void * p_arg);
 void Director_Lock(Director * p_d);
 void Director_Unlock(Director * p_d);
-
-//Getters
-Market * Director_getMarket(Director * p_d);
 
 #endif	/* _TDIRECTOR_H */

@@ -23,6 +23,10 @@ enum UserState {
     USR_QUIT
 };
 
+/**
+ * @brief Data structure used to store information about a user.
+ * 
+ */
 struct User {
     pthread_t thread;   /**< User thread */
     pthread_mutex_t lock;  /**< lock variable */
@@ -46,23 +50,6 @@ int User_delete(User * p_u);
 void User_reset(User * p_u, int p_products, int p_shoppingTime, Market * p_m);
 void User_log(User * p_u);
 int User_compare(void * p_u1, void * p_u2);
-//Getters
-int User_getId(User * p_u);
-UserState User_getState(User * p_u);
-int User_getProducts(User * p_u);
-int User_getQueueChanges(User * p_u);
-struct timespec User_getMarketEntryTime(User * p_u);
-struct timespec User_getMarketExitTime(User * p_u);
-struct timespec User_getQueueStartTime(User * p_u);
-int User_getShoppingTime(User * p_u);
-Market * User_getMarket(User * p_u);
-//Setters
-void User_setState(User * p_u, UserState p_s);
-void User_setMarketEntryTime(User * p_u, struct timespec p_x);
-void User_setMarketExitTime(User * p_u, struct timespec p_x);
-void User_setQueueStartTime(User * p_u, struct timespec p_x);
-void User_setProducts(User * p_u, int p_prd);
-void User_changeQueue(User * p_u);
 
 void * User_main(void * arg);
 

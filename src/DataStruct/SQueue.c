@@ -16,24 +16,33 @@
 #include <stdlib.h>
 #include <assert.h>
 
-//Private functions prototypes
+//Private functions
 static Node * pSQueue_allocateNode() { return malloc(sizeof(Node));}
 static SQueue * pSQueue_allocQueue() { return malloc(sizeof(SQueue)); }
 static void pSQueue_freeNode(Node * n, funDealloc p_funDealloc) { 
-    if(p_funDealloc != NULL) p_funDealloc(n->data); 
+    if(p_funDealloc != NULL) 
+        p_funDealloc(n->data); 
     free(n); 
 }
 static int pSQueue_isEmpty(SQueue * p_q);
 static int pSQueue_isFull(SQueue * p_q);
 static int pSQueue_pop(SQueue * p_q, void ** p_removed);
 static int pSQueue_push(SQueue * p_q, void * p_new);
-static void pSQueue_Lock(SQueue * p_q) {if(pthread_mutex_lock(&p_q->lock) != 0) err_quit("An error occurred during locking.");}
-static void pSQueue_Unlock(SQueue * p_q) {if(pthread_mutex_unlock(&p_q->lock) != 0) err_quit("An error occurred during unlocking.");}
-static void pSQueue_WaitFull(SQueue * p_q) {if(pthread_cond_wait(&p_q->cv_full, &p_q->lock) != 0) err_quit("An error occurred during cond wait.");}
-static void pSQueue_WaitEmpty(SQueue * p_q) {if(pthread_cond_wait(&p_q->cv_empty, &p_q->lock) != 0) err_quit("An error occurred during cond wait.");}
-static void pSQueue_SignalEmpty(SQueue * p_q) {if(pthread_cond_signal(&p_q->cv_empty) != 0) err_quit("An error occurred during singal empty.");}
-static void pSQueue_SignalFull(SQueue * p_q) {if(pthread_cond_signal(&p_q->cv_full) != 0) err_quit("An error occurred during singal full.");}
+static void pSQueue_Lock(SQueue * p_q) {if(pthread_mutex_lock(&p_q->lock) != 0) ERR_QUIT("An error occurred during locking.");}
+static void pSQueue_Unlock(SQueue * p_q) {if(pthread_mutex_unlock(&p_q->lock) != 0) ERR_QUIT("An error occurred during unlocking.");}
+static void pSQueue_WaitFull(SQueue * p_q) {if(pthread_cond_wait(&p_q->cv_full, &p_q->lock) != 0) ERR_QUIT("An error occurred during cond wait.");}
+static void pSQueue_WaitEmpty(SQueue * p_q) {if(pthread_cond_wait(&p_q->cv_empty, &p_q->lock) != 0) ERR_QUIT("An error occurred during cond wait.");}
+static void pSQueue_SignalEmpty(SQueue * p_q) {if(pthread_cond_signal(&p_q->cv_empty) != 0) ERR_QUIT("An error occurred during singal empty.");}
+static void pSQueue_SignalFull(SQueue * p_q) {if(pthread_cond_signal(&p_q->cv_full) != 0) ERR_QUIT("An error occurred during singal full.");}
 
+static int pSQueue_isEmpty(SQueue * p_q){
+    return p_q->n == 0 ? 1:0;
+}
+
+static int pSQueue_isFull(SQueue * p_q){
+    if(p_q->max <= 0) return 0; //if max limit is not set, p_q is never considered full.
+    return  p_q->n == p_q->max ? 1:0;
+}
 /**
  * @brief Make a new empty queue.
  * @param p_max is the maximum number of elements for the queue, in particular: if 
@@ -473,15 +482,4 @@ void SQueue_map(SQueue * p_q, funMap p_funMap) {
         aux = aux->next;
     }
     pSQueue_Unlock(p_q);  
-}
-
-
-
-static int pSQueue_isEmpty(SQueue * p_q){
-    return p_q->n == 0 ? 1:0;
-}
-
-static int pSQueue_isFull(SQueue * p_q){
-    if(p_q->max <= 0) return 0; //if max limit is not set, p_q is never considered full.
-    return  p_q->n == p_q->max ? 1:0;
 }

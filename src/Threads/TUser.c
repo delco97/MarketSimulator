@@ -20,10 +20,10 @@ static void pUser_Lock(User * p_u) {Lock(&p_u->lock);}
 static void pUser_Unlock(User * p_u) {Unlock(&p_u->lock);}
 static int pUser_getNextId() {
     int next = 0;
-    if(pthread_mutex_lock(&g_lock) != 0) err_quit("An error occurred during locking.");
+    if(pthread_mutex_lock(&g_lock) != 0) ERR_QUIT("An error occurred during locking.");
     next = g_UserCounter;
     g_UserCounter++;
-    if(pthread_mutex_unlock(&g_lock) != 0) err_quit("An error occurred during unlocking.");
+    if(pthread_mutex_unlock(&g_lock) != 0) ERR_QUIT("An error occurred during unlocking.");
     return next;
 }
 static void pUser_toString(User * p_u, char * p_buff){
@@ -152,138 +152,6 @@ int User_joinThread(User * p_u){
 }
 
 /**
- * @brief Get the p_u id.
- * 
- * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- * @return int
- */
-int User_getId(User * p_u){ int x; pUser_Lock(p_u); x = p_u->id; pUser_Unlock(p_u); return x; }
-
-/**
- * @brief Get current user state
- * 
- * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- * @return UserState 
- */
-UserState User_getState(User * p_u) { UserState x; pUser_Lock(p_u); x = p_u->state; pUser_Unlock(p_u); return x; }
-
-
-/**
- * @brief Get the number of products in cart.
- * 
- * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- * @return int 
- */
-int User_getProducts(User * p_u){ int x; pUser_Lock(p_u); x = p_u->products; pUser_Unlock(p_u); return x; }
-
-/**
- * @brief Get the number of queue changes occurred.
- * 
- * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- * @return int 
- */
-int User_getQueueChanges(User * p_u){ int x; pUser_Lock(p_u); x = p_u->queueChanges; pUser_Unlock(p_u); return x; }
-
-
-/**
- * @brief Get entry time in the market
- * 
- * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- * @return struct timespec 
- */
-struct timespec User_getMarketEntryTime(User * p_u)
-{ struct timespec x; pUser_Lock(p_u); x = p_u->tMarketEntry; pUser_Unlock(p_u); return x; }
-
-/**
- * @brief Get exit time in the market
- * 
- * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- * @return struct timespec 
- */
-struct timespec User_getMarketExitTime(User * p_u)
-{ struct timespec x; pUser_Lock(p_u); x = p_u->tMarketExit; pUser_Unlock(p_u); return x; }
-
-/**
- * @brief Get entry time when user moved to a queue.
- * 
- * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- * @return struct timespec 
- */
-struct timespec User_getQueueStartTime(User * p_u)
-{ struct timespec x; pUser_Lock(p_u); x = p_u->tQueueStart; pUser_Unlock(p_u); return x; }
-
-/**
- * @brief Get the shopping time to spend in shopping area.
- * 
- * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- * @return int 
- */
-int User_getShoppingTime(User * p_u){ int x; pUser_Lock(p_u); x = p_u->shoppingTime; pUser_Unlock(p_u); return x; }
-
-/**
- * @brief Set user state
- * 
- * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- */
-void User_setState(User * p_u, UserState p_s) {pUser_Lock(p_u); p_u->state = p_s; pUser_Unlock(p_u);}
-
-
-/**
- * @brief Set time of when p_u entered the market.
- * 
- * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- * @param p_x time of enter
- */
-void User_setMarketEntryTime(User * p_u, struct timespec p_x){
-    pUser_Lock(p_u); p_u->tMarketEntry = p_x; pUser_Unlock(p_u);
-}
-
-/**
- * @brief Set time of when p_u exit from the market.
- * 
- * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- * @param p_x time of exit
- */
-void User_setMarketExitTime(User * p_u, struct timespec p_x){
-    pUser_Lock(p_u); p_u->tMarketExit = p_x; pUser_Unlock(p_u);
-}
-/**
- * @brief Set time of when p_u moved to a queue.
- * 
- * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- * @param p_x time of when user moved in front of a queue.
- */
-void User_setQueueStartTime(User * p_u, struct timespec p_x){
-    pUser_Lock(p_u); p_u->tQueueStart = p_x; pUser_Unlock(p_u);
-}
-
-/**
- * @brief Set number of products purchases
- * 
- * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- * @param p_prd new number of products
- */
-void User_setProducts(User * p_u, int p_prd) {
-    pUser_Lock(p_u); p_u->products = p_prd; pUser_Unlock(p_u);
-}
-
-/**
- * @brief Get the market where user p_u is located.
- * 
- * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- * @return Market* 
- */
-Market * User_getMarket(User * p_u) {return p_u->market;}
-
-
-/**
- * @brief changeQueue event occurred.
- * 
- * @param p_u Requirements: p_u != NULL and must refer to a User object created with #User_init. Target User.
- */
-void User_changeQueue(User * p_u){ pUser_Lock(p_u); p_u->queueChanges++; pUser_Unlock(p_u);}
-
-/**
  * @brief Entry point for a User thread.
  * 
  * Function to use on User thread creation. This
@@ -299,7 +167,7 @@ void User_changeQueue(User * p_u){ pUser_Lock(p_u); p_u->queueChanges++; pUser_U
  */
 void * User_main(void * p_arg) {
     User * u = (User *)p_arg;
-    Market * m = User_getMarket(u);
+    Market * m = u->market;
     while (1) {
         Lock(&u->lock);
         //Wait to being ready to start next simulation
@@ -307,37 +175,37 @@ void * User_main(void * p_arg) {
             pthread_cond_wait(&u->cv_UserNews, &u->lock);
         Unlock(&u->lock);
 
-        if(User_getState(u) == USR_QUIT) break;
+        if(u->state == USR_QUIT) break;
 
-        User_setState(u, USR_NOT_READY);
+        u->state = USR_NOT_READY;
         //USR_READY => Is in shopping area ready to start simulation
-        User_setMarketEntryTime(u, getCurrentTime());
+        u->tMarketEntry = getCurrentTime();
         if(sig_quit) {
             Market_FromShoppingToExit(m, u);
             break;
         }
 
         //Shopping time
-        printf("[User %d]: start shopping!\n", User_getId(u));
+        printf("[User %d]: start shopping!\n", u->id);
         
-        if(waitMs(User_getShoppingTime(u)) == -1)
-            err_sys("[User %d]: an error occurred during waiting for shopping time.\n", User_getId(u));
+        if(waitMs(u->shoppingTime) == -1)
+            ERR_SYS_QUIT("[User %d]: an error occurred during waiting for shopping time.\n", u->id);
 
         if(sig_quit == 1) {
-            Market_FromShoppingToExit(User_getMarket(u), u);
+            Market_FromShoppingToExit(u->market, u);
             break;
         }
-        printf("[User %d]: end shopping!\n", User_getId(u));
+        printf("[User %d]: end shopping!\n", u->id);
         //End of shopping, move to one cashdesk or to authorization queue
-        if(User_getProducts(u) > 0){//Has something in the cart
-            printf("[User %d]: move to a open cash desk for payment.\n", User_getId(u));
-            Market_FromShoppingToPay(User_getMarket(u), u);
+        if(u->products > 0){//Has something in the cart
+            printf("[User %d]: move to a open cash desk for payment.\n", u->id);
+            Market_FromShoppingToPay(u->market, u);
         }else{//Nothing in the cart
-            printf("[User %d]: move to the authorization queue.\n", User_getId(u));
+            printf("[User %d]: move to the authorization queue.\n", u->id);
             //Move User struct to queue of users waiting director authorization before exit.
-            Market_FromShoppingToAuth(User_getMarket(u), u);
+            Market_FromShoppingToAuth(u->market, u);
         }
     }
-    printf("[User %d]: end of thread.\n", User_getId(u));
+    printf("[User %d]: end of thread.\n", u->id);
     return (void *)NULL;
 }

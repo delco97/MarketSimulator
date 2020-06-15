@@ -4,7 +4,7 @@
  * 			It is used to setup the environment using the config file passed
  * 			as parameter.
  */
-
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -13,24 +13,34 @@
 #include <SQueue.h>
 #include <Config.h>
 #include <TMarket.h>
-#include <signal.h>
 
 volatile sig_atomic_t sig_hup=0; /**< SIGHUP signal indicator */
 volatile sig_atomic_t sig_quit=0; /**< SIGQUIT signal indicator */
-
+/**
+ * @brief Data struct used to pass paramters to signal handler thread
+ * 
+ */
 typedef struct _input_handler_par_t {
-	Market * m;
-	sigset_t * set;
+	Market * m; /**<reference to market interested into getting notified about signals.*/
+	sigset_t * set;	/**< set of signal handled*/
 } input_handler_par_t;
 
-
+/**
+ * @brief Signal handler thread's main function.
+ * 
+ * It handles the following signals:
+ *  - SIGQUIT: set sig_quit = 1 and notify Market thread that will start a fast-closure.
+ * 	- SIHUP: set sig_hup = 1 and notify Market thread that will start a gracefull-closure.
+ * @param p_arg this argument is expected to be a input_handler_par_t *
+ * @return void* 
+ */
 static void * sigHandler(void * p_arg) {
 	sigset_t * set = ((input_handler_par_t *) p_arg)->set;
 	Market * m = ((input_handler_par_t *) p_arg)->m;
     int sig;
 
     while (1) {
-        if (sigwait(set, &sig) != 0) err_quit("sigwait");
+        if (sigwait(set, &sig) != 0) ERR_QUIT("sigwait");
         switch (sig) {
 			case SIGQUIT:
 				printf("Received signal SIGQUIT.\n");
@@ -45,14 +55,14 @@ static void * sigHandler(void * p_arg) {
 				return (void *) NULL;
 				break;       
 			default:
-				//err_msg("Received unknown signal: %d!\n", sig);
+				ERR_MSG("Received unknown signal: %d!\n", sig);
 				break;
         }
     }	
 }
 
 /**
- * @brief Explain how to correctly use the program.
+ * @brief Print a message on stdout to explain how to correctly use the program.
  * 
  * @param p_argv parameters passed to the program.
  */
@@ -60,7 +70,7 @@ static void useInfo(char * p_argv[]){
 	fprintf(stderr, "See the expected call:\n");
 	fprintf(stderr, "	%s <config_file> <log_file>\n", p_argv[0]);
 }
-int exitUser = 0;
+
 int main(int argc, char * argv[]) {
 	Market * m = NULL;
 	pthread_t thSigHandler;
@@ -72,43 +82,43 @@ int main(int argc, char * argv[]) {
 	if(argc != 3){//Wrong use
 		printf("Wrong use.");
 		useInfo(argv);
-		err_exit(EXIT_FAILURE, "Exit...");
+		ERR_QUIT("Exit...");
 	}
-    
-	//Setup signal handler thread
-    //Block SIGHUP and SIGQUIT; other threads created by main()
-	//will inherit a copy of the signal mask.	
-	if(sigemptyset(&set) == -1) err_quit("impossible to set mask. (1)");
-	if(sigaddset(&set, SIGHUP) == -1) err_quit("impossible to set mask. (2)");
-	if(sigaddset(&set, SIGQUIT) == -1) err_quit("impossible to set mask. (3)");
-	if(pthread_sigmask(SIG_BLOCK, &set, NULL)==-1) err_quit("impossible to set mask (4)");	
+	//Setup signal handler thread in order to block SIGHUP and SIGHUP signals.
+	//Other threads created by main() thread will inherit a copy of its signal mask, so they
+	//won't receive SIGHUP and SIGHUP as main(), because these signal will handled by the signal handler thread.
+	if(sigemptyset(&set) == -1) ERR_QUIT("impossible to set mask.");
+	if(sigaddset(&set, SIGHUP) == -1) ERR_QUIT("impossible to set mask. (2)");
+	if(sigaddset(&set, SIGQUIT) == -1) ERR_QUIT("impossible to set mask. (3)");
+	if(pthread_sigmask(SIG_BLOCK, &set, NULL)==-1) ERR_QUIT("impossible to set mask (4)");	
 
 	//Try to init market
 	if((m = Market_init(argv[1], argv[2])) == NULL)
-		err_quit("An error occurred during market initialization. Exit...");
+		ERR_QUIT("An error occurred during market initialization. Exit...");
 
 	//Market is correctly initialized
 	if(Market_startThread(m) != 0)
-		err_quit("An error occurred during market startup (1). Exit...");
+		ERR_QUIT("An error occurred during market startup (1). Exit...");
 
 	//Start signal handler thread
 	in.m = m;
 	in.set = &set;
 	if(pthread_create(&thSigHandler, NULL, sigHandler, &in) != 0)
-		err_quit("impossible to execute signal handler thread.");
+		ERR_QUIT("impossible to execute signal handler thread.");
 
 	//Wait Market
 	if(Market_joinThread(m) != 0)
-		err_quit("An error occurred during market startup (2). Exit...");
-
+		ERR_QUIT("An error occurred during market startup (2). Exit...");
+	
+	//Deallocate memory used by Market
 	if(Market_delete(m) != 1)
-		err_quit( "An error occurred during market closing. Exit...");
+		ERR_QUIT( "An error occurred during market closing. Exit...");
 	
 	//Wait signal handler thread
 	if(pthread_join(thSigHandler, NULL) != 0)
-		err_quit("pthread_join: thSigHandler");
+		ERR_QUIT("pthread_join: thSigHandler");
 
-	printf("Market closed\n");
+	printf("Market closed.\n");
 
 	return 0;
 }

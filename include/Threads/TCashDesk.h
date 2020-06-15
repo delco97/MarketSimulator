@@ -23,13 +23,20 @@ enum CashDeskState {
     DESK_CLOSE
 };
 
+/**
+ * @brief Data structure used to periodically notify
+ * director thread about a cash desk status.
+ */
 struct CashDeskNotify {
     int id; //**< cash desk id who sent this notify*/
-    int users; //**< user in queue */
+    int users; //**< users in queue */
     CashDeskState state; //** desk state */
-    struct timespec time;  /**< time of notification */ 
 };
 
+/**
+ * @brief Data structure used to store information about a cash desk.
+ * 
+ */
 struct CashDesk {
     pthread_t thread;   /**< CaskDesk thread */
     pthread_mutex_t lock;  /**< lock variable */
@@ -40,13 +47,14 @@ struct CashDesk {
     int usersProcessed; /**< number of users served */
     int numClosure; /**< number of closure */
     int totOpenTime; /**< tot open time in ms */
-    float avgSeviceTime; /**< average service time for a user*/
+    float avgServiceTime; /**< average service time for a user*/
+    int notifyInterval; /**< notify interval to inform director thread in ms*/
     CashDeskState state;    /**< current cashdesk state */
     SQueue * usersPay; /**< Users waiting for payment. */
     Market * market;  /**< Reference to the market where the director is. */
 };
 
-CashDesk * CashDesk_init(Market * p_m, int p_id, int p_serviceConst, CashDeskState p_state);
+CashDesk * CashDesk_init(Market * p_m, int p_id, int p_serviceConst, int p_notifyInterval, CashDeskState p_state);
 int CashDesk_delete(CashDesk * p_c);
 int CashDesk_startThread(CashDesk * p_c);
 int CashDesk_joinThread(CashDesk * p_c);
@@ -54,14 +62,7 @@ void * CashDesk_notifyDirector(void * p_arg);
 void * CashDesk_main(void * p_arg);
 void CashDesk_Lock(CashDesk * p_m);
 void CashDesk_Unlock(CashDesk * p_m);
-//Getters
-CashDeskState CashDesk_getId(CashDesk * p_c);
-CashDeskState CashDesk_getSate(CashDesk * p_c);
-SQueue * CashDesk_getUsersPay(CashDesk * p_c);
-Market * CashDesk_getMarket(CashDesk * p_c);
-//Setters
 void CashDesk_addUser(CashDesk * p_c, User * p_u);
-
 void CashDesk_log(CashDesk * p_c);
 
 #endif	/* _TCASHDESK_H */

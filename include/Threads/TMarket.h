@@ -25,6 +25,10 @@ typedef struct PayArea PayArea;
 extern volatile sig_atomic_t sig_hup;
 extern volatile sig_atomic_t sig_quit;
 
+/**
+ * @brief Data structure used to store information about a market.
+ * 
+ */
 struct Market {
     pthread_t thread;   /**< Market  thread */
     pthread_mutex_t lock;  /**< lock variable */
@@ -62,26 +66,7 @@ int Market_joinThread(Market * p_m);
 int Market_delete(Market * p_m);
 void Market_Lock(Market * p_m);
 void Market_Unlock(Market * p_m);
-
-
-unsigned int * Market_getSeed(Market * p_m);
-long Market_getK(Market * p_m);
-long Market_getKS(Market * p_m);
-long Market_getC(Market * p_m);
-long Market_getE(Market * p_m);
-long Market_getT(Market * p_m);
-long Market_getP(Market * p_m);
-long Market_getS(Market * p_m);
-long Market_getS1(Market * p_m);
-long Market_getS2(Market * p_m);
-long Market_getNP(Market * p_m);
-Director * Market_getDirector(Market * p_m);
-SQueue * Market_getUsersShopping(Market * p_m);
-SQueue * Market_getUsersExit(Market * p_m);
-SQueue * Market_getUsersAuth(Market * p_m);
-CashDesk ** Market_getDesks(Market * p_m);
 int Market_isEmpty(Market * p_m);
-
 void Market_FromShoppingToPay(Market * p_m, User * p_u);
 void Market_FromShoppingToAuth(Market * p_m, User * p_u);
 void Market_FromShoppingToExit(Market * p_m, User * p_u);

@@ -31,14 +31,14 @@ Director * Director_init(Market * p_m) {
     aux->notifications = NULL;
 
     if((aux->notifications = SQueue_init(-1)) == NULL) {
-		err_msg("An error occurred during notification queue setup. Impossible to setup the director.");
+		ERR_MSG("An error occurred during notification queue setup. Impossible to setup the director.");
         goto err;
 	}
 
 	if (pthread_cond_init(&aux->cv_Director_AuthNews, NULL) != 0 ||
         pthread_cond_init(&aux->cv_Director_DesksNews, NULL) != 0 ||
         pthread_mutex_init(&(aux->lock), NULL) != 0) {
-		err_msg("An error occurred during locking system initialization. Impossible to setup the director.");
+		ERR_MSG("An error occurred during locking system initialization. Impossible to setup the director.");
         goto err;
 	}
 
@@ -92,10 +92,6 @@ int Director_delete(Director * p_d) {
 	return 1;
 }
 
-//Getters
-Market * Director_getMarket(Director * p_d) {return p_d->market;}
-
-
 /**
  * @brief Thread dedicated to auth queue 
  * 
@@ -103,12 +99,12 @@ Market * Director_getMarket(Director * p_d) {return p_d->market;}
  */
 void * Director_handleAuth(void * p_arg) {
     Market * m = (Market *) p_arg;
-    Director * d = Market_getDirector(m);
-    SQueue * auth = Market_getUsersAuth(m);
+    Director * d = m->director;
+    SQueue * auth = m->usersAuthQueue;
     void * data = NULL;
     User * user = NULL;
     while (1) {
-       	//Wait a signal or new user in auth queue to proceed
+       	//Wait a closure signal or new user in auth queue to proceed
 		Lock(&d->lock);
 		while (sig_hup != 1 && sig_quit != 1 && SQueue_isEmpty(auth)==1) 
 			pthread_cond_wait(&d->cv_Director_AuthNews, &d->lock);
@@ -127,7 +123,7 @@ void * Director_handleAuth(void * p_arg) {
         //Market is not closing
         if(SQueue_pop(auth, &data) == 1){
             user = (User *) data;
-            printf("[Director]: user %d is authorized for exit.\n", User_getId(user));
+            printf("[Director]: user %d is authorized for exit.\n", user->id);
             //Move user to exit
             Market_moveToExit(m, user);
         }
@@ -156,15 +152,15 @@ void * Director_main(void * p_arg){
 	printf("[Director]: start of thread.\n");
 
     if((lastReceivedMsg = calloc(d->market->K, sizeof(CashDesk **))) == NULL)
-        err_quit("Malloc error");
-
+        ERR_QUIT("Malloc error");
 
     //Create auxiliary thread for managing auth queue
     if(pthread_create(&thAuthHandler, NULL, Director_handleAuth, d->market) !=0)
-        err_quit("[Director]: an error occurred during creation of authorizations handler thread."); 
+        ERR_QUIT("[Director]: an error occurred during creation of authorizations handler thread."); 
     
     //Handle cashdesks notifications
     while (1) {
+        //Wait a closure signal or new desk notification to proceed
 		Lock(&d->lock);
 		while (sig_hup != 1 && sig_quit != 1 && SQueue_isEmpty(d->notifications)==1) 
 			pthread_cond_wait(&d->cv_Director_DesksNews, &d->lock);
@@ -214,9 +210,8 @@ void * Director_main(void * p_arg){
         if(lastReceivedMsg[i] != NULL) free(lastReceivedMsg[i]);
     free(lastReceivedMsg);
     
-
     if(pthread_join(thAuthHandler, NULL) !=0)
-        err_quit("[Director]: an error occurred during join of authorizations handler thread."); 
+        ERR_QUIT("[Director]: an error occurred during join of authorizations handler thread."); 
 
 	printf("[Director]: end of thread.\n");
     return (void *)NULL;
