@@ -44,7 +44,7 @@ OBJS    := $(patsubst $(SRC)/%,$(OBJ)/%,$(SRCS:.c=.o))
 CINCLUDES	:= $(patsubst %,-I%, $(INCLUDEDIRS:%/=%))
 CLIBS		:= $(patsubst %,-L%, $(LIBDIRS:%/=%))
 
-.PHONY: all dir clean doc docker_build docker_run test
+.PHONY: all dir clean doc docker_build docker_run test test_1 test_2
 
 all: $(EXES) $(OBJS)
 
