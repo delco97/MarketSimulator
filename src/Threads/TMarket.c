@@ -412,7 +412,7 @@ void * Market_main(void * p_arg){
 			printf("Market is closing...\n");
 			//When SIGHUP or SIQQUIT occurs no new users are allowed inside the market and
 			//all the users inside are waited.
-			//Singla closure to all threads and wait them
+			//Singal closure to all threads and wait them
 			PayArea_Signal(m->payArea);
 			printf("Cashdesks termination...\n");
 			PayArea_joinDeskThreads(m->payArea);
