@@ -171,7 +171,7 @@ void * Director_main(void * p_arg){
         if(SQueue_pop(d->notifications, &data) == 1) {
             //New notification received
             msg = (CashDeskNotify *) data;
-            printf("[Director]: recived notification from desk %d\n", msg->id);
+            printf("[Director]: received notification from desk %d\n", msg->id);
 
             if(lastReceivedMsg[msg->id] == NULL) desksMsg++;
             else free(lastReceivedMsg[msg->id]);
