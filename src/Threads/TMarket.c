@@ -427,8 +427,8 @@ void * Market_main(void * p_arg){
 				SQueue_push(m->usersExit, u_aux);
 			}
 			//Delete all users
-			while(Market_isEmpty(m)) {		
-				if(SQueue_popWait(m->usersExit, &data) == 1){
+			while(Market_isEmpty(m) != 1) {		
+				if(SQueue_pop(m->usersExit, &data) == 1){
 					u_aux = (User *) data;
 					User_log(u_aux);
 					u_aux->state = USR_QUIT;
