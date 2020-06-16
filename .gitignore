@@ -6,3 +6,4 @@ doxyDocs/
 .vscode/
 logFiles/
 *.PID
+~*

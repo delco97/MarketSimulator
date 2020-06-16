@@ -34,7 +34,6 @@ struct Market {
     pthread_mutex_t lock;  /**< lock variable */
     pthread_mutex_t lock_Logfile;  /**< lock for log file */
     pthread_cond_t cv_MarketNews; /**< used to notify updates to Market thread */
-    unsigned int seed;  /**< seed used by the market thread for generating random number */
     long K; 	/**< Maximum number of open cashdesk. {K>0} */
     long KS; 	/**< Number of open cashdesks at opening. {0<KS<=K} */
     long C; 	/**< Maximum number of client allowed inside. {C >1} */

@@ -190,7 +190,6 @@ Market * Market_init(const char * p_conf, const char * p_log){
 		ERR_SYS_MSG("An error occurred during memory allocation.");
 		goto err;
 	}
-	m->seed = time(NULL); //init seed for rand_r
 	m->f_log = f_log;
 	//Default values
 	m->director = NULL;
