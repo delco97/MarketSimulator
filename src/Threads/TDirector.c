@@ -111,7 +111,7 @@ void * Director_handleAuth(void * p_arg) {
 		Unlock(&d->lock);
 		if(sig_hup == 1 || sig_quit == 1) {        
             //Empties the user auth queue and wait until no other users are in the market
-            while (SQueue_isEmpty(m->usersShopping) != 1) {
+            while (SQueue_isEmpty(m->usersShopping) != 1 || SQueue_isEmpty(auth)!= 1) {
                 if(SQueue_pop(auth, &data) == 1) {
                     user = (User *) data;
                     //Move user to exit

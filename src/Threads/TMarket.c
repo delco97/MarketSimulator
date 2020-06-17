@@ -355,6 +355,8 @@ int Market_isEmpty(Market * p_m){
 	//Check if all cash desk are empty
 	res_fun = res_fun!=1 || PayArea_isEmpty(p_m->payArea)!=1 ? 0:res_fun;
 	res_fun = res_fun!=1 || SQueue_isEmpty(p_m->usersExit)!=1 ? 0:res_fun;
+	if(res_fun == 0) DEBUG_PRINT("1) Market non vuoto: %d (shopping), %d (auth), %d (exit), %d (pay area is empty)\n", SQueue_dim(p_m->usersShopping), SQueue_dim(p_m->usersAuthQueue), SQueue_dim(p_m->usersExit), PayArea_isEmpty(p_m->payArea));
+	if(res_fun == 0) DEBUG_PRINT("2) Market non vuoto: %d (shopping), %d (auth), %d (exit), %d (pay area is empty)\n", SQueue_isEmpty(p_m->usersShopping), SQueue_isEmpty(p_m->usersAuthQueue), SQueue_isEmpty(p_m->usersExit), PayArea_isEmpty(p_m->payArea));
 	return res_fun;
 }
 
@@ -427,18 +429,16 @@ void * Market_main(void * p_arg){
 				SQueue_push(m->usersExit, u_aux);
 			}
 			//Delete all users
-			while(Market_isEmpty(m) != 1) {		
-				if(SQueue_pop(m->usersExit, &data) == 1){
-					u_aux = (User *) data;
-					User_log(u_aux);
-					u_aux->state = USR_QUIT;
-					Signal(&u_aux->cv_UserNews);
-					if(User_joinThread(u_aux) != 0)
-						ERR_QUIT("An error occurred joining User %d thread.", u_aux->id);
-					User_delete(u_aux);
-					removedUsers++;
-					printf("[Market]: Users removed: %d\n", removedUsers);
-				}
+			while(SQueue_pop(m->usersExit, &data) == 1) {		
+				u_aux = (User *) data;
+				User_log(u_aux);
+				u_aux->state = USR_QUIT;
+				Signal(&u_aux->cv_UserNews);
+				if(User_joinThread(u_aux) != 0)
+					ERR_QUIT("An error occurred joining User %d thread.", u_aux->id);
+				User_delete(u_aux);
+				removedUsers++;
+				printf("[Market]: Users removed: %d\n", removedUsers);
 			}	
 			//Log all cashdesks data
 			DEBUG_PRINT("Market_isEmpty: %d\n", Market_isEmpty(m));
